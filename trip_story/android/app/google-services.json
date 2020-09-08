@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "235329436627",
+    "firebase_url": "https://tripstory-108d8.firebaseio.com",
+    "project_id": "tripstory-108d8",
+    "storage_bucket": "tripstory-108d8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:235329436627:android:786649c873de4e7aa24d26",
+        "android_client_info": {
+          "package_name": "com.deu.tripstory"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "235329436627-g4pdqna1tq6tks9ghphcatf9tubebotd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.deu.tripstory",
+            "certificate_hash": "0e17ed75c98aea1831a2b05f659df1c8a5e50a1b"
+          }
+        },
+        {
+          "client_id": "235329436627-bh5d3eg23eh7rnnm38f2fuf18gidd55n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD60EYFu0F50ioJvDTRcg_hBpExkn3_2kM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "235329436627-bh5d3eg23eh7rnnm38f2fuf18gidd55n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
