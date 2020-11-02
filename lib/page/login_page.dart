@@ -17,10 +17,22 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final loginFormKey = new GlobalKey<FormState>();
-  String _memberId;
-  String _memberPw;
+  String _errorMsg = '';
+  TextEditingController _memberIdTextController = new TextEditingController();
+  TextEditingController _memberPwTextController = new TextEditingController();
+  String _memberId = '';
+  String _memberPw = '';
   bool _autoLoginChecked = false;
+  String _globalLoginState = '-';
 
+
+  @override
+  void initState() {
+    checkAutoLogin(context);
+    super.initState();
+  }
+
+  //TODO: Delete Force login
   void forceLogin() {
     User user = User();
     user.name = '송민광';
@@ -31,11 +43,51 @@ class _LoginPageState extends State<LoginPage> {
         (route) => false);
   }
 
+  Future<bool> getUserInfo() async {
+    bool result = false;
+    http.Response _response = await http.get(AddressBook.userInfo + _memberId);
+
+    var resData = jsonDecode(_response.body);
+    var state = resData['result'];
+    if(state == 'success'){
+      User().id = resData['memberInfo']['memberId'];
+      User().name = resData['memberInfo']['memberName'];
+      User().email = resData['memberInfo']['memberEmail'];
+      User().profile = resData['memberInfo']['memberProfileImagePath'];
+      result = true;
+    }
+    return result;
+  }
+
   Future<void> checkAutoLogin(BuildContext context) async {
     String state = '';
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    print(prefs.getBool('auto'));
+    if(prefs.getKeys().isEmpty){
+      return;
+    }
     if (prefs.getBool('auto')) {
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context){
+            return WillPopScope(
+              onWillPop: () async => false,
+              child: AlertDialog(
+                title: Text('로그인 중입니다'),
+                content: Container(
+                  padding: EdgeInsets.all(15.0),
+                  child: LoadingBouncingGrid.square(
+                    backgroundColor: Colors.blueAccent,
+                    size: 90.0,
+                  ),
+                ),
+              ),
+            );
+          }
+      );
+
+      _autoLoginChecked = true;
+      _memberId = prefs.getString('id');
       if (prefs.getString('type') == "us") {
         http.Response response = await http.post(AddressBook.login,
             headers: <String, String>{
@@ -50,12 +102,17 @@ class _LoginPageState extends State<LoginPage> {
         state = resData['result'];
 
         if (state == 'success') {
-          //TODO: 유저 정보 세팅
-          Navigator.pushAndRemoveUntil(
-              context,
-              new MaterialPageRoute(
-                  builder: (BuildContext context) => MainStatefulWidget()),
-              (route) => false);
+          //유저 정보 세팅
+          var getUser = await getUserInfo();
+          if(getUser){
+            User().type = 'us';
+            Navigator.pop(context);
+            Navigator.pushAndRemoveUntil(
+                context,
+                new MaterialPageRoute(
+                    builder: (BuildContext context) => MainStatefulWidget()),
+                    (route) => false);
+          }
         } else {
           prefs.setBool('auto', false);
           prefs.setString('type', '');
@@ -68,14 +125,115 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  Future<void> login() async {
+  Future<void> login(BuildContext context) async {
+    final form = loginFormKey.currentState;
+    if(form.validate()){
+      form.save();
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context){
+            return WillPopScope(
+              onWillPop: () async => false,
+              child: AlertDialog(
+                title: Text('로그인 시도'),
+                content: Container(
+                  padding: EdgeInsets.all(15.0),
+                  child: LoadingBouncingGrid.square(
+                    inverted: true,
+                    backgroundColor: Colors.blueAccent,
+                    size: 80.0,
+                  ),
+                ),
+              ),
+            );
+          }
+      );
+      await loginProcess();
+      Navigator.pop(context);
+      if(_globalLoginState == 'success'){
+        Navigator.pushAndRemoveUntil(
+            context,
+            new MaterialPageRoute(
+                builder: (BuildContext context) => MainStatefulWidget()),
+                (route) => false);
+      } else {
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('로그인 실패'),
+                content: _errorMsg == '' ? Text('인터넷 상태를 확인해주세요.') : Text(_errorMsg),
+                actions: <Widget>[
+                  FlatButton(
+                    color: Colors.white,
+                    textColor: Colors.lightBlue,
+                    disabledColor: Colors.grey,
+                    disabledTextColor: Colors.black,
+                    padding: EdgeInsets.all(8.0),
+                    splashColor: Colors.blueAccent,
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('확인'),
+                  )
+                ],
+              );
+            });
+      }
+    }
+  }
+
+  Future<void> loginProcess() async {
+    http.Response response = await http.post(AddressBook.login,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({'memberId': _memberId, 'memberPw': _memberPw}));
+    var resData = jsonDecode(response.body);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    if (resData['result'] == "success") {
+      var getUser = await getUserInfo();
+      if(!getUser){
+        return;
+      }
+      print(User().name);
+      if (_autoLoginChecked) {
+        User().type = 'us';
+        prefs.setBool('auto', true);
+        prefs.setString('type', 'us');
+        prefs.setString('id', _memberId);
+        prefs.setString('pw', _memberPw);
+      } else {
+        prefs.setBool('auto', false);
+        prefs.setString('type', '');
+        prefs.setString('id', '');
+        prefs.setString('pw', '');
+      }
+      setState(() {
+        _globalLoginState = 'success';
+      });
+      print('login success');
+    } else {
+      _errorMsg = resData['errors'];
+      prefs.setBool('auto', false);
+      prefs.setString('type', '');
+      prefs.setString('id', '');
+      prefs.setString('pw', '');
+      print('login failed');
+    }
+  }
+
+  Future<void> login_backup(BuildContext context) async {
     final form = loginFormKey.currentState;
     if (form.validate()) {
       form.save();
       String loginState = '-';
       String state = '';
 
-      //TODO: 사용자 정보 저장하기
       http.Response response = await http.post(AddressBook.login,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
@@ -88,10 +246,15 @@ class _LoginPageState extends State<LoginPage> {
 
       if (state == "success") {
         if (_autoLoginChecked) {
-          prefs.setBool('auto', true);
-          prefs.setString('type', 'us');
-          prefs.setString('id', _memberId);
-          prefs.setString('pw', _memberPw);
+          //사용자 정보 저장
+          var getUser = await getUserInfo();
+          if(getUser){
+            User().type = 'us';
+            prefs.setBool('auto', true);
+            prefs.setString('type', 'us');
+            prefs.setString('id', _memberId);
+            prefs.setString('pw', _memberPw);
+          }
         } else {
           prefs.setBool('auto', false);
           prefs.setString('type', '');
@@ -103,7 +266,6 @@ class _LoginPageState extends State<LoginPage> {
           loginState = 'success';
         });
         print('login success');
-        print(resData);
       } else {
         prefs.setBool('auto', false);
         prefs.setString('type', '');
@@ -118,14 +280,14 @@ class _LoginPageState extends State<LoginPage> {
           builder: (BuildContext context) {
             return AlertDialog(
               title: loginState == 'success' ? Text('로그인 성공') : Text('로그인 실패'),
-              content: loginState == '-'
-                  ? LoadingBouncingGrid.square(
-                      backgroundColor: Colors.blueAccent,
-                      size: 80.0,
-                    )
-                  : (loginState == 'success'
+              content: loginState == 'success'
+                  ? (state == 'success'
                       ? Text('로그인 되었습니다.')
-                      : Text(resData['errors'])),
+                      : LoadingBouncingGrid.square(
+                          backgroundColor: Colors.blueAccent,
+                          size: 80.0,
+                        ))
+                  : Text(resData['errors']),
               actions: <Widget>[
                 FlatButton(
                   color: Colors.white,
@@ -155,7 +317,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void registration() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => SignUp()));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpPage()));
   }
 
   @override
@@ -172,15 +334,14 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(
                   height: 32.0,
                 ),
-                FlutterLogo(
-                  size: 140.0,
-                ),
+                Image.network(AddressBook.logo, width: MediaQuery.of(context).size.width / 2, height: MediaQuery.of(context).size.width / 2,),
                 SizedBox(
                   height: 22.0,
                 ),
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 32.0),
                   child: TextFormField(
+                    initialValue: _memberId,
                     decoration: InputDecoration(
                         border: OutlineInputBorder(), labelText: 'ID'),
                     validator: (value) =>
@@ -194,6 +355,9 @@ class _LoginPageState extends State<LoginPage> {
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 32.0),
                   child: TextFormField(
+                    enableSuggestions: false,
+                    autocorrect: false,
+                    obscureText: true,
                     decoration: InputDecoration(
                         border: OutlineInputBorder(), labelText: 'PW'),
                     validator: (value) =>
@@ -226,7 +390,7 @@ class _LoginPageState extends State<LoginPage> {
                     OutlineButton(child: Text('회원가입'), onPressed: registration),
                     OutlineButton(
                       child: Text('로그인'),
-                      onPressed: forceLogin, //TODO: Change to login
+                      onPressed: () => login(context),
                     )
                   ],
                 ),
@@ -264,9 +428,9 @@ class _LoginPageState extends State<LoginPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Image.network(
-                          "https://scontent-gmp1-1.xx.fbcdn.net/v/t1.0-9/119568341_200337161527884_7846459746434232698_n.png?_nc_cat=1&_nc_sid=85a577&_nc_ohc=UI9fwKptC54AX90BHW0&_nc_ht=scontent-gmp1-1.xx&oh=12db9af00bc94abb0096a534611a2a00&oe=5F9E1CE0",
-                          width: 22.0,
-                          height: 22.0,
+                          "https://facebookbrand.com/wp-content/uploads/2019/04/f_logo_RGB-Hex-Blue_512.png?w=512&h=512",
+                          width: 21.0,
+                          height: 21.0,
                         ),
                         Text('   Sign in with Facebook')
                       ],

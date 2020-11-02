@@ -14,14 +14,15 @@ import 'package:trip_story/utils/blank_appbar.dart';
 import 'package:trip_story/utils/image_data.dart';
 import 'package:http/http.dart' as http;
 
-class MakeTrip extends StatefulWidget {
+class MakeTripPage extends StatefulWidget {
   @override
-  _MakeTripState createState() => _MakeTripState();
+  _MakeTripPageState createState() => _MakeTripPageState();
 }
 
-class _MakeTripState extends State<MakeTrip> {
+class _MakeTripPageState extends State<MakeTripPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   Completer<GoogleMapController> _controller = Completer();
+  int scope = 0; //0=전체 공개, 1=친구공개, 2=비공개
   Set<Marker> _markers = Set();
   Set<Polyline> _polylines = Set();
   Map points = new Map<LatLng, List<DateTime>>();
@@ -539,6 +540,7 @@ class _MakeTripState extends State<MakeTrip> {
       itemBuilder: (BuildContext context, int index) {
         if (index == tagList.length) {
           return new IconButton(
+              padding: EdgeInsets.symmetric(horizontal: 25.0),
               icon: Icon(
                 Icons.add,
                 color: Colors.blue,
@@ -579,30 +581,165 @@ class _MakeTripState extends State<MakeTrip> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            SizedBox(
+              height: 12.0,
+            ),
+
+            ///공개범위 설정
+            Container(
+                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                child: InkWell(
+                  child: ListTile(
+                    title: Text(
+                      '공개 범위',
+                      style: TextStyle(
+                          fontSize: 14.0, fontWeight: FontWeight.bold),
+                    ),
+                    trailing: Wrap(
+                      children: [
+                        Text(
+                          scope == 0
+                              ? '전체 공개  '
+                              : (scope == 1 ? '친구 공개  ' : '비 공개  '),
+                          style: TextStyle(
+                              fontStyle: FontStyle.italic,
+                              color: Colors.black45),
+                        ),
+                        Icon(scope == 0
+                            ? Icons.public
+                            : (scope == 1 ? Icons.group : Icons.lock)),
+                      ],
+                    ),
+                  ),
+                  onTap: () {
+                    showModalBottomSheet(
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(25.0)),
+                        ),
+                        context: context,
+                        builder: (context) {
+                          return Container(
+                            height: MediaQuery.of(context).size.height / 3,
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 8.0, vertical: 5.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.all(10.0),
+                                  child: Text(
+                                    '공개 범위 설정',
+                                    style: TextStyle(
+                                        fontSize: 20.0,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                InkWell(
+                                  child: ListTile(
+                                    title: Wrap(
+                                      spacing: 8.0,
+                                      children: [
+                                        Icon(Icons.public),
+                                        Text('전체 공개'),
+                                      ],
+                                    ),
+                                    trailing: scope == 0
+                                        ? Icon(
+                                      Icons.check,
+                                      color: Colors.green,
+                                    )
+                                        : SizedBox(),
+                                  ),
+                                  onTap: () {
+                                    setState(() {
+                                      scope = 0;
+                                    });
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                                InkWell(
+                                  child: ListTile(
+                                    title: Wrap(
+                                      spacing: 8.0,
+                                      children: [
+                                        Icon(Icons.group),
+                                        Text('친구 공개'),
+                                      ],
+                                    ),
+                                    trailing: scope == 1
+                                        ? Icon(
+                                      Icons.check,
+                                      color: Colors.green,
+                                    )
+                                        : SizedBox(),
+                                  ),
+                                  onTap: () {
+                                    setState(() {
+                                      scope = 1;
+                                    });
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                                InkWell(
+                                  child: ListTile(
+                                    title: Wrap(
+                                      spacing: 8.0,
+                                      children: [
+                                        Icon(Icons.lock),
+                                        Text('비공개'),
+                                      ],
+                                    ),
+                                    trailing: scope == 2
+                                        ? Icon(
+                                      Icons.check,
+                                      color: Colors.green,
+                                    )
+                                        : SizedBox(),
+                                  ),
+                                  onTap: () {
+                                    setState(() {
+                                      scope = 2;
+                                    });
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        });
+                  },
+                )),
+
             ///방문 날짜
             MergeSemantics(
-              child: ListTile(
-                title: Text(
-                  '여행 기간',
-                  style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
-                ),
-                trailing: Switch(
-                  value: _useDate,
-                  onChanged: (bool value) {
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                child: ListTile(
+                  title: Text(
+                    '방문 날짜',
+                    style:
+                    TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
+                  ),
+                  trailing: Switch(
+                    value: _useDate,
+                    onChanged: (bool value) {
+                      setState(() {
+                        _useDate = value;
+                      });
+                    },
+                  ),
+                  onTap: () {
                     setState(() {
-                      _useDate = value;
+                      _useDate = !_useDate;
                     });
                   },
                 ),
-                onTap: () {
-                  setState(() {
-                    _useDate = !_useDate;
-                  });
-                },
               ),
             ),
             AnimatedContainer(
-              height: !_useDate ? 0.0 : MediaQuery.of(context).size.height / 15,
+              padding: EdgeInsets.symmetric(horizontal: 30.0),
+              height: !_useDate ? 0.0 : 40.0,
               duration: Duration(milliseconds: 500),
               curve: Curves.fastOutSlowIn,
               child: MergeSemantics(
@@ -620,9 +757,9 @@ class _MakeTripState extends State<MakeTrip> {
                               builder: (BuildContext context) {
                                 return Container(
                                   height: MediaQuery.of(context)
-                                          .copyWith()
-                                          .size
-                                          .height /
+                                      .copyWith()
+                                      .size
+                                      .height /
                                       3,
                                   child: CupertinoDatePicker(
                                     initialDateTime: startDate == null
@@ -652,9 +789,9 @@ class _MakeTripState extends State<MakeTrip> {
                               builder: (BuildContext context) {
                                 return Container(
                                   height: MediaQuery.of(context)
-                                          .copyWith()
-                                          .size
-                                          .height /
+                                      .copyWith()
+                                      .size
+                                      .height /
                                       3,
                                   child: CupertinoDatePicker(
                                     initialDateTime: endDate == null
@@ -688,24 +825,27 @@ class _MakeTripState extends State<MakeTrip> {
 
             /// 여행 경로
             MergeSemantics(
-              child: ListTile(
-                title: Text(
-                  '여행 경로',
-                  style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
-                ),
-                trailing: Switch(
-                  value: _useMaps,
-                  onChanged: (bool value) {
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                child: ListTile(
+                  title: Text(
+                    '여행 경로',
+                    style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
+                  ),
+                  trailing: Switch(
+                    value: _useMaps,
+                    onChanged: (bool value) {
+                      setState(() {
+                        _useMaps = value;
+                      });
+                    },
+                  ),
+                  onTap: () {
                     setState(() {
-                      _useMaps = value;
+                      _useMaps = !_useMaps;
                     });
                   },
                 ),
-                onTap: () {
-                  setState(() {
-                    _useMaps = !_useMaps;
-                  });
-                },
               ),
             ),
             !_useMaps
@@ -805,8 +945,8 @@ class _MakeTripState extends State<MakeTrip> {
                 : AnimatedContainer(
                     height: !_openMarkerOption
                         ? 0.0
-                        : MediaQuery.of(context).size.height * 3 / 12,
-                    padding: EdgeInsets.symmetric(horizontal: 12.0),
+                        : 130.0,
+                    padding: EdgeInsets.symmetric(horizontal: 25.0),
                     duration: Duration(milliseconds: 500),
                     curve: Curves.fastOutSlowIn,
                     child: Column(
@@ -860,7 +1000,7 @@ class _MakeTripState extends State<MakeTrip> {
             /// 태그
             Container(
               width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 10.0),
               child: Text(
                 '# 태그',
                 style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
@@ -868,7 +1008,6 @@ class _MakeTripState extends State<MakeTrip> {
             ),
             Container(
               height: MediaQuery.of(context).size.width / 10,
-              padding: EdgeInsets.all(5.0),
               child: makeTagList(),
             ),
 
@@ -936,9 +1075,7 @@ class _MakeTripState extends State<MakeTrip> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(18.0),
                   ),
-                  child: Text(
-                    '사진 +',
-                  ),
+                  child: Icon(Icons.add_photo_alternate_outlined),
                   onPressed: () {
                     /// 사진 추가
                     addImage();
@@ -951,9 +1088,7 @@ class _MakeTripState extends State<MakeTrip> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(18.0),
                   ),
-                  child: Text(
-                    '게시글 +',
-                  ),
+                  child: Icon(Icons.post_add),
                   onPressed: addPost,
                 ),
               ),

@@ -5,12 +5,12 @@ import 'package:trip_story/utils/blank_appbar.dart';
 import 'package:trip_story/utils/trip.dart';
 import 'package:trip_story/utils/user.dart';
 
-class NewsFeed extends StatefulWidget {
+class NewsFeedPage extends StatefulWidget {
   @override
-  _NewsFeedState createState() => _NewsFeedState();
+  _NewsFeedPageState createState() => _NewsFeedPageState();
 }
 
-class _NewsFeedState extends State<NewsFeed> {
+class _NewsFeedPageState extends State<NewsFeedPage> {
 
   goUserPage() {
     print('해당 유저페이지로 이동');

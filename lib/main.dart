@@ -65,9 +65,9 @@ class _MainStatefulWidgetState extends State<MainStatefulWidget>
         controller: tabController,
         physics: NeverScrollableScrollPhysics(),
         children: [
-          NewsFeed(),
+          NewsFeedPage(),
           TempPage(),
-          Blank(),
+          BlankPage(),
           TempPage(),
           UserPage(),
         ],
@@ -88,14 +88,14 @@ class _MainStatefulWidgetState extends State<MainStatefulWidget>
               ),
               Tab(
                 icon: new Icon(
-                  Icons.favorite,
+                  Icons.search,
                   color: Colors.black26,
                 ),
               ),
               SizedBox(width: MediaQuery.of(context).size.width / 5,),
               Tab(
                 icon: new Icon(
-                  Icons.people,
+                  Icons.where_to_vote_outlined,
                   color: Colors.black26,
                 ),
               ),
@@ -113,7 +113,7 @@ class _MainStatefulWidgetState extends State<MainStatefulWidget>
         heroTag: 'makePost',
         onPressed: () => setState(() {
           Navigator.push(context,
-              MaterialPageRoute(builder: (BuildContext context) => MakePost()));
+              MaterialPageRoute(builder: (BuildContext context) => MakePostPage()));
         }),
         tooltip: '새 게시글 작성',
         child: Icon(Icons.add),

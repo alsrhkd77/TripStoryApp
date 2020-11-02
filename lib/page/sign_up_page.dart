@@ -1,20 +1,25 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:loading_animations/loading_animations.dart';
 import 'package:trip_story/page/login_page.dart';
 import 'package:trip_story/utils/address_book.dart';
 import 'package:trip_story/utils/blank_appbar.dart';
 import 'package:http/http.dart' as http;
 
-class SignUp extends StatefulWidget {
+class SignUpPage extends StatefulWidget {
   @override
-  _SignUpState createState() => _SignUpState();
+  _SignUpPageState createState() => _SignUpPageState();
 }
 
-class _SignUpState extends State<SignUp> {
+class _SignUpPageState extends State<SignUpPage> {
   final signUpFormKey = new GlobalKey<FormState>();
   final idFormKey = new GlobalKey<FormState>();
+  final nicknameFormKey = new GlobalKey<FormState>();
+  bool idCheck = false;
+  bool nickNameCheck = false;
   String _memberId;
+  String _memberNickName;
   String _memberPw;
   String _memberName;
   String _memberEmail;
@@ -24,6 +29,27 @@ class _SignUpState extends State<SignUp> {
     final idForm = idFormKey.currentState;
     if (idForm.validate()) {
       idForm.save();
+
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return WillPopScope(
+              onWillPop: () async => false,
+              child: AlertDialog(
+                title: Text('잠시만 기다려주세요...'),
+                content: Container(
+                  padding: EdgeInsets.all(15.0),
+                  child: LoadingBouncingGrid.square(
+                    inverted: true,
+                    backgroundColor: Colors.blueAccent,
+                    size: 90.0,
+                  ),
+                ),
+              ),
+            );
+          });
+
       http.Response response = await http.post(AddressBook.idCheck,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
@@ -31,7 +57,11 @@ class _SignUpState extends State<SignUp> {
           body: jsonEncode({'memberId': _memberId}));
       var resData = jsonDecode(response.body);
 
+      Navigator.pop(context);
       if (resData['result'] == "success") {
+        setState(() {
+          idCheck = true;
+        });
         _showDialog('ID 중복확인', '사용가능한 ID입니다.');
       } else if(resData['result'] == "duplicated"){
         _showDialog('ID 중복확인', '중복된 ID입니다.');
@@ -43,65 +73,110 @@ class _SignUpState extends State<SignUp> {
     }
   }
 
-  ///회원가입
-  Future<void> registration() async {
-    final form = signUpFormKey.currentState;
-    final idForm = idFormKey.currentState;
-    if (form.validate() && idForm.validate()) {
-      idForm.save();
-      form.save();
+  Future<void> requestCheckNickName() async {
+    final nickNameForm = nicknameFormKey.currentState;
+    if (nickNameForm.validate()) {
+      nickNameForm.save();
 
-      ///중복확인
-      http.Response idResponse = await http.post(AddressBook.idCheck,
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return WillPopScope(
+              onWillPop: () async => false,
+              child: AlertDialog(
+                title: Text('잠시만 기다려주세요...'),
+                content: Container(
+                  padding: EdgeInsets.all(15.0),
+                  child: LoadingBouncingGrid.square(
+                    inverted: true,
+                    backgroundColor: Colors.blueAccent,
+                    size: 90.0,
+                  ),
+                ),
+              ),
+            );
+          });
+
+      http.Response response = await http.post(AddressBook.nickNameCheck,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
-          body: jsonEncode({'memberId': _memberId}));
-      var idRes = jsonDecode(idResponse.body);
-      if (idRes['result'] == "success") {
-        ///회원가입
-        http.Response response = await http.post(AddressBook.registration,
-            headers: <String, String>{
-              'Content-Type': 'application/json; charset=UTF-8',
-            },
-            body: jsonEncode({
-              'memberId': _memberId,
-              'memberPw': _memberPw,
-              'memberName': _memberName,
-              'memberEmail': _memberEmail
-            }));
+          body: jsonEncode({'memberNickName': _memberNickName}));
+      var resData = jsonDecode(response.body);
 
-        var resData = jsonDecode(response.body);
-
-        if (resData['result'] == "success") {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              // return object of type Dialog
-              return AlertDialog(
-                title: new Text('회원가입'),
-                content: new Text('회원가입이 완료되었습니다.'),
-                actions: <Widget>[
-                  new FlatButton(
-                    child: new Text("확인"),
-                    onPressed: () {
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (BuildContext context) => LoginPage()));
-                    },
-                  ),
-                ],
-              );
-            },
-          );
-        } else {
-          _showDialog('회원가입', '회원가입에 실패하였습니다.\n${resData['errors']}');
-        }
-      } else if(idRes['result'] == "duplicated"){
-        _showDialog('ID 중복확인', '중복된 ID입니다.');
+      Navigator.pop(context);
+      if (resData['result'] == "success") {
+        setState(() {
+          nickNameCheck = true;
+        });
+        _showDialog('닉네임 중복확인', '사용가능한 닉네임 입니다.');
+      } else if(resData['result'] == "duplicated"){
+        _showDialog('닉네임 중복확인', '중복된 닉네임 입니다.');
       }else {
-        _showDialog('ID 중복확인', idRes['errors']);
+        _showDialog('닉네임 중복확인', resData['errors']);
+      }
+    } else {
+      print("nickname form update err");
+    }
+  }
+
+  ///회원가입
+  Future<void> registration() async {
+    final form = signUpFormKey.currentState;
+
+    if(!idCheck){
+      _showDialog('회원가입', '회원가입에 실패하였습니다.\nID 중복체크를 먼저 진행하세요');
+      return;
+    }
+
+    if(!nickNameCheck){
+      _showDialog('회원가입', '회원가입에 실패하였습니다.\n닉네임 중복체크를 먼저 진행하세요');
+      return;
+    }
+
+    if (form.validate()) {
+      form.save();
+
+      http.Response response = await http.post(AddressBook.registration,
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode({
+            'memberId': _memberId,
+            'memberPw': _memberPw,
+            'memberNickName': _memberNickName,
+            'memberName': _memberName,
+            'memberEmail': _memberEmail
+          }));
+
+      var resData = jsonDecode(response.body);
+
+      Navigator.pop(context);
+      if (resData['result'] == "success") {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            // return object of type Dialog
+            return AlertDialog(
+              title: new Text('회원가입'),
+              content: new Text('회원가입이 완료되었습니다.'),
+              actions: <Widget>[
+                new FlatButton(
+                  child: new Text("확인"),
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => LoginPage()));
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        _showDialog('회원가입', '회원가입에 실패하였습니다.\n${resData['errors']}');
       }
     } else {
       print("form update err");
@@ -133,117 +208,167 @@ class _SignUpState extends State<SignUp> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: BlankAppbar(),
-      resizeToAvoidBottomPadding: false, //키보드 올라올때 안움직이게
       body: Form(
         key: signUpFormKey,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: 32.0,
-            ),
-            FlutterLogo(
-              size: 140.0,
-            ),
-            SizedBox(
-              height: 22.0,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Form(
-                  key: idFormKey,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 3 / 5,
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                          border: OutlineInputBorder(), labelText: 'ID'),
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'ID can\'t be empty!';
-                        } else if (!RegExp(r"^[A-Za-z0-9+]{4,12}$")
-                            .hasMatch(value)) {
-                          return 'Please combination of Alphabet and Numbers.';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) => _memberId = value,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 32.0,
+              ),
+              Image.network(AddressBook.logo, width: MediaQuery.of(context).size.width / 2, height: MediaQuery.of(context).size.width / 2,),
+              SizedBox(
+                height: 22.0,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                children: [
+                  Form(
+                    key: idFormKey,
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 3 / 5,
+                      child: TextFormField(
+                        onChanged: (value) {
+                          setState(() {
+                            idCheck = false;
+                          });
+                        },
+                        maxLength: 12,
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(), labelText: 'ID', hintText: '4~12 Alphabet and Numbers.'),
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'ID can\'t be empty!';
+                          } else if (!RegExp(r"^[A-Za-z0-9+]{4,12}$")
+                              .hasMatch(value)) {
+                            return 'Use only Alphabet and Numbers.';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) => _memberId = value,
+                      ),
                     ),
                   ),
+                  SizedBox(
+                    width: 22.0,
+                  ),
+                  OutlineButton(
+                    child: Text('중복확인'),
+                    onPressed: requestCheckId,
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 10.0,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                children: [
+                  Form(
+                    key: nicknameFormKey,
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 3 / 5,
+                      child: TextFormField(
+                        onChanged: (value) {
+                          setState(() {
+                            nickNameCheck = false;
+                          });
+                        },
+                        maxLength: 10,
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(), labelText: 'Nick Name', hintText: 'Use only Alphabet and Numbers.'),
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Nick name can\'t be empty!';
+                          } else if (!RegExp(r"^[A-Za-z0-9+]{1,10}$")
+                              .hasMatch(value)) {
+                            return 'Use only Alphabet and Numbers.';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) => _memberNickName = value,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 22.0,
+                  ),
+                  OutlineButton(
+                    child: Text('중복확인'),
+                    onPressed: requestCheckNickName,
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 10.0,
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width * 7 / 8,
+                child: TextFormField(
+                  maxLength: 18,
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(), labelText: 'PW'),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Password can\'t be empty!';
+                    } else if (!RegExp(r"^[A-Za-z0-9+]{6,18}$")
+                        .hasMatch(value)) {
+                      return 'Please combination of Alphabet and Numbers.';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) => _memberPw = value,
                 ),
-                SizedBox(
-                  width: 22.0,
+              ),
+              SizedBox(
+                height: 10.0,
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width * 7 / 8,
+                child: TextFormField(
+                  maxLength: 40,
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(), labelText: 'Name'),
+                  validator: (value) =>
+                  value.isEmpty ? 'Name can\'t be empty!' : null,
+                  onSaved: (value) => _memberName = value,
                 ),
-                OutlineButton(
-                  child: Text('중복확인'),
-                  onPressed: requestCheckId,
+              ),
+              SizedBox(
+                height: 10.0,
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width * 7 / 8,
+                child: TextFormField(
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(), labelText: 'Email'),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Email can\'t be empty';
+                    } else if (!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                        .hasMatch(value)) {
+                      return 'Please write in the correct email format.';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) => _memberEmail = value,
                 ),
-              ],
-            ),
-            SizedBox(
-              height: 16.0,
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width * 7 / 8,
-              child: TextFormField(
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(), labelText: 'PW'),
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Password can\'t be empty!';
-                  } else if (!RegExp(r"^[A-Za-z0-9+]{6,18}$")
-                      .hasMatch(value)) {
-                    return 'Please combination of Alphabet and Numbers.';
-                  }
-                  return null;
-                },
-                onSaved: (value) => _memberPw = value,
               ),
-            ),
-            SizedBox(
-              height: 16.0,
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width * 7 / 8,
-              child: TextFormField(
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(), labelText: 'Name'),
-                validator: (value) =>
-                    value.isEmpty ? 'Name can\'t be empty!' : null,
-                onSaved: (value) => _memberName = value,
+              SizedBox(
+                height: 16.0,
               ),
-            ),
-            SizedBox(
-              height: 16.0,
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width * 7 / 8,
-              child: TextFormField(
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(), labelText: 'Email'),
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Email can\'t be empty';
-                  } else if (!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                      .hasMatch(value)) {
-                    return 'Please write in the correct email format.';
-                  }
-                  return null;
-                },
-                onSaved: (value) => _memberEmail = value,
+              Container(
+                width: MediaQuery.of(context).size.width * 7 / 8,
+                child: OutlineButton(
+                  child: Text('회 원 가 입'),
+                  onPressed: registration,
+                ),
               ),
-            ),
-            SizedBox(
-              height: 16.0,
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width * 7 / 8,
-              child: OutlineButton(
-                child: Text('회 원 가 입'),
-                onPressed: registration,
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

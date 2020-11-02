@@ -5,6 +5,7 @@ class User{
   /*User information*/
   String type; //google, facebook, us
   String name;
+  String nickName;
   String id;
   String email;
   String profile = AddressBook.defaultProfileUrl;
@@ -19,6 +20,7 @@ class User{
     this.id='';
     this.type = '';
     this.name = '이름 없음';
+    this.nickName = '???';
     this.email = '';
     this.profile = AddressBook.defaultProfileUrl;
   }

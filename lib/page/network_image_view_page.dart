@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-class NetworkImageView extends StatefulWidget {
+class NetworkImageViewPage extends StatefulWidget {
   final String url;
   
-  NetworkImageView({this.url});
+  NetworkImageViewPage({this.url});
   
   @override
-  _NetworkImageViewState createState() => _NetworkImageViewState();
+  _NetworkImageViewPageState createState() => _NetworkImageViewPageState();
 }
 
-class _NetworkImageViewState extends State<NetworkImageView> {
+class _NetworkImageViewPageState extends State<NetworkImageViewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

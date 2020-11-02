@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:trip_story/page/friends_page.dart';
 import 'package:trip_story/page/make_trip_page.dart';
 import 'package:trip_story/page/settings_page.dart';
 import 'package:trip_story/page/view_post_page.dart';
@@ -32,7 +33,7 @@ class _UserPageState extends State<UserPage> {
             child: Image.network(AddressBook.getSampleImg(), fit: BoxFit.contain,),
             onTap: (){
               Navigator.push(context,
-                  MaterialPageRoute(builder: (BuildContext context) => ViewTrip()));
+                  MaterialPageRoute(builder: (BuildContext context) => ViewTripPage()));
             },
           ),
         );
@@ -54,7 +55,7 @@ class _UserPageState extends State<UserPage> {
             child: Image.network(AddressBook.getSampleImg(), fit: BoxFit.contain,),
             onTap: (){
               Navigator.push(context,
-                  MaterialPageRoute(builder: (BuildContext context) => ViewPost()));
+                  MaterialPageRoute(builder: (BuildContext context) => ViewPostPage()));
             },
           ),
         );
@@ -82,7 +83,7 @@ class _UserPageState extends State<UserPage> {
                         Container(
                           padding: EdgeInsets.all(12.0),
                           child: Text(
-                            'user_id',
+                            'NickName',
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
@@ -92,7 +93,7 @@ class _UserPageState extends State<UserPage> {
                             child: Icon(Icons.settings),
                             onTap: () {
                               Navigator.push(context,
-                                  MaterialPageRoute(builder: (BuildContext context) => Settings()));
+                                  MaterialPageRoute(builder: (BuildContext context) => SettingsPage()));
                             },
                           ),
                         ),
@@ -111,14 +112,14 @@ class _UserPageState extends State<UserPage> {
                               backgroundColor: Colors.blueAccent,
                               child: CircleAvatar(
                                 radius:
-                                    (MediaQuery.of(context).size.width / 9) - 3,
+                                    (MediaQuery.of(context).size.width / 9) - 2.5,
                                 backgroundImage: NetworkImage(User().profile),
                               ),
                             ),
                             SizedBox(
                               height: 8.0,
                             ),
-                            Text('송민광')
+                            Text(User().name)
                           ],
                         ),
                         Column(
@@ -140,7 +141,11 @@ class _UserPageState extends State<UserPage> {
                               Text('팔로워')
                             ],
                           ),
-                          onTap: (){},
+                          onTap: (){
+                            //TODO: 주소랑 현재창 유저id 넘겨서 판단
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (BuildContext context) => FriendsPage()));
+                          },
                         ),
                         InkWell(
                           child: Column(
@@ -152,7 +157,10 @@ class _UserPageState extends State<UserPage> {
                               Text('팔로잉')
                             ],
                           ),
-                          onTap: (){},
+                          onTap: (){
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (BuildContext context) => FriendsPage()));
+                          },
                         )
                       ],
                     ),
@@ -207,7 +215,7 @@ class _UserPageState extends State<UserPage> {
         icon: Icon(Icons.airport_shuttle),
         onPressed: () {
           Navigator.push(context,
-              MaterialPageRoute(builder: (BuildContext context) => MakeTrip()));
+              MaterialPageRoute(builder: (BuildContext context) => MakeTripPage()));
         },
       ),
     );

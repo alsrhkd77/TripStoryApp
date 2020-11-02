@@ -13,12 +13,12 @@ import 'package:trip_story/utils/user.dart';
 import 'package:trip_story/utils/view_appbar.dart';
 import 'package:http/http.dart' as http;
 
-class ViewTrip extends StatefulWidget {
+class ViewTripPage extends StatefulWidget {
   @override
-  _ViewTripState createState() => _ViewTripState();
+  _ViewTripPageState createState() => _ViewTripPageState();
 }
 
-class _ViewTripState extends State<ViewTrip> {
+class _ViewTripPageState extends State<ViewTripPage> {
   Completer<GoogleMapController> _controller = Completer();
   Set<Marker> _markers = Set();
   Set<Polyline> _polylines = Set();
@@ -284,9 +284,20 @@ class _ViewTripState extends State<ViewTrip> {
               useDate: true,
               startDate: DateTime.now(),
               endDate: DateTime.now(),
-              trailer: IconButton(
-                icon: Icon(Icons.menu),
-                onPressed: () {},
+              trailer: PopupMenuButton(
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    value: 1,
+                    child: Text('수정'),
+                  ),
+                  PopupMenuItem(
+                    value: 2,
+                    child: Text('삭제'),
+                  ),
+                ],
+                onSelected: (_value) {
+                  print(_value);
+                },
               ),
             ),
             Container(
@@ -407,7 +418,7 @@ class _ViewTripState extends State<ViewTrip> {
                   Navigator.of(context).push(PageRouteBuilder(
                       opaque: false,
                       pageBuilder: (BuildContext context, _, __) =>
-                          NetworkImageView(
+                          NetworkImageViewPage(
                             url: _trip.imageList[0],
                           )));
                 },
@@ -497,7 +508,7 @@ class _ViewTripState extends State<ViewTrip> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (BuildContext context) => ViewPost()));
+                          builder: (BuildContext context) => ViewPostPage()));
                 },
               ),
             ),
