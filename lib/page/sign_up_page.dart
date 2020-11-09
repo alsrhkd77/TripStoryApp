@@ -2,10 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:loading_animations/loading_animations.dart';
-import 'package:trip_story/page/login_page.dart';
-import 'package:trip_story/utils/address_book.dart';
-import 'package:trip_story/utils/blank_appbar.dart';
 import 'package:http/http.dart' as http;
+import 'package:trip_story/common/address_book.dart';
+import 'package:trip_story/common/blank_appbar.dart';
+import 'package:trip_story/page/login_page.dart';
 
 class SignUpPage extends StatefulWidget {
   @override

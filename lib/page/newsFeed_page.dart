@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:trip_story/utils/blank_appbar.dart';
-import 'package:trip_story/utils/trip.dart';
-import 'package:trip_story/utils/user.dart';
+import 'package:trip_story/common/blank_appbar.dart';
+import 'package:trip_story/common/owner.dart';
+import 'package:trip_story/models/trip.dart';
 
 class NewsFeedPage extends StatefulWidget {
   @override
@@ -58,7 +58,7 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
                       backgroundColor: Colors.blueAccent,
                       child: CircleAvatar(
                         radius: (MediaQuery.of(context).size.width / 20) - 2,
-                        backgroundImage: NetworkImage(User().profile),
+                        backgroundImage: NetworkImage(Owner().profile),
                       ),
                     ),
                     onTap: goUserPage,
@@ -135,10 +135,10 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
           ),
 
           /// 본문
-          _trip.contents != ''
+          _trip.content != ''
               ? Container(
             padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 10.0),
-            child: Text(_trip.contents, maxLines: 2, overflow: TextOverflow.ellipsis,),
+            child: Text(_trip.content, maxLines: 2, overflow: TextOverflow.ellipsis,),
           )
               : SizedBox(
             height: 0,
@@ -184,7 +184,7 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
                       backgroundColor: Colors.blueAccent,
                       child: CircleAvatar(
                         radius: (MediaQuery.of(context).size.width / 20) - 2,
-                        backgroundImage: NetworkImage(User().profile),
+                        backgroundImage: NetworkImage(Owner().profile),
                       ),
                     ),
                     onTap: goUserPage,
@@ -261,10 +261,10 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
           ),
 
           /// 본문
-          _trip.contents != ''
+          _trip.content != ''
               ? Container(
             padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 10.0),
-            child: Text(_trip.contents, maxLines: 2, overflow: TextOverflow.ellipsis,),
+            child: Text(_trip.content, maxLines: 2, overflow: TextOverflow.ellipsis,),
           )
               : SizedBox(
             height: 0,
@@ -317,7 +317,7 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
                         backgroundColor: Colors.blueAccent,
                         child: CircleAvatar(
                           radius: (MediaQuery.of(context).size.width / 20) - 2,
-                          backgroundImage: NetworkImage(User().profile),
+                          backgroundImage: NetworkImage(Owner().profile),
                         ),
                       ),
                       onTap: goUserPage,
@@ -395,10 +395,10 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
             ),
 
             /// 본문
-            _trip.contents != ''
+            _trip.content != ''
                 ? Container(
               padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 10.0),
-              child: Text(_trip.contents, maxLines: 2, overflow: TextOverflow.ellipsis,),
+              child: Text(_trip.content, maxLines: 2, overflow: TextOverflow.ellipsis,),
             )
                 : SizedBox(
               height: 0,
@@ -469,7 +469,7 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
                         backgroundColor: Colors.blueAccent,
                         child: CircleAvatar(
                           radius: (MediaQuery.of(context).size.width / 20) - 2,
-                          backgroundImage: NetworkImage(User().profile),
+                          backgroundImage: NetworkImage(Owner().profile),
                         ),
                       ),
                       onTap: goUserPage,
@@ -485,10 +485,10 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
             ),
 
             /// 본문
-            _trip.contents != ''
+            _trip.content != ''
                 ? Container(
               padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 10.0),
-              child: Text(_trip.contents, maxLines: 2, overflow: TextOverflow.ellipsis,),
+              child: Text(_trip.content, maxLines: 2, overflow: TextOverflow.ellipsis,),
             )
                 : SizedBox(
               height: 0,
@@ -582,7 +582,7 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
                         backgroundColor: Colors.blueAccent,
                         child: CircleAvatar(
                           radius: (MediaQuery.of(context).size.width / 20) - 2,
-                          backgroundImage: NetworkImage(User().profile),
+                          backgroundImage: NetworkImage(Owner().profile),
                         ),
                       ),
                       onTap: goUserPage,
@@ -667,10 +667,10 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
             ),
 
             /// 본문
-            _trip.contents != ''
+            _trip.content != ''
                 ? Container(
               padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-              child: Text(_trip.contents, maxLines: 2, overflow: TextOverflow.ellipsis,),
+              child: Text(_trip.content, maxLines: 2, overflow: TextOverflow.ellipsis,),
             )
                 : SizedBox(
               height: 0,

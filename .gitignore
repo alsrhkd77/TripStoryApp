@@ -43,5 +43,4 @@ app.*.map.json
 # Exceptions to above rules.
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 
-# Server address
-/lib/utils/address_book.dart
+lib/common/address_book.dart

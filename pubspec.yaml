@@ -24,12 +24,13 @@ dependencies:
   flutter:
     sdk: flutter
 
-  loading_animations: ^2.1.0
-  http: ^0.12.2
-  image_picker: ^0.6.7+8
-  exif: ^1.0.3
+  rxdart: ^0.24.1
+  loading_animations: ^2.1.0  #Loading Spinner 패키지
+  http: ^0.12.2 #http 연결 패키지
+  image_picker: ^0.6.7+8  #사진 접근 패키지
+  exif: ^1.0.3  #image meta data 패키지
   intl: ^0.16.1 #날짜 formatting 패키지
-  google_maps_flutter: ^1.0.3
+  google_maps_flutter: ^1.0.3 #Google maps 패키지
   shared_preferences: ^0.5.12+2 #로컬 데이터 저장 패키지
 
   # The following adds the Cupertino Icons font to your application.

@@ -4,14 +4,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
+import 'package:trip_story/common/address_book.dart';
+import 'package:trip_story/common/blank_appbar.dart';
+import 'package:trip_story/common/owner.dart';
+import 'package:trip_story/common/view_appbar.dart';
+import 'package:trip_story/models/trip.dart';
 import 'package:trip_story/page/network_image_view_page.dart';
 import 'package:trip_story/page/view_post_page.dart';
-import 'package:trip_story/utils/address_book.dart';
-import 'package:trip_story/utils/blank_appbar.dart';
-import 'package:trip_story/utils/trip.dart';
-import 'package:trip_story/utils/user.dart';
-import 'package:trip_story/utils/view_appbar.dart';
-import 'package:http/http.dart' as http;
 
 class ViewTripPage extends StatefulWidget {
   @override
@@ -139,7 +139,7 @@ class _ViewTripPageState extends State<ViewTripPage> {
                         backgroundColor: Colors.blueAccent,
                         child: CircleAvatar(
                           radius: (MediaQuery.of(context).size.width / 25) - 1,
-                          backgroundImage: NetworkImage(User().profile),
+                          backgroundImage: NetworkImage(Owner().profile),
                         ),
                       ),
                       title: TextFormField(
@@ -183,7 +183,7 @@ class _ViewTripPageState extends State<ViewTripPage> {
                                             25) -
                                         1,
                                     backgroundImage:
-                                        NetworkImage(User().profile),
+                                        NetworkImage(Owner().profile),
                                   ),
                                 ),
                                 Container(
@@ -271,6 +271,7 @@ class _ViewTripPageState extends State<ViewTripPage> {
 
   @override
   Widget build(BuildContext context) {
+    _trip.makeSample();
     return Scaffold(
       appBar: BlankAppbar(),
       body: SingleChildScrollView(
@@ -280,7 +281,7 @@ class _ViewTripPageState extends State<ViewTripPage> {
             ///앱바(작성자, 방문일자, 메뉴)
             ViewAppbar(
               name: '작성자 이름',
-              profileUrl: User().profile,
+              profileUrl: Owner().profile,
               useDate: true,
               startDate: DateTime.now(),
               endDate: DateTime.now(),
@@ -375,10 +376,10 @@ class _ViewTripPageState extends State<ViewTripPage> {
             ),
 
             /// 본문
-            _trip.contents != ''
+            _trip.content != ''
                 ? Container(
                     padding: EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 15.0),
-                    child: Text(_trip.contents),
+                    child: Text(_trip.content),
                   )
                 : SizedBox(
                     height: 0,

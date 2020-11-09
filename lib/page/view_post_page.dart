@@ -1,11 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:trip_story/utils/address_book.dart';
-import 'package:trip_story/utils/blank_appbar.dart';
-import 'package:trip_story/utils/post.dart';
-import 'package:trip_story/utils/user.dart';
-import 'package:trip_story/utils/view_appbar.dart';
+import 'package:trip_story/common/blank_appbar.dart';
+import 'package:trip_story/common/owner.dart';
+import 'package:trip_story/common/view_appbar.dart';
+import 'package:trip_story/models/post.dart';
 
 class ViewPostPage extends StatefulWidget {
   @override
@@ -40,6 +39,7 @@ class _ViewPostPageState extends State<ViewPostPage> {
 
   @override
   Widget build(BuildContext context) {
+    _post.makeSample();
     return Scaffold(
       appBar: BlankAppbar(),
       body: SingleChildScrollView(
@@ -49,7 +49,7 @@ class _ViewPostPageState extends State<ViewPostPage> {
             ///앱바(작성자, 방문일자, 메뉴)
             ViewAppbar(
               name: '작성자 이름',
-              profileUrl: User().profile,
+              profileUrl: Owner().profile,
               useDate: true,
               startDate: DateTime.now(),
               endDate: DateTime.now(),
@@ -138,10 +138,10 @@ class _ViewPostPageState extends State<ViewPostPage> {
             ),
 
             /// 본문
-            _post.contents != ''
+            _post.content != ''
                 ? Container(
                     padding: EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 15.0),
-                    child: Text(_post.contents),
+                    child: Text(_post.content),
                   )
                 : SizedBox(
                     height: 0,
@@ -170,7 +170,7 @@ class _ViewPostPageState extends State<ViewPostPage> {
                     backgroundColor: Colors.blueAccent,
                     child: CircleAvatar(
                       radius: (MediaQuery.of(context).size.width / 25) - 1,
-                      backgroundImage: NetworkImage(User().profile),
+                      backgroundImage: NetworkImage(Owner().profile),
                     ),
                   ),
                   Container(
@@ -242,7 +242,7 @@ class _ViewPostPageState extends State<ViewPostPage> {
                 backgroundColor: Colors.blueAccent,
                 child: CircleAvatar(
                   radius: (MediaQuery.of(context).size.width / 25) - 1,
-                  backgroundImage: NetworkImage(User().profile),
+                  backgroundImage: NetworkImage(Owner().profile),
                 ),
               ),
               title: TextFormField(

@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:loading_animations/loading_animations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import 'package:trip_story/common/address_book.dart';
+import 'package:trip_story/common/blank_appbar.dart';
+import 'package:trip_story/common/owner.dart';
 import 'package:trip_story/main.dart';
 import 'package:trip_story/page/sign_up_page.dart';
-import 'package:trip_story/utils/address_book.dart';
-import 'package:trip_story/utils/blank_appbar.dart';
-import 'package:http/http.dart' as http;
-import 'package:trip_story/utils/user.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -34,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
 
   //TODO: Delete Force login
   void forceLogin() {
-    User user = User();
+    Owner user = Owner();
     user.name = '송민광';
     Navigator.pushAndRemoveUntil(
         context,
@@ -49,11 +49,13 @@ class _LoginPageState extends State<LoginPage> {
 
     var resData = jsonDecode(_response.body);
     var state = resData['result'];
+    print(resData);
     if(state == 'success'){
-      User().id = resData['memberInfo']['memberId'];
-      User().name = resData['memberInfo']['memberName'];
-      User().email = resData['memberInfo']['memberEmail'];
-      User().profile = resData['memberInfo']['memberProfileImagePath'];
+      Owner().id = resData['memberInfo']['memberId'];
+      Owner().name = resData['memberInfo']['memberName'];
+      Owner().email = resData['memberInfo']['memberEmail'];
+      Owner().profile = resData['memberInfo']['memberProfileImagePath'];
+      Owner().nickName = resData['memberInfo']['memberNickName'];
       result = true;
     }
     return result;
@@ -105,7 +107,7 @@ class _LoginPageState extends State<LoginPage> {
           //유저 정보 세팅
           var getUser = await getUserInfo();
           if(getUser){
-            User().type = 'us';
+            Owner().type = 'us';
             Navigator.pop(context);
             Navigator.pushAndRemoveUntil(
                 context,
@@ -200,9 +202,9 @@ class _LoginPageState extends State<LoginPage> {
       if(!getUser){
         return;
       }
-      print(User().name);
+      print(Owner().name);
       if (_autoLoginChecked) {
-        User().type = 'us';
+        Owner().type = 'us';
         prefs.setBool('auto', true);
         prefs.setString('type', 'us');
         prefs.setString('id', _memberId);
@@ -249,7 +251,7 @@ class _LoginPageState extends State<LoginPage> {
           //사용자 정보 저장
           var getUser = await getUserInfo();
           if(getUser){
-            User().type = 'us';
+            Owner().type = 'us';
             prefs.setBool('auto', true);
             prefs.setString('type', 'us');
             prefs.setString('id', _memberId);

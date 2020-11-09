@@ -8,15 +8,12 @@
 // ![](https://flutter.github.io/assets-for-api-docs/assets/material/scaffold_bottom_app_bar.png)
 
 import 'package:flutter/material.dart';
+import 'package:trip_story/Common/blank_appbar.dart';
+import 'package:trip_story/Common/owner.dart';
 import 'package:trip_story/page/blank_page.dart';
+import 'package:trip_story/page/edit_post_page.dart';
 import 'package:trip_story/page/login_page.dart';
-import 'package:trip_story/page/make_post_page.dart';
-import 'package:trip_story/page/make_trip_page.dart';
-import 'package:trip_story/page/map_sample.dart';
-import 'package:trip_story/page/newsFeed_page.dart';
-import 'package:trip_story/page/sign_up_page.dart';
 import 'package:trip_story/page/user_page.dart';
-import 'package:trip_story/utils/blank_appbar.dart';
 
 void main() => runApp(MyApp());
 
@@ -45,11 +42,25 @@ class MainStatefulWidget extends StatefulWidget {
 class _MainStatefulWidgetState extends State<MainStatefulWidget>
     with SingleTickerProviderStateMixin {
   TabController tabController;
+  List<Widget> _page = new List<Widget>();
 
   @override
   void initState() {
     super.initState();
     tabController = new TabController(length: 5, vsync: this);
+    Widget userPage = new UserPage(
+      nickName: Owner().nickName,
+      type: 'owner',
+    );
+    Widget tempPage = new TempPage();
+    Widget blankPage = new BlankPage();
+    _page = [
+      tempPage,
+      blankPage,
+      tempPage,
+      tempPage,
+      userPage,
+    ];
   }
 
   @override
@@ -64,13 +75,7 @@ class _MainStatefulWidgetState extends State<MainStatefulWidget>
       body: TabBarView(
         controller: tabController,
         physics: NeverScrollableScrollPhysics(),
-        children: [
-          NewsFeedPage(),
-          TempPage(),
-          BlankPage(),
-          TempPage(),
-          UserPage(),
-        ],
+        children: _page,
       ),
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
@@ -92,7 +97,9 @@ class _MainStatefulWidgetState extends State<MainStatefulWidget>
                   color: Colors.black26,
                 ),
               ),
-              SizedBox(width: MediaQuery.of(context).size.width / 5,),
+              SizedBox(
+                width: MediaQuery.of(context).size.width / 5,
+              ),
               Tab(
                 icon: new Icon(
                   Icons.where_to_vote_outlined,
@@ -112,8 +119,10 @@ class _MainStatefulWidgetState extends State<MainStatefulWidget>
       floatingActionButton: FloatingActionButton(
         heroTag: 'makePost',
         onPressed: () => setState(() {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (BuildContext context) => MakePostPage()));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => EditPostPage()));
         }),
         tooltip: '새 게시글 작성',
         child: Icon(Icons.add),
