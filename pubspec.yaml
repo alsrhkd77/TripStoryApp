@@ -33,6 +33,9 @@ dependencies:
   google_maps_flutter: ^1.0.3 #Google maps 패키지
   shared_preferences: ^0.5.12+2 #로컬 데이터 저장 패키지
 
+  reorderables: ^0.3.2  #드래그 앤 드롭 위젯 패키지(Reorderable widget)
+  date_range_picker: ^1.0.6 #범위 날짜 선택 패키지
+
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.3

@@ -63,7 +63,7 @@ class _SignUpPageState extends State<SignUpPage> {
           idCheck = true;
         });
         _showDialog('ID 중복확인', '사용가능한 ID입니다.');
-      } else if(resData['result'] == "duplicated"){
+      } else if(resData['result'] == "duplicate"){
         _showDialog('ID 중복확인', '중복된 ID입니다.');
       }else {
         _showDialog('ID 중복확인', resData['errors']);
@@ -73,6 +73,7 @@ class _SignUpPageState extends State<SignUpPage> {
     }
   }
 
+  ///닉네임 중복 확인
   Future<void> requestCheckNickName() async {
     final nickNameForm = nicknameFormKey.currentState;
     if (nickNameForm.validate()) {
@@ -111,7 +112,7 @@ class _SignUpPageState extends State<SignUpPage> {
           nickNameCheck = true;
         });
         _showDialog('닉네임 중복확인', '사용가능한 닉네임 입니다.');
-      } else if(resData['result'] == "duplicated"){
+      } else if(resData['result'] == "duplicate"){
         _showDialog('닉네임 중복확인', '중복된 닉네임 입니다.');
       }else {
         _showDialog('닉네임 중복확인', resData['errors']);
@@ -207,7 +208,7 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: BlankAppbar(),
+      appBar: AppBar(title: Text('회원가입'),),
       body: Form(
         key: signUpFormKey,
         child: SingleChildScrollView(
@@ -286,6 +287,9 @@ class _SignUpPageState extends State<SignUpPage> {
                           } else if (!RegExp(r"^[A-Za-z0-9+]{1,10}$")
                               .hasMatch(value)) {
                             return 'Use only Alphabet and Numbers.';
+                          } else if (!RegExp(r"^[A-Za-z0-9+]{1,10}$")
+                              .hasMatch(value)) {
+                            return 'Must be between 1 and 10 characters';
                           }
                           return null;
                         },

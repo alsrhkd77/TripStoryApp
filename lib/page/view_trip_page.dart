@@ -24,6 +24,7 @@ class _ViewTripPageState extends State<ViewTripPage> {
   Set<Polyline> _polylines = Set();
   Map points = new Map<LatLng, List<DateTime>>();
   Trip _trip = new Trip();
+  int _index;
 
   static final _gwanghwamun = CameraPosition(
       target: LatLng(37.575929, 126.976849), zoom: 19.151926040649414);
@@ -301,26 +302,24 @@ class _ViewTripPageState extends State<ViewTripPage> {
                 },
               ),
             ),
+
+            ///이미지
             Container(
+              color: Colors.black,
               width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.width * 2 / 3,
+              height: MediaQuery.of(context).size.width,
               child: Stack(
                 children: [
-                  GoogleMap(
-                    mapType: MapType.normal,
-                    initialCameraPosition: _gwanghwamun,
-                    onMapCreated: (GoogleMapController controller) {
-                      _controller.complete(controller);
-                    },
-                    zoomControlsEnabled: false,
-                    zoomGesturesEnabled: true,
-                    buildingsEnabled: true,
-                    scrollGesturesEnabled: true,
-                    rotateGesturesEnabled: false,
-                    tiltGesturesEnabled: false,
-                    markers: _markers,
-                    polylines: _polylines,
-                  ),
+                  PageView.builder(
+                      onPageChanged: (int index) =>
+                          setState(() => _index = index),
+                      itemCount: _trip.imageList.length,
+                      itemBuilder: (_, i) {
+                        return Image.network(
+                          _trip.imageList[i],
+                          fit: BoxFit.contain,
+                        );
+                      }),
                 ],
               ),
             ),
@@ -385,10 +384,35 @@ class _ViewTripPageState extends State<ViewTripPage> {
                     height: 0,
                   ),
 
+            ///여행 경로
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.width * 2 / 3,
+              child: Stack(
+                children: [
+                  GoogleMap(
+                    mapType: MapType.normal,
+                    initialCameraPosition: _gwanghwamun,
+                    onMapCreated: (GoogleMapController controller) {
+                      _controller.complete(controller);
+                    },
+                    zoomControlsEnabled: false,
+                    zoomGesturesEnabled: true,
+                    buildingsEnabled: true,
+                    scrollGesturesEnabled: true,
+                    rotateGesturesEnabled: false,
+                    tiltGesturesEnabled: false,
+                    markers: _markers,
+                    polylines: _polylines,
+                  ),
+                ],
+              ),
+            ),
+
             ///태그
             Container(
               alignment: Alignment.center,
-              padding: EdgeInsets.symmetric(horizontal: 8.0),
+              padding: EdgeInsets.all(8.0),
               child: Wrap(
                 spacing: 10.0,
                 alignment: WrapAlignment.center,
@@ -398,6 +422,7 @@ class _ViewTripPageState extends State<ViewTripPage> {
             ),
             Divider(),
 
+            /*
             Container(
               width: MediaQuery.of(context).size.width * 4 / 5,
               height: MediaQuery.of(context).size.width * 4 / 5,
@@ -428,6 +453,7 @@ class _ViewTripPageState extends State<ViewTripPage> {
             SizedBox(
               height: 20,
             ),
+             */
 
             Container(
               width: MediaQuery.of(context).size.width * 4 / 5,
@@ -469,6 +495,182 @@ class _ViewTripPageState extends State<ViewTripPage> {
                                       setState(() {
                                         _trip.postList[0].liked =
                                             !_trip.postList[0].liked;
+                                        //TODO: 좋아요 추가, 제거 서버에 요청
+                                      });
+                                    }),
+                                Text(
+                                  '123',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white54,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 25.0,
+                                ),
+                                Icon(
+                                  Icons.mode_comment_outlined,
+                                  color: Colors.white54,
+                                ),
+                                SizedBox(
+                                  width: 10.0,
+                                ),
+                                Text(
+                                  '123',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white54,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        bottom: 0,
+                      ),
+                    ],
+                  ),
+                ),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => ViewPostPage()));
+                },
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+
+            Container(
+              width: MediaQuery.of(context).size.width * 4 / 5,
+              height: MediaQuery.of(context).size.width * 4 / 5,
+              child: InkWell(
+                child: Card(
+                  color: Colors.black,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  semanticContainer: true,
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  elevation: 2.0,
+                  child: Stack(
+                    fit: StackFit.passthrough,
+                    children: [
+                      Image.network(
+                        _trip.postList[0].imageList[2],
+                        fit: BoxFit.contain,
+                      ),
+                      Positioned(
+                        child: Container(
+                          color: Color.fromRGBO(0, 0, 0, 80),
+                          width: MediaQuery.of(context).size.width * 4 / 5,
+                          child: ListTile(
+                            title: Row(
+                              children: [
+                                IconButton(
+                                    icon: _trip.postList[0].liked
+                                        ? Icon(
+                                      Icons.favorite,
+                                      color: Colors.red,
+                                    )
+                                        : Icon(
+                                      Icons.favorite_border,
+                                      color: Colors.white54,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        _trip.postList[0].liked =
+                                        !_trip.postList[0].liked;
+                                        //TODO: 좋아요 추가, 제거 서버에 요청
+                                      });
+                                    }),
+                                Text(
+                                  '123',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white54,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 25.0,
+                                ),
+                                Icon(
+                                  Icons.mode_comment_outlined,
+                                  color: Colors.white54,
+                                ),
+                                SizedBox(
+                                  width: 10.0,
+                                ),
+                                Text(
+                                  '123',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white54,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        bottom: 0,
+                      ),
+                    ],
+                  ),
+                ),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => ViewPostPage()));
+                },
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+
+            Container(
+              width: MediaQuery.of(context).size.width * 4 / 5,
+              height: MediaQuery.of(context).size.width * 4 / 5,
+              child: InkWell(
+                child: Card(
+                  color: Colors.black,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  semanticContainer: true,
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  elevation: 2.0,
+                  child: Stack(
+                    fit: StackFit.passthrough,
+                    children: [
+                      Image.network(
+                        _trip.postList[0].imageList[1],
+                        fit: BoxFit.contain,
+                      ),
+                      Positioned(
+                        child: Container(
+                          color: Color.fromRGBO(0, 0, 0, 80),
+                          width: MediaQuery.of(context).size.width * 4 / 5,
+                          child: ListTile(
+                            title: Row(
+                              children: [
+                                IconButton(
+                                    icon: _trip.postList[0].liked
+                                        ? Icon(
+                                      Icons.favorite,
+                                      color: Colors.red,
+                                    )
+                                        : Icon(
+                                      Icons.favorite_border,
+                                      color: Colors.white54,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        _trip.postList[0].liked =
+                                        !_trip.postList[0].liked;
                                         //TODO: 좋아요 추가, 제거 서버에 요청
                                       });
                                     }),

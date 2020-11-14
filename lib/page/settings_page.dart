@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trip_story/page/edit_profile_page.dart';
 import 'package:trip_story/page/login_page.dart';
+import 'package:trip_story/page/planner_page.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -19,11 +20,21 @@ class _SettingsPageState extends State<SettingsPage> {
           InkWell(
             child: ListTile(
               leading: Icon(Icons.account_box),
-              title: Text('프로필 편집'),
+              title: Text('내 프로필'),
             ),
             onTap: (){
               Navigator.push(context,
                   MaterialPageRoute(builder: (BuildContext context) => EditProfilePage()));
+            },
+          ),
+          InkWell(
+            child: ListTile(
+              leading: Icon(Icons.flight_takeoff),
+              title: Text('여행 플래너'),
+            ),
+            onTap: (){
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (BuildContext context) => PlannerPage()));
             },
           ),
           InkWell(
