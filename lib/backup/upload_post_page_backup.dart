@@ -97,7 +97,6 @@ class _UploadPostPageBackupState extends State<UploadPostPageBackup> {
 
     var response = await (await request.send()).stream.bytesToString();
     var resData = jsonDecode(response);
-    print(resData);
     _uploadState = resData['result'];
   }
 

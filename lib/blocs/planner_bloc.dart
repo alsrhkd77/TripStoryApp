@@ -3,17 +3,17 @@ import 'package:trip_story/models/travel_plan.dart';
 
 class PlannerBloc {
   List<TravelPlan> _myPlans = new List();
-  List<TravelPlan> _taggedPlans = new List();
+  //List<TravelPlan> _taggedPlans = new List();
 
   BehaviorSubject myPlanBehavior = new BehaviorSubject<List>();
-  BehaviorSubject taggedPlanBehavior = new BehaviorSubject<List>();
+  //BehaviorSubject taggedPlanBehavior = new BehaviorSubject<List>();
 
   Stream get myPlansStream => myPlanBehavior.stream;
-  Stream get taggedPlansStream => taggedPlanBehavior.stream;
+  //Stream get taggedPlansStream => taggedPlanBehavior.stream;
 
   PlannerBloc(){
     myPlanBehavior.sink.add(_myPlans);
-    taggedPlanBehavior.sink.add(_taggedPlans);
+    //taggedPlanBehavior.sink.add(_taggedPlans);
   }
 
   Future<void> fetchAllPlans() async {
@@ -41,6 +41,9 @@ class PlannerBloc {
   }
 
   onReorder(int oldIndex, int newIndex){
+    if (newIndex > oldIndex) {
+      newIndex -= 1;
+    }
     final TravelPlan item = _myPlans.removeAt(oldIndex);
     _myPlans.insert(newIndex, item);
     myPlanBehavior.sink.add(_myPlans);
@@ -53,6 +56,6 @@ class PlannerBloc {
 
   dispose(){
     myPlanBehavior.close();
-    taggedPlanBehavior.close();
+    //taggedPlanBehavior.close();
   }
 }

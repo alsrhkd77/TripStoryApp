@@ -218,7 +218,7 @@ class _SignUpPageState extends State<SignUpPage> {
               SizedBox(
                 height: 32.0,
               ),
-              Image.network(AddressBook.logo, width: MediaQuery.of(context).size.width / 2, height: MediaQuery.of(context).size.width / 2,),
+              Image.asset('images/logo.png', width: MediaQuery.of(context).size.width / 2, height: MediaQuery.of(context).size.width / 2,),
               SizedBox(
                 height: 22.0,
               ),
@@ -280,14 +280,14 @@ class _SignUpPageState extends State<SignUpPage> {
                         },
                         maxLength: 10,
                         decoration: InputDecoration(
-                            border: OutlineInputBorder(), labelText: 'Nick Name', hintText: 'Use only Alphabet and Numbers.'),
+                            border: OutlineInputBorder(), labelText: 'Nick Name', hintText: 'Use only Alphabet, Numbers, 한글.'),
                         validator: (value) {
                           if (value.isEmpty) {
                             return 'Nick name can\'t be empty!';
-                          } else if (!RegExp(r"^[A-Za-z0-9+]{1,10}$")
+                          } else if (!RegExp(r"^[ㄱ-ㅎ|ㅏ-ㅣ|가-힣A-Za-z0-9+]+$")
                               .hasMatch(value)) {
                             return 'Use only Alphabet and Numbers.';
-                          } else if (!RegExp(r"^[A-Za-z0-9+]{1,10}$")
+                          } else if (!RegExp(r"^[ㄱ-ㅎ|ㅏ-ㅣ|가-힣A-Za-z0-9+]{1,10}$")
                               .hasMatch(value)) {
                             return 'Must be between 1 and 10 characters';
                           }
@@ -312,6 +312,9 @@ class _SignUpPageState extends State<SignUpPage> {
               Container(
                 width: MediaQuery.of(context).size.width * 7 / 8,
                 child: TextFormField(
+                  enableSuggestions: false,
+                  autocorrect: false,
+                  obscureText: true,
                   maxLength: 18,
                   decoration: InputDecoration(
                       border: OutlineInputBorder(), labelText: 'PW'),

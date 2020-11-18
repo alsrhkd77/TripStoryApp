@@ -18,9 +18,8 @@ class _NetworkImageViewPageState extends State<NetworkImageViewPage> {
       ),
       backgroundColor: Colors.black.withOpacity(0.9),
       body: Center(
-        child: Container(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
+        child: InteractiveViewer(
+          maxScale: 5.0,
           child: Image.network(this.widget.url, fit: BoxFit.contain,),
         ),
       ),

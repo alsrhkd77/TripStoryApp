@@ -30,7 +30,7 @@ class _SettingsPageState extends State<SettingsPage> {
           InkWell(
             child: ListTile(
               leading: Icon(Icons.flight_takeoff),
-              title: Text('여행 플래너'),
+              title: Text('실험실 (여행 플래너)'),
             ),
             onTap: (){
               Navigator.push(context,

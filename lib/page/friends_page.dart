@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:loading_animations/loading_animations.dart';
 import 'package:trip_story/blocs/friend_bloc.dart';
+import 'package:trip_story/page/user_page.dart';
 
 class FriendsPage extends StatelessWidget {
   final FriendBloc _bloc = FriendBloc();
@@ -100,14 +101,11 @@ class FriendsPage extends StatelessWidget {
                   );
                 });
           },
-        ) : Container(),
+        ) : SizedBox(height: 0.0,),
       ),
       onTap: () {
-        print('view user page');
-        /*
         Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) => UserPage(nickName: friend.nickName,)));
-         */
+            MaterialPageRoute(builder: (BuildContext context) => UserPage(nickName: friend.nickName, type: 'other',)));
       },
     );
   }

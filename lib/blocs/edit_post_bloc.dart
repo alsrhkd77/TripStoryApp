@@ -137,12 +137,10 @@ class EditPostBloc {
 
     var response = await (await request.send()).stream.bytesToString();
     var resData = jsonDecode(response);
-    print(resData);
     uploadState = resData['result'];
   }
 
-  uploadEditFeed
-      (){
+  uploadEditFeed(){
 
   }
 

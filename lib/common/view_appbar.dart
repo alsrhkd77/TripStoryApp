@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:trip_story/common/owner.dart';
+import 'package:trip_story/page/network_image_view_page.dart';
+import 'package:trip_story/page/user_page.dart';
 
 class ViewAppbar extends StatelessWidget {
   final Widget trailer;
@@ -22,8 +24,24 @@ class ViewAppbar extends StatelessWidget {
       this.startDate,
       this.endDate});
 
-  goUserPage() {
-    print(author);
+  goUserPage(context) {
+    if(name == Owner().nickName){
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => UserPage(
+                nickName: name,
+                type: 'owner',
+              )));
+    }else{
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => UserPage(
+                nickName: name,
+                type: 'other',
+              )));
+    }
   }
 
   @override
@@ -59,17 +77,25 @@ class ViewAppbar extends StatelessWidget {
                   backgroundColor: Colors.blueAccent,
                   child: CircleAvatar(
                     radius: (MediaQuery.of(context).size.width / 20) - 2,
-                    backgroundImage: NetworkImage(Owner().profile),
+                    backgroundImage: NetworkImage(profileUrl),
                   ),
                 ),
-                onTap: goUserPage,
+                onTap: (){
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              NetworkImageViewPage(
+                                url: profileUrl,
+                              )));
+                },
               ),
               Container(
                 width: MediaQuery.of(context).size.width * 15 / 20,
                 child: ListTile(
                   title: InkWell(
                     child: Text(name),
-                    onTap: goUserPage,
+                    onTap: () => goUserPage(context),
                   ),
                   subtitle: Text(visit),
                   trailing: trailer,

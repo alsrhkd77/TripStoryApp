@@ -275,7 +275,7 @@ class EditFeedTemplate{
               return new IconButton(
                 padding: EdgeInsets.symmetric(horizontal: 25.0),
                 icon: Icon(
-                  Icons.add,
+                  Icons.add_link,
                   color: Colors.blue,
                 ),
                 onPressed: () => _addTag(context: context, bloc: bloc),

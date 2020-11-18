@@ -91,7 +91,6 @@ class EditTripBloc extends EditPostBloc {
         width: 4,
         points: list);
     _polylines.add(polyline);
-    print('running');
     _polylineBehavior.sink.add(_polylines);
   }
 
@@ -150,7 +149,6 @@ class EditTripBloc extends EditPostBloc {
 
     var response = await (await request.send()).stream.bytesToString();
     var resData = jsonDecode(response);
-    print(resData);
     uploadState = resData['result'];
   }
 

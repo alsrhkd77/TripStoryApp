@@ -13,6 +13,7 @@ import 'package:trip_story/Common/owner.dart';
 import 'package:trip_story/page/blank_page.dart';
 import 'package:trip_story/page/edit_post_page.dart';
 import 'package:trip_story/page/login_page.dart';
+import 'package:trip_story/page/timeline_page.dart';
 import 'package:trip_story/page/user_page.dart';
 
 void main() => runApp(MyApp());
@@ -55,7 +56,7 @@ class _MainStatefulWidgetState extends State<MainStatefulWidget>
     Widget tempPage = new TempPage();
     Widget blankPage = new BlankPage();
     _page = [
-      tempPage,
+      TimeLinePage(),
       blankPage,
       tempPage,
       tempPage,
@@ -75,7 +76,13 @@ class _MainStatefulWidgetState extends State<MainStatefulWidget>
       body: TabBarView(
         controller: tabController,
         physics: NeverScrollableScrollPhysics(),
-        children: _page,
+        children: [
+          TimeLinePage(),
+          TempPage(),
+          BlankPage(),
+          BlankPage(),
+          UserPage(type: 'owner', nickName: Owner().nickName,),
+        ],
       ),
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),

@@ -17,5 +17,9 @@ class FriendHandler{
         break;
     }
   }
+
+  Future<Friend> fetchProfile(String nickName) async {
+    return await _friendProvider.fetchProfile(nickName);
+  }
   
 }

@@ -49,7 +49,6 @@ class _LoginPageState extends State<LoginPage> {
 
     var resData = jsonDecode(_response.body);
     var state = resData['result'];
-    print(resData);
     if(state == 'success'){
       Owner().id = resData['memberInfo']['memberId'];
       Owner().name = resData['memberInfo']['memberName'];
@@ -202,7 +201,6 @@ class _LoginPageState extends State<LoginPage> {
       if(!getUser){
         return;
       }
-      print(Owner().name);
       if (_autoLoginChecked) {
         Owner().type = 'us';
         prefs.setBool('auto', true);
@@ -336,7 +334,7 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(
                   height: 32.0,
                 ),
-                Image.network(AddressBook.logo, width: MediaQuery.of(context).size.width / 2, height: MediaQuery.of(context).size.width / 2,),
+                Image.asset('images/logo.png', width: MediaQuery.of(context).size.width / 2, height: MediaQuery.of(context).size.width / 2,),
                 SizedBox(
                   height: 22.0,
                 ),

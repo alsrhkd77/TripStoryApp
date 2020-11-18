@@ -7,6 +7,7 @@ import 'package:loading_animations/loading_animations.dart';
 import 'package:trip_story/common/address_book.dart';
 import 'package:trip_story/common/owner.dart';
 import 'package:http/http.dart' as http;
+import 'package:trip_story/main.dart';
 
 class EditProfilePage extends StatefulWidget {
   @override
@@ -175,6 +176,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('내 프로필'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios),
+          onPressed: (){
+            Navigator.pushAndRemoveUntil(
+                context,
+                new MaterialPageRoute(
+                    builder: (BuildContext context) => MainStatefulWidget()),
+                    (route) => false);
+          },
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(

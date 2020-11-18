@@ -45,9 +45,46 @@ class Trip extends Post {
             tagList: tagList,
             imageList: imageList);
 
-  makeSample(){
+  @override
+  Trip fromJSON(var value) {
+    super.fromJSON(value);
+    Map result = value['travelPostInfo'];
+
+    //마커 좌표
+    for (var point in result['courses']) {
+      LatLng latLng = new LatLng(point['lat'], point['lng']);
+      if (!points.containsKey(latLng)) {
+        points[latLng] = new List<DateTime>();
+      }
+      points[latLng].add(DateTime.parse(point['passDate']));
+    }
+
+    for (var posts in result['posts']){
+      Post temp = new Post();
+      temp.id = posts['postId'];
+      temp.comments = posts['comments'];
+      temp.liked = posts['liked'];
+      temp.likes = posts['likes'];
+      temp.imageList.add(posts['thunbnailImagePath']);
+      this.postList.add(temp);
+    }
+
+    this.startDate = DateTime.parse(result['travelStart']); //방문 시작일
+    this.endDate = DateTime.parse(result['travelEnd']); //방문 종료일
+
+    //방문날짜 사용 여부
+    if (this.startDate == null || this.endDate == null) {
+      this.useVisit = false;
+    } else {
+      this.useVisit = true;
+    }
+
+    return this;
+  }
+
+  makeSample() {
     super.makeSample();
-    for(int i = 0; i< 5; i++){
+    for (int i = 0; i < 5; i++) {
       Post t = new Post();
       t.makeSample();
       postList.add(t);

@@ -1,22 +1,38 @@
 # trip_story
+   
+## 기능 체크리스트
+- [x] 회원가입
 
-Trip story Application
+- [x] 로그인
 
-## Getting Started
+- [x] 내 프로필 조회
 
-This project is a starting point for a Flutter application.
+- [x] 타인 프로필 조회
 
-A few resources to get you started if this is your first Flutter project:
+- [x] 닉네임 변경
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+- [ ] 프로필 사진 변경
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- [ ] 팔로우 및 팔로우 취소
 
+- [x] 게시물 작성
 
-용어 정리
+- [x] 게시물 조회
+
+- [ ] 게시물 삭제
+
+- [ ] 댓글 작성 및 삭제
+
+- [x] 타임라인
+
+- [ ] 검색어를 통한 검색
+
+- [ ] 내 주변 검색
+   
+   
+## 용어 정리
 - Feed = 단일 게시물(Post), 여행 게시물(Trip)
 - Post = 단일 게시물
 - Trip = 여햏 게시물
+   
+

@@ -443,28 +443,44 @@ class _EditPostPageState extends State<EditPostPage> {
         return Column(
           children: [
             Container(
-              decoration: BoxDecoration(
-                color: Colors.black,
-              ),
               height: MediaQuery.of(context).size.width,
               child: PageView.builder(
                 controller: _pageController,
-                onPageChanged: (int index) =>
-                    setState(() => _pageIndex = index),
-                itemCount: snapshot.data.imageList.length,
+                itemCount: snapshot.data.imageList.length + 1,
                 itemBuilder: (_, i) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: Colors.black,
-                      borderRadius: BorderRadius.circular(25.0),
-                      image: DecorationImage(
-                        image: Image.file(
-                          File(snapshot.data.imageList[i]),
-                        ).image,
-                        fit: BoxFit.contain,
+                  if (i == snapshot.data.imageList.length) {
+                    return Container(
+                      margin: EdgeInsets.all(25.0),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          border:
+                              Border.all(width: 1.0, color: Colors.blueAccent),
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(25.0))),
+                      child: IconButton(
+                        //padding: EdgeInsets.symmetric(horizontal: 25.0),
+                        icon: Icon(
+                          Icons.add_photo_alternate_outlined,
+                          color: Colors.blue,
+                        ),
+                        onPressed: () async {
+                          await addImage();
+                        },
                       ),
-                    ),
-                  );
+                    );
+                  } else {
+                    return Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        image: DecorationImage(
+                          image: Image.file(
+                            File(snapshot.data.imageList[i]),
+                          ).image,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    );
+                  }
                 },
               ),
             ),
@@ -530,7 +546,7 @@ class _EditPostPageState extends State<EditPostPage> {
                   Icons.add,
                   color: Colors.blue,
                 ),
-                onPressed: () => addImage(snapshot),
+                onPressed: () => addImage(),
               );
             } else {
               return InkWell(
@@ -557,17 +573,19 @@ class _EditPostPageState extends State<EditPostPage> {
     );
   }
 
-  Future<void> addImage(snapshot) async {
+  Future<void> addImage() async {
     var image = await ImagePicker().getImage(source: ImageSource.gallery);
     if (image == null) {
       return;
     }
     DateTime _imgDate = await ImageData.getImageDateTime(image.path);
     _bloc.addImage(image.path, _imgDate);
+    /*
     setState(() {
       _pageController.animateToPage(snapshot.data.imageList.length - 1,
           duration: Duration(milliseconds: 300), curve: Curves.decelerate);
     });
+     */
   }
 
   @override
@@ -603,12 +621,14 @@ class _EditPostPageState extends State<EditPostPage> {
           ],
         ),
       ),
+      /*
       bottomNavigationBar: BottomAppBar(
         child: Container(
           height: MediaQuery.of(context).size.width / 7,
           child: buildBottomList(),
         ),
       ),
+       */
     );
   }
 }

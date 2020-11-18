@@ -470,7 +470,7 @@ class _EditTripPageState extends State<EditTripPage> {
                 child: IconButton(
                   //padding: EdgeInsets.symmetric(horizontal: 25.0),
                   icon: Icon(
-                    Icons.add,
+                    Icons.add_photo_alternate_outlined,
                     color: Colors.blue,
                   ),
                   onPressed: () async {
@@ -542,7 +542,7 @@ class _EditTripPageState extends State<EditTripPage> {
                 child: IconButton(
                   //padding: EdgeInsets.symmetric(horizontal: 25.0),
                   icon: Icon(
-                    Icons.add,
+                    Icons.post_add,
                     color: Colors.blue,
                   ),
                   onPressed: () async {

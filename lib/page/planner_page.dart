@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:reorderables/reorderables.dart';
 import 'package:trip_story/blocs/planner_bloc.dart';
-import 'package:trip_story/common/address_book.dart';
 import 'package:trip_story/common/blank_appbar.dart';
 import 'package:trip_story/page/edit_plan_page.dart';
 import 'package:date_range_picker/date_range_picker.dart' as DateRagePicker;
@@ -75,7 +74,10 @@ class _PlannerPageState extends State<PlannerPage> {
                       ' ~ ' +
                       DateFormat('yyyy. MM. dd')
                           .format(snapshot.data[index].itinerary.last)),
-                  trailing: Icon(Icons.remove_circle, color: Colors.red,),
+                  trailing: InkWell(
+                    child: Icon(Icons.remove_circle, color: Colors.red,),
+                    onTap: (){},
+                  ),
                 ),
               );
             }),
@@ -84,19 +86,30 @@ class _PlannerPageState extends State<PlannerPage> {
         });
   }
 
-  List<Widget> buildTaggedPlanList() {
+  List<Widget> buildTaggedPlanList(data) {
     List result = new List<Widget>();
-    for (int index = 0; index < taggedPlanList.length; index++) {
+    for (int index = 0; index < data.length; index++) {
       Card temp = new Card(
+        key: Key('$index'),
         margin: EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
         elevation: 5.0,
         child: ListTile(
           onTap: () {
-            print('touch');
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => EditPlanPage()));
           },
-          title: Text(taggedPlanList[index]),
-          subtitle: Text('2020. 03. 03 ~ 2020. 11. 12'),
-          trailing: Icon(Icons.reorder),
+          title: Text(data[index].title),
+          subtitle: Text(DateFormat('yyyy. MM. dd')
+              .format(data[index].itinerary.first) +
+              ' ~ ' +
+              DateFormat('yyyy. MM. dd')
+                  .format(data[index].itinerary.last)),
+          trailing: IconButton(
+            icon: Icon(Icons.remove_circle, color: Colors.red,),
+            onPressed: (){},
+          ),
         ),
       );
       result.add(temp);
@@ -173,7 +186,62 @@ class _PlannerPageState extends State<PlannerPage> {
     return Scaffold(
         appBar: BlankAppbar(),
         backgroundColor: Colors.lightBlueAccent,
-        body: SingleChildScrollView(
+        body: StreamBuilder(
+          stream: _bloc.myPlansStream,
+          builder: (context, snapshot){
+            return ReorderableListView(
+              header: Column(
+                children: [
+                  Container(
+                    padding: EdgeInsets.symmetric(vertical: 15.0),
+                    alignment: Alignment.center,
+                    child: Image.asset(
+                      'images/planner.png',
+                      width: MediaQuery.of(context).size.width * 2 / 3,
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                    child: Text(
+                      '여행 일정',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                          fontStyle: FontStyle.italic),
+                    ),
+                  ),
+                  Card(
+                    margin: EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
+                    elevation: 5.0,
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      margin:
+                      EdgeInsets.symmetric(horizontal: 50.0, vertical: 10.0),
+                      decoration: BoxDecoration(
+                          border: Border.all(width: 1.0, color: Colors.blueAccent),
+                          borderRadius: BorderRadius.all(Radius.circular(25.0))),
+                      child: IconButton(
+                        //padding: EdgeInsets.symmetric(horizontal: 25.0),
+                        icon: Icon(
+                          Icons.add,
+                          color: Colors.blue,
+                        ),
+                        onPressed: () async {
+                          await addNewPlan();
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              children: buildTaggedPlanList(snapshot.data),
+              onReorder: _bloc.onReorder,
+            );
+          },
+        ),
+        /*
+        SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -235,6 +303,8 @@ class _PlannerPageState extends State<PlannerPage> {
                   children: buildTaggedPlanList(), onReorder: _taggedOnReorder),
             ],
           ),
-        ));
+        )*/
+        );
+
   }
 }
