@@ -1,4 +1,6 @@
-# trip_story
+# Trip Story
+
+>download link : [Trip Story.apk](https://github.com/alsrhkd77/TripStoryApp/raw/master/Trip%20Story.apk)
    
 ## 기능 체크리스트
 - [x] 회원가입
