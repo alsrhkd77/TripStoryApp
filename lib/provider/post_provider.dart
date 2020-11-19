@@ -51,15 +51,15 @@ class PostProvider {
     }
   }
 
-  Future<Post> fetchPostView(postId) async {
-    http.Response _response = await http.get(AddressBook.getPostView +
-        postId.toString() +
+  Future<Post> fetchPostView(feedId) async {
+    http.Response _response = await http.get(AddressBook.postView +
+        feedId.toString() +
         '/' +
         Owner().id.toString());
     var resData = jsonDecode(_response.body);
     var state = resData['result'];
     if (state == 'success') {
-      return new Post().fromJSON(resData);
+      return new Post().fromJson(resData);
     } else if (resData['errors'] != null) {
       throw Exception('Failed to load post view value\n${resData['errors']}');
     } else {
@@ -81,7 +81,7 @@ class PostProvider {
       for (var data in resData['items']) {
         Map temp = new Map();
         Post _post = new Post();
-        _post.fromJSON(data);
+        _post.fromJson(data);
         temp['item'] = _post;
         temp['type'] = data['type'];
         _list.add(temp);
@@ -93,6 +93,20 @@ class PostProvider {
     } else {
       throw Exception(
           'Failed to timeline value at offset=$offset, limit=$limit\nerrors=null');
+    }
+  }
+
+  Future<String> removePost(feedId) async {
+    http.Response _response = await http.delete(AddressBook.postView + feedId.toString() + '/' + Owner().id);
+    var resData = jsonDecode(_response.body);
+    if (resData['result'] == 'success') {
+      return 'success';
+    } else if (resData['errors'] != null) {
+      print('Failed to remove post\n${resData['errors']}');
+      return resData['errors'].toString();
+    } else {
+      print('Failed to remove post\nerrors=null');
+      return 'failed';
     }
   }
 }

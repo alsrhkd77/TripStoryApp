@@ -62,4 +62,28 @@ class FriendProvider{
       throw Exception('Failed to load profile value');
     }
   }
+
+  Future<void> follow(String nickName) async {
+    http.Response response = await http.post(AddressBook.follow,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({'memberId': Owner().id, 'nickName': nickName}));
+    var resData = jsonDecode(response.body);
+  }
+
+  Future<void> unfollow(String nickName) async {
+    http.Response _response = await http.delete(AddressBook.follow + '/' + Owner().id + '/' + nickName);
+    var resData = jsonDecode(_response.body);
+    var state = resData['result'];
+    if (state == 'success') {
+      return 'success';
+    }
+    else if(resData['errors'] != null){
+      throw Exception('Failed to unfollow\n${resData['errors']}');
+    }
+    else {
+      throw Exception('Failed to unfollow');
+    }
+  }
 }

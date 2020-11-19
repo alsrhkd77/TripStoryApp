@@ -158,7 +158,7 @@ class _UserPageState extends State<UserPage>
                 ? OutlineButton(
                     borderSide: BorderSide(color: Colors.blueAccent),
                     child: Text('Unfollow'),
-                    onPressed: () {},
+                    onPressed: () => _bloc.unfollow(_friend.nickName),
                   )
                 : RaisedButton(
                     elevation: 5.0,
@@ -167,7 +167,7 @@ class _UserPageState extends State<UserPage>
                       'Follow',
                       style: TextStyle(color: Colors.white),
                     ),
-                    onPressed: () {},
+                    onPressed: () => _bloc.follow(_friend.nickName),
                   ),
           ),
           SizedBox(
@@ -355,7 +355,7 @@ class _UserPageState extends State<UserPage>
                 ),
               ],
             ),
-            view == 'post' ? buildPost() : buildTrip()
+            view == 'post' ? buildPost() : buildTrip(),
           ],
         ),
       ),
@@ -363,7 +363,7 @@ class _UserPageState extends State<UserPage>
           ? FloatingActionButton.extended(
               heroTag: 'makeTrip',
               label: Text('여행 작성'),
-              icon: Icon(Icons.airport_shuttle),
+              icon: Icon(Icons.dynamic_feed),
               onPressed: () {
                 Navigator.push(
                     context,

@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:trip_story/common/common_table.dart';
 
-class EditFeedTemplate{
-
+class EditFeedTemplate {
   ///공개범위 설정
   Widget buildScope(bloc) {
     return StreamBuilder(
@@ -33,14 +32,14 @@ class EditFeedTemplate{
               showModalBottomSheet(
                 shape: RoundedRectangleBorder(
                   borderRadius:
-                  BorderRadius.vertical(top: Radius.circular(25.0)),
+                      BorderRadius.vertical(top: Radius.circular(25.0)),
                 ),
                 context: context,
                 builder: (context) {
                   return Container(
                     height: MediaQuery.of(context).size.height / 3,
                     padding:
-                    EdgeInsets.symmetric(horizontal: 8.0, vertical: 5.0),
+                        EdgeInsets.symmetric(horizontal: 8.0, vertical: 5.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -63,9 +62,9 @@ class EditFeedTemplate{
                             ),
                             trailing: snapshot.data.scope == 'public'
                                 ? Icon(
-                              Icons.check,
-                              color: Colors.green,
-                            )
+                                    Icons.check,
+                                    color: Colors.green,
+                                  )
                                 : SizedBox(),
                           ),
                           onTap: () {
@@ -84,9 +83,9 @@ class EditFeedTemplate{
                             ),
                             trailing: snapshot.data.scope == 'friend'
                                 ? Icon(
-                              Icons.check,
-                              color: Colors.green,
-                            )
+                                    Icons.check,
+                                    color: Colors.green,
+                                  )
                                 : SizedBox(),
                           ),
                           onTap: () {
@@ -105,9 +104,9 @@ class EditFeedTemplate{
                             ),
                             trailing: snapshot.data.scope == 'private'
                                 ? Icon(
-                              Icons.check,
-                              color: Colors.green,
-                            )
+                                    Icons.check,
+                                    color: Colors.green,
+                                  )
                                 : SizedBox(),
                           ),
                           onTap: () {
@@ -142,7 +141,7 @@ class EditFeedTemplate{
                   title: Text(
                     '방문 날짜',
                     style:
-                    TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
+                        TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
                   ),
                   trailing: Switch(
                     value: snapshot.data.useVisit,
@@ -174,9 +173,9 @@ class EditFeedTemplate{
                             builder: (BuildContext context) {
                               return Container(
                                 height: MediaQuery.of(context)
-                                    .copyWith()
-                                    .size
-                                    .height /
+                                        .copyWith()
+                                        .size
+                                        .height /
                                     3,
                                 child: CupertinoDatePicker(
                                   initialDateTime: snapshot.data.startDate,
@@ -184,9 +183,9 @@ class EditFeedTemplate{
                                     bloc.setStartDate(picked);
                                   },
                                   maximumDate: snapshot.data.startDate
-                                      .compareTo(
-                                      snapshot.data.endDate) >
-                                      0
+                                              .compareTo(
+                                                  snapshot.data.endDate) >
+                                          0
                                       ? DateTime.now()
                                       : snapshot.data.endDate,
                                   minimumYear: 1950,
@@ -207,9 +206,9 @@ class EditFeedTemplate{
                             builder: (BuildContext context) {
                               return Container(
                                 height: MediaQuery.of(context)
-                                    .copyWith()
-                                    .size
-                                    .height /
+                                        .copyWith()
+                                        .size
+                                        .height /
                                     3,
                                 child: CupertinoDatePicker(
                                   initialDateTime: snapshot.data.startDate,
@@ -227,12 +226,12 @@ class EditFeedTemplate{
                       )
                     ],
                   ),
-                  trailing: InkWell(
-                    child: Text(
-                      'Auto',
-                      style: TextStyle(color: Colors.blue),
+                  trailing: IconButton(
+                    icon: Icon(
+                      Icons.update,
+                      color: Colors.blue,
                     ),
-                    onTap: bloc.autoDate,
+                    onPressed: bloc.autoDate,
                   ),
                 ),
               ),
@@ -286,7 +285,7 @@ class EditFeedTemplate{
                 child: Chip(
                   backgroundColor: Colors.lightBlueAccent,
                   deleteIcon: Icon(Icons.close),
-                  onDeleted: (){
+                  onDeleted: () {
                     bloc.removeTag(index);
                   },
                   label: Text('# ' + snapshot.data.tagList[index]),
@@ -313,7 +312,7 @@ class EditFeedTemplate{
                 autofocus: true,
                 maxLength: 15,
                 decoration:
-                InputDecoration(labelText: '새 태그', hintText: '새 태그'),
+                    InputDecoration(labelText: '새 태그', hintText: '새 태그'),
               ),
             )
           ],
@@ -338,10 +337,10 @@ class EditFeedTemplate{
   }
 
   ///본문 내용
-  Widget buildContent(bloc){
+  Widget buildContent(bloc) {
     return StreamBuilder(
       stream: bloc.feedStream,
-      builder: (context, snapshot){
+      builder: (context, snapshot) {
         return Container(
           width: MediaQuery.of(context).size.width,
           padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 5.0),
@@ -359,7 +358,7 @@ class EditFeedTemplate{
   }
 
   ///업로드 버튼
-  Widget buildSubmit({context, onPressed}){
+  Widget buildSubmit({context, onPressed}) {
     return SizedBox(
       width: MediaQuery.of(context).size.width * 4 / 5,
       child: RaisedButton(

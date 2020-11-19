@@ -19,10 +19,11 @@ class _TimeLinePageState extends State<TimeLinePage> with AutomaticKeepAliveClie
   final ScrollController _scrollController = new ScrollController();
 
   @override
-  bool wantKeepAlive = false;
+  bool wantKeepAlive = true;
 
   @override
   void initState() {
+    super.initState();
     _bloc.fetchStart();
     _scrollController.addListener(_scrollListener);
   }
@@ -66,7 +67,7 @@ class _TimeLinePageState extends State<TimeLinePage> with AutomaticKeepAliveClie
     return _tags;
   }
 
-  Widget postCard(context, Post _post, int index) {
+  Widget postCard(context, Post _post, int index, String type) {
     String visit = '';
     if (_post.useVisit) {
       if (DateFormat('yyyy-MM-dd').format(_post.startDate) ==
@@ -85,7 +86,7 @@ class _TimeLinePageState extends State<TimeLinePage> with AutomaticKeepAliveClie
           Row(
             children: [
               Container(
-                width: MediaQuery.of(context).size.width * 15 / 20,
+                width: MediaQuery.of(context).size.width,
                 padding: EdgeInsets.symmetric(horizontal: 5.0),
                 child: ListTile(
                   leading: InkWell(
@@ -112,6 +113,7 @@ class _TimeLinePageState extends State<TimeLinePage> with AutomaticKeepAliveClie
                     onTap: () => goUserPage(context, _post.author),
                   ),
                   subtitle: Text(visit),
+                  trailing: type == 'TRAVEL' ? Icon(Icons.dynamic_feed) : Icon(Icons.airport_shuttle),
                 ),
               ),
             ],
@@ -161,7 +163,7 @@ class _TimeLinePageState extends State<TimeLinePage> with AutomaticKeepAliveClie
                   width: 10.0,
                 ),
                 Text(
-                  '123',
+                  _post.comments.toString(),
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ],
@@ -205,6 +207,7 @@ class _TimeLinePageState extends State<TimeLinePage> with AutomaticKeepAliveClie
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       appBar: BlankAppbar(),
       body: SingleChildScrollView(
@@ -252,7 +255,7 @@ class _TimeLinePageState extends State<TimeLinePage> with AutomaticKeepAliveClie
                               }
                             },
                             child: postCard(
-                                context, snapshot.data[index]['item'], index),
+                                context, snapshot.data[index]['item'], index, snapshot.data[index]['type']),
                           );
                         },
                       )

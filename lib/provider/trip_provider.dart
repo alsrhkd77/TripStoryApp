@@ -6,15 +6,15 @@ import 'package:trip_story/common/owner.dart';
 import 'package:trip_story/models/trip.dart';
 
 class TripProvider {
-  Future<Trip> fetchTripView(postId) async {
-    http.Response _response = await http.get(AddressBook.getTripView +
-        postId.toString() +
+  Future<Trip> fetchTripView(feedId) async {
+    http.Response _response = await http.get(AddressBook.tripView +
+        feedId.toString() +
         '/' +
         Owner().id.toString());
     var resData = jsonDecode(_response.body);
     var state = resData['result'];
     if (state == 'success') {
-      return new Trip().fromJSON(resData);
+      return new Trip().fromJson(resData);
     } else if (resData['errors'] != null) {
       throw Exception('Failed to load post view value\n${resData['errors']}');
     } else {
@@ -58,5 +58,19 @@ class TripProvider {
       }
     }
     return _result;
+  }
+
+  Future<String> removeTrip(feedId) async {
+    http.Response _response = await http.delete(AddressBook.tripView + feedId + '/' + Owner().id);
+    var resData = jsonDecode(_response.body);
+    if (resData['result'] == 'success') {
+      return 'success';
+    } else if (resData['errors'] != null) {
+      print('Failed to remove trip\n${resData['errors']}');
+      return resData['errors'].toString();
+    } else {
+      print('Failed to remove trip\nerrors=null');
+      return 'failed';
+    }
   }
 }

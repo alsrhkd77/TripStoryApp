@@ -48,7 +48,7 @@ class Post {
       this.tagList,
       this.imageList});
 
-  Post fromJSON(var value) {
+  Post fromJson(var value) {
     //Map result = jsonDecode(value);
     Map result;
     if (value.containsKey('postDetail')) {

@@ -31,13 +31,13 @@ class FeedHandler {
     }
   }
 
-  Future<Post> fetchFeedView(postId, type) async {
+  Future<Post> fetchFeedView(feedId, type) async {
     switch (type) {
       case 'post':
-        return await _postProvider.fetchPostView(postId);
+        return await _postProvider.fetchPostView(feedId);
         break;
       case 'trip':
-        return await _tripProvider.fetchTripView(postId);
+        return await _tripProvider.fetchTripView(feedId);
         break;
       default:
         throw Exception('Need request data type');
@@ -55,16 +55,27 @@ class FeedHandler {
     return _list;
   }
 
-  Future<void> sendLike(postId) async {
+  Future<void> sendLike(feedId) async {
     http.Response response = await http.post(AddressBook.setLike,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: jsonEncode({'postId': postId, 'memberId': Owner().id}));
+        body: jsonEncode({'postId': feedId, 'memberId': Owner().id}));
     var resData = jsonDecode(response.body);
   }
-
-  Future<Friend> fetchAuthorProfile(nickName) async {
-    return await _friendProvider.fetchProfile(nickName);
+  
+  Future<String> removeFeed(feedId, type) async {
+    switch (type) {
+      case 'post':
+        return await _postProvider.removePost(feedId);
+        break;
+      case 'trip':
+        return await _tripProvider.removeTrip(feedId);
+        break;
+      default:
+        throw Exception('Need request data type');
+        break;
+    }
   }
+
 }

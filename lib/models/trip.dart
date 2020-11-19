@@ -46,8 +46,8 @@ class Trip extends Post {
             imageList: imageList);
 
   @override
-  Trip fromJSON(var value) {
-    super.fromJSON(value);
+  Trip fromJson(var value) {
+    super.fromJson(value);
     Map result = value['travelPostInfo'];
 
     //마커 좌표

@@ -7,7 +7,7 @@ import 'package:trip_story/models/post.dart';
 import 'package:trip_story/models/trip.dart';
 
 class UserBloc {
-  Friend _friend;
+  Friend _friend = new Friend();
   List<Post> _postList;
   List<Trip> _tripList;
 
@@ -26,6 +26,7 @@ class UserBloc {
 
   UserBloc(){
     _feedCountBehavior.sink.add(0);
+    _profileBehavior.sink.add(_friend);
   }
 
   fetchAll(String nickName){
@@ -49,6 +50,20 @@ class UserBloc {
     _feedCountBehavior.sink.add(_postList.length + _tripList.length);
     _postBehavior.sink.add(_postList.reversed.toList());
     _tripBehavior.sink.add(_tripList.reversed.toList());
+  }
+
+  follow(String nickName){
+    _friendHandler.follow(nickName);
+    _friend.followed = true;
+    _friend.follower = _friend.follower + 1;
+    _profileBehavior.sink.add(_friend);
+  }
+
+  unfollow(String nickName){
+    _friendHandler.unfollow(nickName);
+    _friend.followed = false;
+    _friend.follower = _friend.follower - 1;
+    _profileBehavior.sink.add(_friend);
   }
 
   dispose(){

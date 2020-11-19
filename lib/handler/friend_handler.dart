@@ -18,8 +18,10 @@ class FriendHandler{
     }
   }
 
-  Future<Friend> fetchProfile(String nickName) async {
-    return await _friendProvider.fetchProfile(nickName);
-  }
+  Future<Friend> fetchProfile(String nickName) async => await _friendProvider.fetchProfile(nickName);
+
+  Future<void> follow(String nickName) async => await _friendProvider.follow(nickName);
+
+  Future<void> unfollow(String nickName) async => await _friendProvider.unfollow(nickName);
   
 }
