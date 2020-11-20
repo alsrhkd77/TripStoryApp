@@ -122,14 +122,18 @@ class FriendsPage extends StatelessWidget {
             return Text(snapshot.data, style: TextStyle(color: Colors.black87),);
           },),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            buildSearchBox(context),
-            buildFriendList(context),
-          ],
+      body: RefreshIndicator(
+        onRefresh: () => _bloc.fetchAllData(nickName, type),
+        child: SingleChildScrollView(
+          physics: AlwaysScrollableScrollPhysics(),
+          child: Column(
+            children: [
+              buildSearchBox(context),
+              buildFriendList(context),
+            ],
+          ),
         ),
-      )
+      ),
     );
   }
 }

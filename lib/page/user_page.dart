@@ -327,36 +327,40 @@ class _UserPageState extends State<UserPage>
           : AppBar(
               title: Text(_nickName),
             ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            buildProfileCard(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                IconButton(
-                  icon: Icon(Icons.apps),
-                  color: view == 'post' ? Colors.blueAccent : Colors.black12,
-                  onPressed: () {
-                    setState(() {
-                      view = 'post';
-                    });
-                  },
-                ),
-                IconButton(
-                  icon: Icon(Icons.assistant_navigation),
-                  color: view == 'trip' ? Colors.blueAccent : Colors.black12,
-                  onPressed: () {
-                    setState(() {
-                      view = 'trip';
-                    });
-                  },
-                ),
-              ],
-            ),
-            view == 'post' ? buildPost() : buildTrip(),
-          ],
+      body: RefreshIndicator(
+        onRefresh: () => _bloc.fetchAll(_nickName),
+        child: SingleChildScrollView(
+          physics: AlwaysScrollableScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              buildProfileCard(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.apps),
+                    color: view == 'post' ? Colors.blueAccent : Colors.black12,
+                    onPressed: () {
+                      setState(() {
+                        view = 'post';
+                      });
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.assistant_navigation),
+                    color: view == 'trip' ? Colors.blueAccent : Colors.black12,
+                    onPressed: () {
+                      setState(() {
+                        view = 'trip';
+                      });
+                    },
+                  ),
+                ],
+              ),
+              view == 'post' ? buildPost() : buildTrip(),
+            ],
+          ),
         ),
       ),
       floatingActionButton: this.widget.type == 'owner'

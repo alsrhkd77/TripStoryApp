@@ -36,6 +36,10 @@ class PlannerBloc {
     TravelPlan travelPlan = new TravelPlan();
     travelPlan.title = title;
     travelPlan.itinerary = itinerary;
+    for(int i=0; i<=travelPlan.itinerary.last.difference(travelPlan.itinerary.first).inDays; i++){
+      List temp = new List();
+      travelPlan.places.add(temp);
+    }
     _myPlans.add(travelPlan);
     myPlanBehavior.sink.add(_myPlans);
   }

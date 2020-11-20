@@ -11,7 +11,7 @@ class EditPostBloc {
   var feed;
   List<DateTime> _imgDate = [];
   String uploadState = '-';
-  var feedBehavior;
+  BehaviorSubject feedBehavior;
 
   Stream get feedStream => feedBehavior.stream;
 
@@ -117,6 +117,7 @@ class EditPostBloc {
     var request = new http.MultipartRequest("POST", Uri.parse(AddressBook.uploadPost));
     request.fields['author'] = Owner().id;
     request.fields['content'] = feed.content;
+    request.fields['scope'] = feed.scope.toUpperCase();
     if (feed.useVisit) {
       request.fields['visitStart'] = DateFormat('yyyy-MM-dd').format(feed.startDate);
       request.fields['visitEnd'] = DateFormat('yyyy-MM-dd').format(feed.endDate);
@@ -138,6 +139,7 @@ class EditPostBloc {
     var response = await (await request.send()).stream.bytesToString();
     var resData = jsonDecode(response);
     uploadState = resData['result'];
+    print(resData);
   }
 
   uploadEditFeed(){

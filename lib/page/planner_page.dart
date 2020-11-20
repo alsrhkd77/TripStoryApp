@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:reorderables/reorderables.dart';
@@ -63,10 +65,11 @@ class _PlannerPageState extends State<PlannerPage> {
                 elevation: 5.0,
                 child: ListTile(
                   onTap: () {
+                    print(snapshot.data);
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (BuildContext context) => EditPlanPage()));
+                            builder: (BuildContext context) => EditPlanPage(travelPlan: snapshot.data[index],)));
                   },
                   title: Text(snapshot.data[index].title),
                   subtitle: Text(DateFormat('yyyy. MM. dd')
@@ -98,7 +101,7 @@ class _PlannerPageState extends State<PlannerPage> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (BuildContext context) => EditPlanPage()));
+                    builder: (BuildContext context) => EditPlanPage(travelPlan: data[index],)));
           },
           title: Text(data[index].title),
           subtitle: Text(DateFormat('yyyy. MM. dd')
@@ -173,7 +176,7 @@ class _PlannerPageState extends State<PlannerPage> {
           initialLastDate: new DateTime.now(),
           firstDate: new DateTime(1945),
           lastDate: new DateTime.now().add(Duration(days: 1825)));
-      if (picked != null && picked.length == 2) {
+      if (picked != null && picked.length >= 2) {
         _picked = picked;
         _picked.sort();
         _bloc.addNewPlan(_title, _picked);

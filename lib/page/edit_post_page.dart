@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loading_animations/loading_animations.dart';
 import 'package:trip_story/blocs/edit_post_bloc.dart';
+import 'package:trip_story/common/common_table.dart';
 import 'package:trip_story/common/image_data.dart';
 import 'package:trip_story/main.dart';
 import 'package:trip_story/page/edit_feed_template.dart';
@@ -463,9 +464,7 @@ class _EditPostPageState extends State<EditPostPage> {
                           Icons.add_photo_alternate_outlined,
                           color: Colors.blue,
                         ),
-                        onPressed: () async {
-                          await addImage();
-                        },
+                        onPressed: addImage,
                       ),
                     );
                   } else {
@@ -546,7 +545,7 @@ class _EditPostPageState extends State<EditPostPage> {
                   Icons.add,
                   color: Colors.blue,
                 ),
-                onPressed: () => addImage(),
+                onPressed: addImage,
               );
             } else {
               return InkWell(
@@ -578,14 +577,18 @@ class _EditPostPageState extends State<EditPostPage> {
     if (image == null) {
       return;
     }
-    DateTime _imgDate = await ImageData.getImageDateTime(image.path);
-    _bloc.addImage(image.path, _imgDate);
-    /*
-    setState(() {
-      _pageController.animateToPage(snapshot.data.imageList.length - 1,
-          duration: Duration(milliseconds: 300), curve: Curves.decelerate);
-    });
-     */
+    //check image format
+    String check = image.path.toString().toUpperCase();
+    for(String type in CommonTable.imageFormat){
+      if(check.endsWith(type)){
+        DateTime _imgDate = await ImageData.getImageDateTime(image.path);
+        _bloc.addImage(image.path, _imgDate);
+        return;
+      }
+    }
+    _scaffoldKey.currentState.showSnackBar(SnackBar(
+      content: Text('지원하지 않는 이미지 형식 입니다.\n다른 이미지를 사용해주세요.'),
+    ));
   }
 
   @override

@@ -6,6 +6,7 @@ import 'package:trip_story/blocs/comment_bloc.dart';
 import 'package:trip_story/blocs/view_feed_bloc.dart';
 import 'package:trip_story/common/blank_appbar.dart';
 import 'package:trip_story/common/owner.dart';
+import 'package:trip_story/common/paged_image_view.dart';
 import 'package:trip_story/common/view_appbar.dart';
 import 'package:trip_story/main.dart';
 import 'package:trip_story/models/comment.dart';
@@ -29,6 +30,33 @@ class ViewPostPage extends StatelessWidget {
   }
 
   Future<void> removeFeed(context) async {
+    var check = await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('삭제'),
+            content: Text('정말 삭제하시겠습니까?\n삭제한 데이터는 복구할 수 없습니다.'),
+            actions: [
+              FlatButton(
+                child: Text('취소'),
+                  onPressed: () {
+                    Navigator.pop(context, 'Cancel');
+                  },
+              ),
+              FlatButton(
+                child: Text('삭제'),
+                onPressed: () {
+                  Navigator.pop(context, 'Ok');
+                },
+              ),
+            ],
+          );
+        });
+
+    if(check == 'Cancel'){
+      return;
+    }
+
     showDialog(
         context: context,
         barrierDismissible: false,
@@ -56,25 +84,24 @@ class ViewPostPage extends StatelessWidget {
           context,
           new MaterialPageRoute(
               builder: (BuildContext context) => MainStatefulWidget()),
-              (route) => false);
+          (route) => false);
     } else {
       showDialog(
-        context: context,
-        builder: (BuildContext context){
-          return AlertDialog(
-            title: Text('삭제 실패'),
-            content: Text(result),
-            actions: [
-              FlatButton(
-                child: Text('확인'),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          );
-        }
-      );
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('삭제 실패'),
+              content: Text(result),
+              actions: [
+                FlatButton(
+                  child: Text('확인'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            );
+          });
     }
   }
 
@@ -120,7 +147,7 @@ class ViewPostPage extends StatelessWidget {
               ],
               onSelected: (_value) {
                 print(_value);
-                if(_value == 1){
+                if (_value == 1) {
                   removeFeed(context);
                 }
               },
@@ -135,28 +162,10 @@ class ViewPostPage extends StatelessWidget {
       color: Colors.black,
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.width,
-      child: Stack(
-        children: [
-          PageView.builder(
-              itemCount: data.imageList.length,
-              itemBuilder: (_, i) {
-                return InkWell(
-                  child: Image.network(
-                    data.imageList[i],
-                    fit: BoxFit.contain,
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                NetworkImageViewPage(
-                                  url: data.imageList[i],
-                                )));
-                  },
-                );
-              }),
-        ],
+      child: PagedImageView(
+        list: data.imageList,
+        zoomAble: true,
+        fit: BoxFit.contain,
       ),
     );
   }
@@ -216,7 +225,7 @@ class ViewPostPage extends StatelessWidget {
     return StreamBuilder(
         stream: commentBloc.commentStream,
         builder: (context, snapshot) {
-          if(!snapshot.hasData){
+          if (!snapshot.hasData) {
             return Center(
               heightFactor: 2,
               child: LoadingBouncingGrid.square(
@@ -415,7 +424,8 @@ class ViewPostPage extends StatelessWidget {
                             commentBloc.addComment(commentTextController.text);
                             commentTextController.text = '';
                             feedBloc.addComment();
-                            FocusManager.instance.primaryFocus.unfocus();   //키보드 닫기
+                            FocusManager.instance.primaryFocus
+                                .unfocus(); //키보드 닫기
                           },
                         ),
                       )

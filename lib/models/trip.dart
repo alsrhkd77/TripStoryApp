@@ -65,7 +65,7 @@ class Trip extends Post {
       temp.comments = posts['comments'];
       temp.liked = posts['liked'];
       temp.likes = posts['likes'];
-      temp.imageList.add(posts['thunbnailImagePath']);
+      temp.imageList.add(posts['thumbnailImagePath']);
       this.postList.add(temp);
     }
 

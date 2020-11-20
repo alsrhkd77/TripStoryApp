@@ -8,39 +8,59 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:reorderables/reorderables.dart';
 import 'package:date_range_picker/date_range_picker.dart' as DateRagePicker;
+import 'package:trip_story/models/travel_plan.dart';
+import 'package:trip_story/page/search_place_page.dart';
 
 class EditPlanPage extends StatefulWidget {
+  final TravelPlan travelPlan;
+
+  const EditPlanPage({Key key, this.travelPlan}) : super(key: key);
+
   @override
   _EditPlanPageState createState() => _EditPlanPageState();
 }
 
 class _EditPlanPageState extends State<EditPlanPage> {
   final Completer<GoogleMapController> _controller = Completer();
-  List<DateTime> itinerary = new List();
   Set<Marker> _markers = Set();
-  List placeList = [
-    ['불국사', '석굴암', '경주월드', '보문단지', '펜션'],
-    ['펜션', '기차역', '대릉원']
-  ];
+  TravelPlan _travelPlan = new TravelPlan();
 
 
   @override
   void initState() {
-    itinerary.add(DateTime.now());
+    super.initState();
+    _travelPlan = this.widget.travelPlan;
   }
 
   static final _gwanghwamun = CameraPosition(
-      target: LatLng(37.575929, 126.976849), zoom: 19.151926040649414);
+      target: LatLng(37.575929, 126.976849), zoom: 11.151926040649414);
+
+  void _onReorder(int index, int oldIndex, int newIndex) {
+    setState(() {
+      final String item = _travelPlan.places[index].removeAt(oldIndex);
+      _travelPlan.places[index].insert(newIndex, item);
+    });
+  }
+
+  void buildMarker(){
+
+  }
+
+  void buildPolyLine(){}
+
+  void addPlace(value, index){
+    _travelPlan.places[index].add(value);
+  }
 
   List<Widget> buildPlaceList(int i) {
     List result = new List<Widget>();
-    for (int index = 0; index < placeList[i].length; index++) {
+    for (int index = 0; index < _travelPlan.places[i].length; index++) {
       Card temp = new Card(
         margin: EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
 
         child: ListTile(
           leading: Text('#${index + 1}'),
-          title: Text(placeList[i][index]),
+          title: Text(_travelPlan.places[i][index]['placeName']),
           trailing: IconButton(
             icon: Icon(Icons.remove, color: Colors.red,),
             onPressed: (){},
@@ -52,18 +72,11 @@ class _EditPlanPageState extends State<EditPlanPage> {
     return result;
   }
 
-  void _onReorder(int index, int oldIndex, int newIndex) {
-    setState(() {
-      final String item = placeList[index].removeAt(oldIndex);
-      placeList[index].insert(newIndex, item);
-    });
-  }
-
   Widget buildPlaces() {
     return ListView.builder(
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
-      itemCount: placeList.length,
+      itemCount: _travelPlan.places.length,
       itemBuilder: (context, index) {
         return Column(
           children: [
@@ -106,7 +119,17 @@ class _EditPlanPageState extends State<EditPlanPage> {
                           Icons.add,
                           color: Colors.blue,
                         ),
-                        onPressed: () async {},
+                        onPressed: () async {
+                          var value = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      SearchPlacePage()));
+                          print(value);
+                          if(value != null){
+                            addPlace(value, index);
+                          }
+                        },
                       ),
                     ),
                   ],
@@ -135,7 +158,7 @@ class _EditPlanPageState extends State<EditPlanPage> {
               padding: EdgeInsets.all(10.0),
               alignment: Alignment.centerLeft,
               child: Text(
-                '경주 여행!!',
+                _travelPlan.title,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25.0),
               ),
             ),
@@ -143,7 +166,7 @@ class _EditPlanPageState extends State<EditPlanPage> {
               padding: EdgeInsets.symmetric(horizontal: 25.0),
               alignment: Alignment.centerLeft,
               child: InkWell(
-                child: Text(DateFormat('yyyy. MM. dd').format(itinerary.first) + ' ~ ' + DateFormat('yyyy. MM. dd').format(itinerary.last)),
+                child: Text(DateFormat('yyyy. MM. dd').format(_travelPlan.itinerary.first) + ' ~ ' + DateFormat('yyyy. MM. dd').format(_travelPlan.itinerary.last)),
                 onTap: () async {
                   final List<DateTime> picked = await DateRagePicker.showDatePicker(
                       context: context,
@@ -152,10 +175,10 @@ class _EditPlanPageState extends State<EditPlanPage> {
                       firstDate: new DateTime(1945),
                       lastDate: new DateTime.now().add(Duration(days: 1825))
                   );
-                  if (picked != null && picked.length == 2) {
+                  if (picked != null && picked.length >= 2) {
                     setState(() {
-                      itinerary = picked;
-                      itinerary.sort();
+                      _travelPlan.itinerary = picked;
+                      _travelPlan.itinerary.sort();
                     });
                   }
                 },

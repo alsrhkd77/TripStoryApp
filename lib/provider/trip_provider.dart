@@ -61,7 +61,7 @@ class TripProvider {
   }
 
   Future<String> removeTrip(feedId) async {
-    http.Response _response = await http.delete(AddressBook.tripView + feedId + '/' + Owner().id);
+    http.Response _response = await http.delete(AddressBook.tripView + feedId.toString() + '/' + Owner().id);
     var resData = jsonDecode(_response.body);
     if (resData['result'] == 'success') {
       return 'success';

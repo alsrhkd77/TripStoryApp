@@ -12,7 +12,9 @@ import 'package:trip_story/blocs/view_feed_bloc.dart';
 import 'package:trip_story/common/address_book.dart';
 import 'package:trip_story/common/blank_appbar.dart';
 import 'package:trip_story/common/owner.dart';
+import 'package:trip_story/common/paged_image_view.dart';
 import 'package:trip_story/common/view_appbar.dart';
+import 'package:trip_story/models/post.dart';
 import 'package:trip_story/models/trip.dart';
 import 'package:trip_story/page/network_image_view_page.dart';
 import 'package:trip_story/page/view_post_page.dart';
@@ -70,21 +72,26 @@ class ViewTripPage extends ViewPostPage {
               builder: (context) {
                 return StatefulBuilder(
                     builder: (BuildContext context, StateSetter setState) {
+                      if (_place == null)
+                        getPlaceName(point).then((value) {
+                          setState(() {
+                            _place = value;
+                          });
+                        });
                   return Container(
                     height: MediaQuery.of(context).copyWith().size.height / 2,
                     child: Column(
                       children: [
                         Container(
-                          height:
-                              (MediaQuery.of(context).copyWith().size.height /
-                                      2) /
-                                  6,
+                          padding: EdgeInsets.all(12.0),
+                          height: (MediaQuery.of(context).copyWith().size.height / 2) / 6,
                           child: Text(
                             _place == null ? '위치 정보 없음' : _place,
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
                         Container(
+                          padding: EdgeInsets.all(12.0),
                           height:
                               (MediaQuery.of(context).copyWith().size.height /
                                       2) *
@@ -217,90 +224,6 @@ class ViewTripPage extends ViewPostPage {
                           height: 12.0,
                         ),
                         buildComment(),
-                        /*
-                        InkWell(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              CircleAvatar(
-                                radius: MediaQuery.of(context).size.width / 25,
-                                backgroundColor: Colors.blueAccent,
-                                child: CircleAvatar(
-                                  radius:
-                                      (MediaQuery.of(context).size.width / 25) -
-                                          1,
-                                  backgroundImage:
-                                      NetworkImage(Owner().profile),
-                                ),
-                              ),
-                              Container(
-                                padding:
-                                    EdgeInsets.fromLTRB(12.0, 0.0, 0.0, 0.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'User_id',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 12.0),
-                                    ),
-                                    Card(
-                                      child: Container(
-                                        width:
-                                            (MediaQuery.of(context).size.width *
-                                                    23 /
-                                                    25) -
-                                                40.0,
-                                        padding: EdgeInsets.all(8.0),
-                                        child: Text(
-                                          '이거슨 댓글 내용',
-                                          overflow: TextOverflow.clip,
-                                        ),
-                                      ),
-                                    ),
-                                    Text(
-                                      DateFormat('yy.MM.dd HH:mm')
-                                          .format(DateTime.now()),
-                                      style: TextStyle(
-                                          fontStyle: FontStyle.italic,
-                                          color: Colors.black38,
-                                          fontSize: 12.0),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                          onLongPress: () {
-                            showDialog(
-                                context: context,
-                                child: AlertDialog(
-                                  contentPadding: EdgeInsets.all(16.0),
-                                  title: Text('댓글 삭제'),
-                                  content: Text(
-                                      '해당 댓글을 삭제하시겠습니까?\n(삭제한 댓글은 복구할 수 없습니다)'),
-                                  actions: [
-                                    FlatButton(
-                                      child: Text('취소'),
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                    FlatButton(
-                                      child: Text('삭제'),
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                        feedBloc.removeComment();
-                                      },
-                                    )
-                                  ],
-                                ));
-                          },
-                        ),
-                        Divider(),
-                         */
                       ],
                     ),
                   ),
@@ -309,6 +232,111 @@ class ViewTripPage extends ViewPostPage {
             ),
           );
         });
+  }
+
+  Widget buildPostView(){
+    return StreamBuilder(
+      stream: feedBloc.feedStream,
+        builder: (context, snapshot){
+      return ListView.builder(
+        physics: NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: snapshot.data.postList.length,
+          itemBuilder: (context, index){
+            return postCard(context, snapshot.data.postList[index], index);
+      });
+    });
+  }
+
+  Widget postCard(context, Post _post, index){
+    return Column(
+      children: [
+        Container(
+          width: MediaQuery.of(context).size.width * 4 / 5,
+          height: MediaQuery.of(context).size.width * 4 / 5,
+          child: InkWell(
+            child: Card(
+              color: Colors.black,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              semanticContainer: true,
+              clipBehavior: Clip.antiAliasWithSaveLayer,
+              elevation: 2.0,
+              child: Stack(
+                fit: StackFit.passthrough,
+                children: [
+                  PagedImageView(
+                    list: _post.imageList,
+                    fit: BoxFit.cover,
+                    zoomAble: false,
+                  ),
+                  Positioned(
+                    child: Container(
+                      color: Color.fromRGBO(0, 0, 0, 80),
+                      width: MediaQuery.of(context).size.width * 4 / 5,
+                      child: ListTile(
+                        title: Row(
+                          children: [
+                            IconButton(
+                              icon: _post.liked
+                                  ? Icon(
+                                Icons.favorite,
+                                color: Colors.red,
+                              )
+                                  : Icon(
+                                Icons.favorite_border,
+                                color: Colors.white54,
+                              ),
+                              onPressed: () => feedBloc.tapPostLike(index),  //TODO: tap post like
+                            ),
+                            Text(
+                              _post.likes.toString(),
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white54,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 25.0,
+                            ),
+                            Icon(
+                              Icons.mode_comment_outlined,
+                              color: Colors.white54,
+                            ),
+                            SizedBox(
+                              width: 10.0,
+                            ),
+                            Text(
+                              _post.comments.toString(),
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white54,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    bottom: 0,
+                  ),
+                ],
+              ),
+            ),
+            onTap: () {
+              //TODO: connect post
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => ViewPostPage(feedId: _post.id, type: 'post',)));
+            },
+          ),
+        ),
+        SizedBox(
+          height: 20,
+        ),
+      ],
+    );
   }
 
   @override
@@ -402,93 +430,7 @@ class ViewTripPage extends ViewPostPage {
                       ),
                       Divider(),
 
-                      /*
-                Container(
-                  width: MediaQuery.of(context).size.width * 4 / 5,
-                  height: MediaQuery.of(context).size.width * 4 / 5,
-                  child: InkWell(
-                    child: Card(
-                      color: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      semanticContainer: true,
-                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                      elevation: 2.0,
-                      child: Stack(
-                        fit: StackFit.passthrough,
-                        children: [
-                          Image.network(
-                            snapshot.data.postList[0].imageList[0],
-                            fit: BoxFit.contain,
-                          ),
-                          Positioned(
-                            child: Container(
-                              color: Color.fromRGBO(0, 0, 0, 80),
-                              width: MediaQuery.of(context).size.width * 4 / 5,
-                              child: ListTile(
-                                title: Row(
-                                  children: [
-                                    IconButton(
-                                        icon: snapshot.data.postList[0].liked
-                                            ? Icon(
-                                          Icons.favorite,
-                                          color: Colors.red,
-                                        )
-                                            : Icon(
-                                          Icons.favorite_border,
-                                          color: Colors.white54,
-                                        ),
-                                        onPressed: bloc.tapLike(),  //TODO: tap post like
-                                    ),
-                                    Text(
-                                      '123',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white54,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 25.0,
-                                    ),
-                                    Icon(
-                                      Icons.mode_comment_outlined,
-                                      color: Colors.white54,
-                                    ),
-                                    SizedBox(
-                                      width: 10.0,
-                                    ),
-                                    Text(
-                                      '123',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white54,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            bottom: 0,
-                          ),
-                        ],
-                      ),
-                    ),
-                    onTap: () {
-                      //TODO: connect post
-                      /*
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (BuildContext context) => ViewPostPage()));
-                       */
-                    },
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                 */
+                      buildPostView(),
                     ],
                   ),
                 )

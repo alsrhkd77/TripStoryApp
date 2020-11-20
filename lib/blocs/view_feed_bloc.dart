@@ -3,8 +3,6 @@ import 'package:rxdart/rxdart.dart';
 import 'package:trip_story/handler/feed_handler.dart';
 import 'package:trip_story/handler/friend_handler.dart';
 import 'package:trip_story/models/friend.dart';
-import 'package:trip_story/models/post.dart';
-import 'package:trip_story/models/trip.dart';
 
 class ViewFeedBloc {
   var _feed;
@@ -46,18 +44,30 @@ class ViewFeedBloc {
     _feedBehavior.sink.add(_feed);
   }
 
-  addComment(){
+  tapPostLike(index) {
+    if (_feed.postList[index].liked) {
+      _feed.postList[index].likes--;
+      _feed.postList[index].liked = false;
+    } else {
+      _feed.postList[index].likes++;
+      _feed.postList[index].liked = true;
+    }
+    _feedHandler.sendLike(_feed.postList[index].id);
+    _feedBehavior.sink.add(_feed);
+  }
+
+  addComment() {
     _feed.comments++;
     _feedBehavior.sink.add(_feed);
   }
 
-  removeComment(){
+  removeComment() {
     _feed.comments--;
     _feedBehavior.sink.add(_feed);
   }
 
   Future<String> removeFeed() async {
-    if(_type == ''){
+    if (_type == '') {
       return '올바르지 않은 게시물 입니다.';
     }
     return await _feedHandler.removeFeed(_feed.id, _type);

@@ -8,6 +8,7 @@
 // ![](https://flutter.github.io/assets-for-api-docs/assets/material/scaffold_bottom_app_bar.png)
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:trip_story/Common/blank_appbar.dart';
 import 'package:trip_story/Common/owner.dart';
 import 'package:trip_story/page/blank_page.dart';
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     return MaterialApp(
       title: _title,
       home: LoginPage(),

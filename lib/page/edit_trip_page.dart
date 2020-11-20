@@ -12,11 +12,13 @@ import 'package:loading_animations/loading_animations.dart';
 import 'package:http/http.dart' as http;
 import 'package:trip_story/blocs/edit_trip_bloc.dart';
 import 'package:trip_story/common/address_book.dart';
+import 'package:trip_story/common/common_table.dart';
 import 'package:trip_story/common/custom_image.dart';
 import 'package:trip_story/common/image_data.dart';
 import 'package:trip_story/main.dart';
 import 'package:trip_story/models/post.dart';
 import 'package:trip_story/page/edit_feed_template.dart';
+import 'package:trip_story/page/select_post_page.dart';
 
 class EditTripPage extends StatefulWidget {
   @override
@@ -473,9 +475,7 @@ class _EditTripPageState extends State<EditTripPage> {
                     Icons.add_photo_alternate_outlined,
                     color: Colors.blue,
                   ),
-                  onPressed: () async {
-                    await addImage();
-                  },
+                  onPressed: addImage,
                 ),
               );
             } else {
@@ -608,28 +608,58 @@ class _EditTripPageState extends State<EditTripPage> {
     if (image == null) {
       return;
     }
-    Map<String, double> _imgLocation =
+
+    //check image format
+    String check = image.path.toString().toUpperCase();
+    for(String type in CommonTable.imageFormat){
+      if(check.endsWith(type)){
+        Map<String, double> _imgLocation =
         await ImageData.getImageLocation(image.path);
-    DateTime _imgDate = await ImageData.getImageDateTime(image.path);
+        DateTime _imgDate = await ImageData.getImageDateTime(image.path);
 
-    _bloc.addImage(image.path, _imgDate);
+        _bloc.addImage(image.path, _imgDate);
 
-    if (_imgLocation['none'] == 0.0 &&
-        _imgDate.compareTo(DateTime.now()) < 0 &&
-        _autoLocalImgMarker) {
-      addMarker(LatLng(_imgLocation['lat'], _imgLocation['lng']), _imgDate);
+        if (_imgLocation['none'] == 0.0 &&
+            _imgDate.compareTo(DateTime.now()) < 0 &&
+            _autoLocalImgMarker) {
+          addMarker(LatLng(_imgLocation['lat'], _imgLocation['lng']), _imgDate);
+        }
+        return;
+      }
     }
+    _scaffoldKey.currentState.showSnackBar(SnackBar(
+      content: Text('지원하지 않는 이미지 형식 입니다.\n다른 이미지를 사용해주세요.'),
+    ));
   }
 
-  void addPost() {
+  Future<void> addPost() async {
     setState(() {
       _scaffoldKey.currentState.hideCurrentSnackBar();
       _addingMarker = false;
     });
+
+    Post _post = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => SelectPostPage()));
+
+    if(_post != null){
+      for(String img in _post.imageList){
+        Map<String, double> _imgLocation =
+        await ImageData.getImageLocation(img);
+        DateTime _imgDate = await ImageData.getImageDateTime(img);
+
+        if (_imgLocation['none'] == 0.0 &&
+            _imgDate.compareTo(DateTime.now()) < 0 &&
+            _autoLocalImgMarker) {
+          addMarker(LatLng(_imgLocation['lat'], _imgLocation['lng']), _imgDate);
+        }
+      }
+      _bloc.addPost(_post);
+    }
     //TODO: 게시물 선택 화면
-    Post _post = new Post();
-    _post.makeSample();
-    _bloc.addPost(_post);
+    //Post _post = new Post();
+    //_post.makeSample();
   }
 
   Future<DateTime> pickDateTime() async {

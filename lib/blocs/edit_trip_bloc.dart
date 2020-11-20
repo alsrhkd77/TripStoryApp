@@ -10,10 +10,10 @@ import 'package:trip_story/common/address_book.dart';
 import 'package:trip_story/common/owner.dart';
 import 'package:trip_story/models/post.dart';
 import 'package:trip_story/models/trip.dart';
+import 'package:trip_story/provider/post_provider.dart';
 
 class EditTripBloc extends EditPostBloc {
   var feed;
-  var feedBehavior;
   final _polylineBehavior = BehaviorSubject<Set>();
 
   Stream<Set> get polylineStream => _polylineBehavior.stream;
@@ -111,22 +111,27 @@ class EditTripBloc extends EditPostBloc {
 
   @override
   uploadNewFeed() async {
-    var request = new http.MultipartRequest("POST", Uri.parse(AddressBook.uploadTrip));
+    var request = new http.MultipartRequest(
+        "POST", Uri.parse(AddressBook.uploadTrip));
     request.fields['author'] = Owner().id;
     request.fields['content'] = feed.content;
+    request.fields['scope'] = feed.scope.toUpperCase();
     if (feed.useVisit) {
-      request.fields['travelStart'] = DateFormat('yyyy-MM-dd').format(feed.startDate);
-      request.fields['travelEnd'] = DateFormat('yyyy-MM-dd').format(feed.endDate);
+      request.fields['travelStart'] =
+          DateFormat('yyyy-MM-dd').format(feed.startDate);
+      request.fields['travelEnd'] =
+          DateFormat('yyyy-MM-dd').format(feed.endDate);
     }
-    if(feed.useMaps){
-      for (LatLng k in feed.points.keys){
-        for(DateTime d in feed.points[k]){
+    if (feed.useMaps) {
+      for (LatLng k in feed.points.keys) {
+        for (DateTime d in feed.points[k]) {
           var temp = jsonEncode({
-            'lat' : k.latitude,
-            'lng' : k.longitude,
-            'passDate' : DateFormat('yyyy-MM-ddTHH:mm').format(d),
+            'lat': k.latitude,
+            'lng': k.longitude,
+            'passDate': DateFormat('yyyy-MM-ddTHH:mm').format(d),
           });
-          request.files.add(http.MultipartFile.fromString('courses', temp.toString()));
+          request.files.add(
+              http.MultipartFile.fromString('courses', temp.toString()));
         }
       }
     }
@@ -150,6 +155,7 @@ class EditTripBloc extends EditPostBloc {
     var response = await (await request.send()).stream.bytesToString();
     var resData = jsonDecode(response);
     uploadState = resData['result'];
+    print(resData);
   }
 
   @override

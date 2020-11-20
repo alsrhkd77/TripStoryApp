@@ -18,7 +18,7 @@ class TimelineBloc{
     loadingStateBehavior.sink.add(_loadingState);
   }
 
-  fetchStart() async {
+  Future<void> fetchStart() async {
     _offset = 0;
     List<Map> temp = await _viewFeedHandler.fetchTimeline(_offset, _offset + 5);
     _list = temp;

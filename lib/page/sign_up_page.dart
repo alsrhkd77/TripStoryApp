@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:loading_animations/loading_animations.dart';
 import 'package:http/http.dart' as http;
 import 'package:trip_story/common/address_book.dart';
-import 'package:trip_story/common/blank_appbar.dart';
 import 'package:trip_story/page/login_page.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -238,11 +237,11 @@ class _SignUpPageState extends State<SignUpPage> {
                         },
                         maxLength: 12,
                         decoration: InputDecoration(
-                            border: OutlineInputBorder(), labelText: 'ID', hintText: '4~12 Alphabet and Numbers.'),
+                            border: OutlineInputBorder(), labelText: 'ID', hintText: '6~12 Alphabet and Numbers.'),
                         validator: (value) {
                           if (value.isEmpty) {
                             return 'ID can\'t be empty!';
-                          } else if (!RegExp(r"^[A-Za-z0-9+]{4,12}$")
+                          } else if (!RegExp(r"^[A-Za-z0-9+]{6,12}$")
                               .hasMatch(value)) {
                             return 'Use only Alphabet and Numbers.';
                           }

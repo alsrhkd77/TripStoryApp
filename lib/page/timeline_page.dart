@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:loading_animations/loading_animations.dart';
 import 'package:trip_story/blocs/timeline_bloc.dart';
 import 'package:trip_story/common/blank_appbar.dart';
+import 'package:trip_story/common/paged_image_view.dart';
 import 'package:trip_story/models/post.dart';
 import 'package:trip_story/page/network_image_view_page.dart';
 import 'package:trip_story/page/user_page.dart';
@@ -122,18 +123,11 @@ class _TimeLinePageState extends State<TimeLinePage> with AutomaticKeepAliveClie
             color: Colors.black,
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.width,
-            child: Stack(
-              children: [
-                PageView.builder(
-                    itemCount: _post.imageList.length,
-                    itemBuilder: (_, i) {
-                      return Image.network(
-                        _post.imageList[i],
-                        fit: BoxFit.cover,
-                      );
-                    }),
-              ],
-            ),
+            child: PagedImageView(
+              list: _post.imageList,
+              fit: BoxFit.cover,
+              zoomAble: false,
+            )
           ),
 
           ///좋아요, 댓글, 작성일자
@@ -210,75 +204,78 @@ class _TimeLinePageState extends State<TimeLinePage> with AutomaticKeepAliveClie
     super.build(context);
     return Scaffold(
       appBar: BlankAppbar(),
-      body: SingleChildScrollView(
-        controller: _scrollController,
-        child: StreamBuilder(
-          stream: _bloc.loadingStream,
-          builder: (context, status){
-            return Column(
-              children: [
-                StreamBuilder(
-                    stream: _bloc.timelineStream,
-                    builder: (context, snapshot) {
-                      return snapshot.hasData
-                          ? ListView.separated(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: snapshot.data.length,
-                        separatorBuilder: (context, index) => Divider(
-                          color: Colors.black26,
-                        ),
-                        itemBuilder: (context, index) {
-                          return InkWell(
-                            onTap: () {
-                              if (snapshot.data[index]['type'] == 'NORMAL') {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            ViewPostPage(
-                                              feedId: snapshot
-                                                  .data[index]['item'].id,
-                                              type: 'post',
-                                            )));
-                              }
-                              if (snapshot.data[index]['type'] == 'TRAVEL') {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            ViewTripPage(
-                                              feedId: snapshot
-                                                  .data[index]['item'].id,
-                                              type: 'trip',
-                                            )));
-                              }
-                            },
-                            child: postCard(
-                                context, snapshot.data[index]['item'], index, snapshot.data[index]['type']),
-                          );
-                        },
-                      )
-                          : Center(
-                        heightFactor: 4,
-                        child: LoadingBouncingGrid.square(
-                          inverted: true,
-                          backgroundColor: Colors.blueAccent,
-                          size: 150.0,
-                        ),
-                      );
-                    }),
-                status.data != '-' ? Center(
-                  heightFactor: 2,
-                  child: LoadingBouncingGrid.square(
-                    inverted: true,
-                    backgroundColor: Colors.blueAccent,
-                    size: 80.0,
-                  ),
-                ) : SizedBox(height: 0.0,),
-              ],
-            );
-          },
+      body: RefreshIndicator(
+        onRefresh: _bloc.fetchStart,
+        child: SingleChildScrollView(
+          controller: _scrollController,
+          child: StreamBuilder(
+            stream: _bloc.loadingStream,
+            builder: (context, status){
+              return Column(
+                children: [
+                  StreamBuilder(
+                      stream: _bloc.timelineStream,
+                      builder: (context, snapshot) {
+                        return snapshot.hasData
+                            ? ListView.separated(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: snapshot.data.length,
+                          separatorBuilder: (context, index) => Divider(
+                            color: Colors.black26,
+                          ),
+                          itemBuilder: (context, index) {
+                            return InkWell(
+                              onTap: () {
+                                if (snapshot.data[index]['type'] == 'NORMAL') {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              ViewPostPage(
+                                                feedId: snapshot
+                                                    .data[index]['item'].id,
+                                                type: 'post',
+                                              )));
+                                }
+                                if (snapshot.data[index]['type'] == 'TRAVEL') {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              ViewTripPage(
+                                                feedId: snapshot
+                                                    .data[index]['item'].id,
+                                                type: 'trip',
+                                              )));
+                                }
+                              },
+                              child: postCard(
+                                  context, snapshot.data[index]['item'], index, snapshot.data[index]['type']),
+                            );
+                          },
+                        )
+                            : Center(
+                          heightFactor: 4,
+                          child: LoadingBouncingGrid.square(
+                            inverted: true,
+                            backgroundColor: Colors.blueAccent,
+                            size: 150.0,
+                          ),
+                        );
+                      }),
+                  status.data != '-' ? Center(
+                    heightFactor: 2,
+                    child: LoadingBouncingGrid.square(
+                      inverted: true,
+                      backgroundColor: Colors.blueAccent,
+                      size: 80.0,
+                    ),
+                  ) : SizedBox(height: 0.0,),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );

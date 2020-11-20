@@ -29,9 +29,9 @@ class UserBloc {
     _profileBehavior.sink.add(_friend);
   }
 
-  fetchAll(String nickName){
-    _fetchProfile(nickName);
-    _fetchFeed(nickName);
+  Future<void> fetchAll(String nickName) async {
+    await _fetchProfile(nickName);
+    await _fetchFeed(nickName);
   }
 
   _fetchProfile(String nickName) async {
