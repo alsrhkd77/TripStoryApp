@@ -11,6 +11,10 @@ import 'package:trip_story/models/post.dart';
 import 'package:trip_story/provider/post_provider.dart';
 
 class SelectPostPage extends StatefulWidget {
+  final selected;
+
+  const SelectPostPage({Key key, this.selected}) : super(key: key);
+
   @override
   _SelectPostPageState createState() => _SelectPostPageState();
 }
@@ -38,7 +42,18 @@ class _SelectPostPageState extends State<SelectPostPage> {
         for (var id in resData['posts']) {
           Post _post;
           _post = await _postProvider.fetchPostView(id);
-          _list.add(_post);
+          if(this.widget.selected.isEmpty){
+            _list.add(_post);
+          }else{
+            for(int i=0; i<this.widget.selected.length; i++){
+              if(this.widget.selected[i].id == _post.id){
+                break;
+              }
+              if(i == this.widget.selected.length - 1){
+                _list.add(_post);
+              }
+            }
+          }
         }
         setState(() {
           result['status'] = 'success';
@@ -109,6 +124,7 @@ class _SelectPostPageState extends State<SelectPostPage> {
                                                   Icons.favorite_border,
                                                   color: Colors.white54,
                                                 ),
+                                          onPressed: (){},
                                         ),
                                         Text(
                                           list[index].likes.toString(),

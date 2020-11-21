@@ -33,11 +33,11 @@ class ViewTripPage extends ViewPostPage {
   }
 
   static final _gwanghwamun = CameraPosition(
-      target: LatLng(37.575929, 126.976849), zoom: 19.151926040649414);
+      target: LatLng(37.575929, 126.976849), zoom: 11.151926040649414);
 
   Future<void> _goToTarget(LatLng pos) async {
     final GoogleMapController controller = await _controller.future;
-    CameraPosition targetPosition = CameraPosition(target: pos, zoom: 14.5);
+    CameraPosition targetPosition = CameraPosition(target: pos, zoom: 11.5);
     controller.animateCamera(CameraUpdate.newCameraPosition(targetPosition));
   }
 
@@ -425,7 +425,7 @@ class ViewTripPage extends ViewPostPage {
                           spacing: 10.0,
                           alignment: WrapAlignment.center,
                           direction: Axis.horizontal,
-                          children: buildTagChip(snapshot.data).toList(),
+                          children: buildTagChip(context, snapshot.data).toList(),
                         ),
                       ),
                       Divider(),

@@ -23,419 +23,6 @@ class _EditPostPageState extends State<EditPostPage> {
   final EditPostBloc _bloc = new EditPostBloc();
   final EditFeedTemplate _template = new EditFeedTemplate();
 
-  /*
-  ///공개범위 설정
-  Widget buildScope() {
-    return StreamBuilder(
-      stream: _bloc.feedStream,
-      builder: (context, snapshot) {
-        return Container(
-          padding: EdgeInsets.symmetric(horizontal: 8.0),
-          child: InkWell(
-            child: ListTile(
-              title: Text(
-                '공개 범위',
-                style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
-              ),
-              trailing: Wrap(
-                children: [
-                  Text(
-                    CommonTable.scope[snapshot.data.scope][0],
-                    style: TextStyle(
-                        fontStyle: FontStyle.italic, color: Colors.black45),
-                  ),
-                  Icon(CommonTable.scope[snapshot.data.scope][1]),
-                ],
-              ),
-            ),
-            onTap: () {
-              showModalBottomSheet(
-                shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.vertical(top: Radius.circular(25.0)),
-                ),
-                context: context,
-                builder: (context) {
-                  return Container(
-                    height: MediaQuery.of(context).size.height / 3,
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 8.0, vertical: 5.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(10.0),
-                          child: Text(
-                            '공개 범위 설정',
-                            style: TextStyle(
-                                fontSize: 20.0, fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        InkWell(
-                          child: ListTile(
-                            title: Wrap(
-                              spacing: 8.0,
-                              children: [
-                                Icon(Icons.public),
-                                Text('전체 공개'),
-                              ],
-                            ),
-                            trailing: snapshot.data.scope == 'public'
-                                ? Icon(
-                                    Icons.check,
-                                    color: Colors.green,
-                                  )
-                                : SizedBox(),
-                          ),
-                          onTap: () {
-                            _bloc.setScopePublic();
-                            Navigator.pop(context);
-                          },
-                        ),
-                        InkWell(
-                          child: ListTile(
-                            title: Wrap(
-                              spacing: 8.0,
-                              children: [
-                                Icon(Icons.group),
-                                Text('친구 공개'),
-                              ],
-                            ),
-                            trailing: snapshot.data.scope == 'friend'
-                                ? Icon(
-                                    Icons.check,
-                                    color: Colors.green,
-                                  )
-                                : SizedBox(),
-                          ),
-                          onTap: () {
-                            _bloc.setScopeFriend();
-                            Navigator.pop(context);
-                          },
-                        ),
-                        InkWell(
-                          child: ListTile(
-                            title: Wrap(
-                              spacing: 8.0,
-                              children: [
-                                Icon(Icons.lock),
-                                Text('비공개'),
-                              ],
-                            ),
-                            trailing: snapshot.data.scope == 'private'
-                                ? Icon(
-                                    Icons.check,
-                                    color: Colors.green,
-                                  )
-                                : SizedBox(),
-                          ),
-                          onTap: () {
-                            _bloc.setScopePrivate();
-                            Navigator.pop(context);
-                          },
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              );
-            },
-          ),
-        );
-      },
-    );
-  }
-
-  ///방문 날짜 설정
-  Widget buildDateTime() {
-    return StreamBuilder(
-      stream: _bloc.feedStream,
-      builder: (context, snapshot) {
-        return Column(
-          children: [
-            MergeSemantics(
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.symmetric(horizontal: 8.0),
-                child: ListTile(
-                  title: Text(
-                    '방문 날짜',
-                    style:
-                        TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
-                  ),
-                  trailing: Switch(
-                    value: snapshot.data.useVisit,
-                    onChanged: (bool value) {
-                      _bloc.setUseVisit(value);
-                    },
-                  ),
-                  onTap: _bloc.switchingUseVisit,
-                ),
-              ),
-            ),
-            AnimatedContainer(
-              padding: EdgeInsets.symmetric(horizontal: 30.0),
-              width: MediaQuery.of(context).size.width,
-              height: !snapshot.data.useVisit ? 0.0 : 60.0,
-              duration: Duration(milliseconds: 500),
-              curve: Curves.fastOutSlowIn,
-              child: MergeSemantics(
-                child: ListTile(
-                  //contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
-                  title: Wrap(
-                    children: [
-                      InkWell(
-                        child: Text(DateFormat('yyyy. MM. dd')
-                            .format(snapshot.data.startDate)),
-                        onTap: () {
-                          showModalBottomSheet(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return Container(
-                                height: MediaQuery.of(context)
-                                        .copyWith()
-                                        .size
-                                        .height /
-                                    3,
-                                child: CupertinoDatePicker(
-                                  initialDateTime: snapshot.data.startDate,
-                                  onDateTimeChanged: (DateTime picked) {
-                                    _bloc.setStartDate(picked);
-                                  },
-                                  maximumDate: snapshot.data.startDate
-                                              .compareTo(
-                                                  snapshot.data.endDate) >
-                                          0
-                                      ? DateTime.now()
-                                      : snapshot.data.endDate,
-                                  minimumYear: 1950,
-                                  mode: CupertinoDatePickerMode.date,
-                                ),
-                              );
-                            },
-                          );
-                        },
-                      ),
-                      Text('  ~  '),
-                      InkWell(
-                        child: Text(DateFormat('yyyy. MM. dd')
-                            .format(snapshot.data.endDate)),
-                        onTap: () {
-                          showModalBottomSheet(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return Container(
-                                height: MediaQuery.of(context)
-                                        .copyWith()
-                                        .size
-                                        .height /
-                                    3,
-                                child: CupertinoDatePicker(
-                                  initialDateTime: snapshot.data.startDate,
-                                  onDateTimeChanged: (DateTime picked) {
-                                    _bloc.setEndDate(picked);
-                                  },
-                                  maximumDate: DateTime.now(),
-                                  minimumDate: snapshot.data.startDate,
-                                  mode: CupertinoDatePickerMode.date,
-                                ),
-                              );
-                            },
-                          );
-                        },
-                      )
-                    ],
-                  ),
-                  trailing: InkWell(
-                    child: Text(
-                      'Auto',
-                      style: TextStyle(color: Colors.blue),
-                    ),
-                    onTap: _bloc.autoDate,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  ///태그 리스트
-  Widget buildTagView() {
-    return Column(
-      children: [
-        Container(
-          width: MediaQuery.of(context).size.width,
-          padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 10.0),
-          child: Text(
-            '# 태그',
-            style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
-          ),
-        ),
-        Container(
-          height: MediaQuery.of(context).size.width / 10,
-          child: makeTagList(),
-        ),
-      ],
-    );
-  }
-
-  Widget makeTagList() {
-    return StreamBuilder(
-      stream: _bloc.feedStream,
-      builder: (context, snapshot) {
-        return ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: snapshot.data.tagList.length + 1,
-          itemBuilder: (BuildContext context, int index) {
-            if (index == snapshot.data.tagList.length) {
-              return new IconButton(
-                padding: EdgeInsets.symmetric(horizontal: 25.0),
-                icon: Icon(
-                  Icons.add,
-                  color: Colors.blue,
-                ),
-                onPressed: addTag,
-              );
-            } else {
-              return Container(
-                margin: EdgeInsets.symmetric(horizontal: 5.0),
-                child: Chip(
-                  backgroundColor: Colors.lightBlueAccent,
-                  deleteIcon: Icon(Icons.close),
-                  onDeleted: (){
-                    _bloc.removeTag(index);
-                  },
-                  label: Text('# ' + snapshot.data.tagList[index]),
-                ),
-              );
-            }
-          },
-        );
-      },
-    );
-  }
-
-  void addTag() {
-    TextEditingController textEditingController = new TextEditingController();
-    showDialog(
-      context: context,
-      child: AlertDialog(
-        contentPadding: EdgeInsets.all(16.0),
-        content: Row(
-          children: [
-            Expanded(
-              child: TextField(
-                controller: textEditingController,
-                autofocus: true,
-                maxLength: 15,
-                decoration:
-                InputDecoration(labelText: '새 태그', hintText: '새 태그'),
-              ),
-            )
-          ],
-        ),
-        actions: [
-          FlatButton(
-            child: Text('취소'),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          FlatButton(
-            child: Text('추가'),
-            onPressed: () {
-              _bloc.addTag(textEditingController.text);
-              Navigator.pop(context);
-            },
-          )
-        ],
-      ),
-    );
-  }
-
-  ///본문 내용
-  Widget buildContent(){
-    return StreamBuilder(
-      stream: _bloc.feedStream,
-      builder: (context, snapshot){
-        return Container(
-          width: MediaQuery.of(context).size.width,
-          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 5.0),
-          child: TextField(
-            maxLines: 5,
-            maxLength: 25,
-            maxLengthEnforced: true,
-            onChanged: _bloc.changeContent,
-            decoration: InputDecoration(
-                hintText: '여행의 느낌을 알려주세요!', border: OutlineInputBorder()),
-          ),
-        );
-      },
-    );
-  }
-
-  ///업로드 버튼
-  Widget buildSubmit(){
-    return SizedBox(
-      width: MediaQuery.of(context).size.width * 4 / 5,
-      child: RaisedButton(
-        color: Colors.lightBlueAccent,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(18.0),
-        ),
-        child: Text(
-          '작성 완료',
-        ),
-        onPressed: () async {
-          if (_bloc.uploadAble()) {
-            _scaffoldKey.currentState.showSnackBar(SnackBar(
-              content: Text('태그와 이미지가 1개 이상 필요합니다.'),
-            ));
-            return;
-          }
-          showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (BuildContext context) {
-                return WillPopScope(
-                  onWillPop: () async => false,
-                  child: AlertDialog(
-                    title: Text('업로드 중입니다'),
-                    content: Container(
-                      padding: EdgeInsets.all(15.0),
-                      child: LoadingBouncingGrid.square(
-                        inverted: true,
-                        backgroundColor: Colors.blueAccent,
-                        size: 90.0,
-                      ),
-                    ),
-                  ),
-                );
-              });
-
-          await _bloc.submit();
-          Navigator.pop(context);
-          if (_bloc.getUploadState() == 'success') {
-            Navigator.pushAndRemoveUntil(
-                context,
-                new MaterialPageRoute(
-                    builder: (BuildContext context) =>
-                        MainStatefulWidget()),
-                    (route) => false);
-          } else {
-            _scaffoldKey.currentState.showSnackBar(SnackBar(
-              content: Text('업로드에 실패하였습니다.\n다시 시도해주세요.'),
-            ));
-          }
-        },
-      ),
-    );
-  }
-   */
-
   ///이미지 리스트
   Widget buildImageView() {
     return StreamBuilder(
@@ -450,34 +37,36 @@ class _EditPostPageState extends State<EditPostPage> {
                 itemCount: snapshot.data.imageList.length + 1,
                 itemBuilder: (_, i) {
                   if (i == snapshot.data.imageList.length) {
-                    return Container(
-                      margin: EdgeInsets.all(25.0),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          border:
-                              Border.all(width: 1.0, color: Colors.blueAccent),
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(25.0))),
-                      child: IconButton(
-                        //padding: EdgeInsets.symmetric(horizontal: 25.0),
-                        icon: Icon(
+                    return InkWell(
+                      child: Container(
+                        margin: EdgeInsets.all(25.0),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            border:
+                            Border.all(width: 1.0, color: Colors.blueAccent),
+                            borderRadius:
+                            BorderRadius.all(Radius.circular(25.0))),
+                        child: Icon(
                           Icons.add_photo_alternate_outlined,
                           color: Colors.blue,
                         ),
-                        onPressed: addImage,
                       ),
+                      onTap: addImage,
                     );
                   } else {
-                    return Container(
-                      decoration: BoxDecoration(
-                        color: Colors.black,
-                        image: DecorationImage(
-                          image: Image.file(
-                            File(snapshot.data.imageList[i]),
-                          ).image,
-                          fit: BoxFit.contain,
+                    return InkWell(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                          image: DecorationImage(
+                            image: Image.file(
+                              File(snapshot.data.imageList[i]),
+                            ).image,
+                            fit: BoxFit.contain,
+                          ),
                         ),
                       ),
+                      onTap: () => _bloc.removeImage(i),
                     );
                   }
                 },
@@ -577,15 +166,38 @@ class _EditPostPageState extends State<EditPostPage> {
     if (image == null) {
       return;
     }
+
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context){
+          return WillPopScope(
+            onWillPop: () async => false,
+            child: AlertDialog(
+              title: Text('이미지를 추가하는 중입니다'),
+              content: Container(
+                padding: EdgeInsets.all(15.0),
+                child: LoadingBouncingGrid.square(
+                  backgroundColor: Colors.blueAccent,
+                  size: 90.0,
+                ),
+              ),
+            ),
+          );
+        }
+    );
+
     //check image format
     String check = image.path.toString().toUpperCase();
     for(String type in CommonTable.imageFormat){
       if(check.endsWith(type)){
         DateTime _imgDate = await ImageData.getImageDateTime(image.path);
-        _bloc.addImage(image.path, _imgDate);
+        await _bloc.addImage(image.path, _imgDate);
+        Navigator.pop(context);
         return;
       }
     }
+    Navigator.pop(context);
     _scaffoldKey.currentState.showSnackBar(SnackBar(
       content: Text('지원하지 않는 이미지 형식 입니다.\n다른 이미지를 사용해주세요.'),
     ));

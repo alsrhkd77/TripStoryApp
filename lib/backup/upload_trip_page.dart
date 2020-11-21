@@ -40,7 +40,7 @@ class _UploadTripPageState extends State<UploadTripPage> {
   bool _autoPostImgMarker = true; //게시물 내 사진 자동 마커
 
   static final _gwanghwamun = CameraPosition(
-      target: LatLng(37.575929, 126.976849), zoom: 19.151926040649414);
+      target: LatLng(37.575929, 126.976849), zoom: 11.151926040649414);
 
   Future<String> getPlaceName(LatLng point) async {
     final response = await http.get(
@@ -566,7 +566,7 @@ class _UploadTripPageState extends State<UploadTripPage> {
 
   Future<void> _goToTarget(LatLng pos) async {
     final GoogleMapController controller = await _controller.future;
-    CameraPosition targetPosition = CameraPosition(target: pos, zoom: 14.5);
+    CameraPosition targetPosition = CameraPosition(target: pos, zoom: 11.5);
     controller.animateCamera(CameraUpdate.newCameraPosition(targetPosition));
   }
 

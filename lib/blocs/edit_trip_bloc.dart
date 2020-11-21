@@ -106,7 +106,18 @@ class EditTripBloc extends EditPostBloc {
 
   @override
   autoDate() {
-
+    super.autoDate();
+    List<Post> _list = feed.postList;
+    if(_list.isNotEmpty){
+      _list.sort((x, y) => x.startDate.compareTo(y.startDate));
+      if(_list.first.startDate.compareTo(feed.startDate) < 0){
+        setStartDate(_list.first.startDate);
+      }
+      _list.sort((x, y) => x.endDate.compareTo(y.endDate));
+      if(_list.first.startDate.compareTo(feed.endDate) > 0){
+        setEndDate(_list.first.endDate);
+      }
+    }
   }
 
   @override

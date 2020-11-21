@@ -12,6 +12,7 @@ import 'package:trip_story/main.dart';
 import 'package:trip_story/models/comment.dart';
 import 'package:trip_story/models/post.dart';
 import 'package:trip_story/page/network_image_view_page.dart';
+import 'package:trip_story/page/search_page.dart';
 
 // ignore: must_be_immutable
 class ViewPostPage extends StatelessWidget {
@@ -105,20 +106,25 @@ class ViewPostPage extends StatelessWidget {
     }
   }
 
-  List<Widget> buildTagChip(Post data) {
+  List<Widget> buildTagChip(context, Post data) {
     List<Widget> _tags = new List();
     for (String i in data.tagList) {
-      Chip _chip = new Chip(
-        elevation: 5.0,
-        shape: StadiumBorder(side: BorderSide(color: Colors.transparent)),
-        backgroundColor: Colors.transparent,
-        label: Text(
-          '# ' + i,
-          style: TextStyle(
-              fontSize: 12.0,
-              fontWeight: FontWeight.bold,
-              decoration: TextDecoration.underline),
+      InkWell _chip = new InkWell(
+        child: Chip(
+          elevation: 5.0,
+          shape: StadiumBorder(side: BorderSide(color: Colors.transparent)),
+          backgroundColor: Colors.transparent,
+          label: Text(
+            '# ' + i,
+            style: TextStyle(
+                fontSize: 12.0,
+                fontWeight: FontWeight.bold,
+                decoration: TextDecoration.underline),
+          ),
         ),
+        onTap: (){
+          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => SearchPage(type: 'sub', keyWord: i,)));
+        },
       );
       _tags.add(_chip);
     }
@@ -389,7 +395,7 @@ class ViewPostPage extends StatelessWidget {
                           spacing: 10.0,
                           alignment: WrapAlignment.center,
                           direction: Axis.horizontal,
-                          children: buildTagChip(snapshot.data).toList(),
+                          children: buildTagChip(context, snapshot.data).toList(),
                         ),
                       ),
                       Divider(),

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:loading_animations/loading_animations.dart';
 import 'package:trip_story/common/address_book.dart';
 import 'package:trip_story/common/owner.dart';
@@ -53,8 +54,48 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
   }
   
-  void sendChangeProfile(){
+  Future<void> sendChangeProfile() async {
     Navigator.pop(context);
+
+    var image = await ImagePicker().getImage(source: ImageSource.gallery);
+
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context){
+          return WillPopScope(
+            onWillPop: () async => false,
+            child: AlertDialog(
+              title: Text('변경 중입니다'),
+              content: Container(
+                padding: EdgeInsets.all(15.0),
+                child: LoadingBouncingGrid.square(
+                  backgroundColor: Colors.blueAccent,
+                  size: 90.0,
+                ),
+              ),
+            ),
+          );
+        }
+    );
+
+    var request = new http.MultipartRequest("PUT", Uri.parse(AddressBook.changeProfile));
+    request.fields['memberId'] = Owner().id;
+    request.files.add(await http.MultipartFile.fromPath('image', image.path));
+    var response = await (await request.send()).stream.bytesToString();
+    var resData = jsonDecode(response);
+
+    Navigator.pop(context);
+    print(resData);
+    if(resData['result'] == 'success'){
+      setState(() {
+        Owner().profile = resData['profileImagePath'];
+      });
+    }else if(resData['errors'] != null){
+      _showDialog('프로필 변경', '프로필 변경에 실패하였습니다.\n${resData['errors']}');
+    }else{
+      _showDialog('프로필 변경', '프로필 변경에 실패하였습니다.\n잠시후에 다시 시도해주세요.');
+    }
   }
 
   void sendDefaultProfile(){

@@ -39,7 +39,7 @@ class _EditTripPageState extends State<EditTripPage> {
   bool _addingMarker = false;
 
   static final _gwanghwamun = CameraPosition(
-      target: LatLng(37.575929, 126.976849), zoom: 19.151926040649414);
+      target: LatLng(37.575929, 126.976849), zoom: 11.151926040649414);
 
   Widget buildMap() {
     return StreamBuilder(
@@ -462,21 +462,20 @@ class _EditTripPageState extends State<EditTripPage> {
           itemCount: snapshot.data.imageList.length + 1,
           itemBuilder: (BuildContext context, int index) {
             if (index == snapshot.data.imageList.length) {
-              return Container(
-                width: MediaQuery.of(context).size.width / 2,
-                margin: EdgeInsets.all(5.0),
-                decoration: BoxDecoration(
-                  border: Border.all(width: 1.0, color: Colors.blueAccent),
-                  borderRadius: BorderRadius.all(Radius.circular(25.0))
-                ),
-                child: IconButton(
-                  //padding: EdgeInsets.symmetric(horizontal: 25.0),
-                  icon: Icon(
+              return InkWell(
+                child: Container(
+                  width: MediaQuery.of(context).size.width / 2,
+                  margin: EdgeInsets.all(5.0),
+                  decoration: BoxDecoration(
+                      border: Border.all(width: 1.0, color: Colors.blueAccent),
+                      borderRadius: BorderRadius.all(Radius.circular(25.0))
+                  ),
+                  child: Icon(
                     Icons.add_photo_alternate_outlined,
                     color: Colors.blue,
                   ),
-                  onPressed: addImage,
                 ),
+                onTap: addImage,
               );
             } else {
               return Container(
@@ -532,23 +531,22 @@ class _EditTripPageState extends State<EditTripPage> {
           itemCount: snapshot.data.postList.length + 1,
           itemBuilder: (BuildContext context, int index) {
             if (index == snapshot.data.postList.length) {
-              return Container(
-                width: MediaQuery.of(context).size.width / 2,
-                margin: EdgeInsets.all(5.0),
-                decoration: BoxDecoration(
-                    border: Border.all(width: 1.0, color: Colors.blueAccent),
-                    borderRadius: BorderRadius.all(Radius.circular(25.0))
-                ),
-                child: IconButton(
-                  //padding: EdgeInsets.symmetric(horizontal: 25.0),
-                  icon: Icon(
+              return InkWell(
+                child: Container(
+                  width: MediaQuery.of(context).size.width / 2,
+                  margin: EdgeInsets.all(5.0),
+                  decoration: BoxDecoration(
+                      border: Border.all(width: 1.0, color: Colors.blueAccent),
+                      borderRadius: BorderRadius.all(Radius.circular(25.0))
+                  ),
+                  child: Icon(
                     Icons.post_add,
                     color: Colors.blue,
                   ),
-                  onPressed: () async {
-                    await addPost();
-                  },
                 ),
+                onTap: () async {
+                  await addPost(snapshot.data.postList);
+                },
               );
             } else {
               return Container(
@@ -609,6 +607,26 @@ class _EditTripPageState extends State<EditTripPage> {
       return;
     }
 
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context){
+          return WillPopScope(
+            onWillPop: () async => false,
+            child: AlertDialog(
+              title: Text('이미지를 추가하는 중입니다'),
+              content: Container(
+                padding: EdgeInsets.all(15.0),
+                child: LoadingBouncingGrid.square(
+                  backgroundColor: Colors.blueAccent,
+                  size: 90.0,
+                ),
+              ),
+            ),
+          );
+        }
+    );
+
     //check image format
     String check = image.path.toString().toUpperCase();
     for(String type in CommonTable.imageFormat){
@@ -617,22 +635,24 @@ class _EditTripPageState extends State<EditTripPage> {
         await ImageData.getImageLocation(image.path);
         DateTime _imgDate = await ImageData.getImageDateTime(image.path);
 
-        _bloc.addImage(image.path, _imgDate);
+        await _bloc.addImage(image.path, _imgDate);
 
         if (_imgLocation['none'] == 0.0 &&
             _imgDate.compareTo(DateTime.now()) < 0 &&
             _autoLocalImgMarker) {
           addMarker(LatLng(_imgLocation['lat'], _imgLocation['lng']), _imgDate);
         }
+        Navigator.pop(context);
         return;
       }
     }
+    Navigator.pop(context);
     _scaffoldKey.currentState.showSnackBar(SnackBar(
       content: Text('지원하지 않는 이미지 형식 입니다.\n다른 이미지를 사용해주세요.'),
     ));
   }
 
-  Future<void> addPost() async {
+  Future<void> addPost(List selected) async {
     setState(() {
       _scaffoldKey.currentState.hideCurrentSnackBar();
       _addingMarker = false;
@@ -641,9 +661,29 @@ class _EditTripPageState extends State<EditTripPage> {
     Post _post = await Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (BuildContext context) => SelectPostPage()));
+            builder: (BuildContext context) => SelectPostPage(selected: selected,)));
 
     if(_post != null){
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context){
+            return WillPopScope(
+              onWillPop: () async => false,
+              child: AlertDialog(
+                title: Text('게시물을 추가하는 중입니다'),
+                content: Container(
+                  padding: EdgeInsets.all(15.0),
+                  child: LoadingBouncingGrid.square(
+                    backgroundColor: Colors.blueAccent,
+                    size: 90.0,
+                  ),
+                ),
+              ),
+            );
+          }
+      );
+
       for(String img in _post.imageList){
         Map<String, double> _imgLocation =
         await ImageData.getImageLocation(img);
@@ -655,7 +695,8 @@ class _EditTripPageState extends State<EditTripPage> {
           addMarker(LatLng(_imgLocation['lat'], _imgLocation['lng']), _imgDate);
         }
       }
-      _bloc.addPost(_post);
+      await _bloc.addPost(_post);
+      Navigator.pop(context);
     }
     //TODO: 게시물 선택 화면
     //Post _post = new Post();
@@ -760,7 +801,7 @@ class _EditTripPageState extends State<EditTripPage> {
 
   Future<void> _goToTarget(LatLng pos) async {
     final GoogleMapController controller = await _controller.future;
-    CameraPosition targetPosition = CameraPosition(target: pos, zoom: 14.5);
+    CameraPosition targetPosition = CameraPosition(target: pos, zoom: 11.5);
     controller.animateCamera(CameraUpdate.newCameraPosition(targetPosition));
   }
 

@@ -14,6 +14,9 @@ import 'package:trip_story/Common/owner.dart';
 import 'package:trip_story/page/blank_page.dart';
 import 'package:trip_story/page/edit_post_page.dart';
 import 'package:trip_story/page/login_page.dart';
+import 'package:trip_story/page/map_sample.dart';
+import 'package:trip_story/page/newsFeed_page.dart';
+import 'package:trip_story/page/search_page.dart';
 import 'package:trip_story/page/timeline_page.dart';
 import 'package:trip_story/page/user_page.dart';
 
@@ -51,19 +54,6 @@ class _MainStatefulWidgetState extends State<MainStatefulWidget>
   void initState() {
     super.initState();
     tabController = new TabController(length: 5, vsync: this);
-    Widget userPage = new UserPage(
-      nickName: Owner().nickName,
-      type: 'owner',
-    );
-    Widget tempPage = new TempPage();
-    Widget blankPage = new BlankPage();
-    _page = [
-      TimeLinePage(),
-      blankPage,
-      tempPage,
-      tempPage,
-      userPage,
-    ];
   }
 
   @override
@@ -80,9 +70,9 @@ class _MainStatefulWidgetState extends State<MainStatefulWidget>
         physics: NeverScrollableScrollPhysics(),
         children: [
           TimeLinePage(),
-          TempPage(),
+          SearchPage(type: 'main',),
           BlankPage(),
-          BlankPage(),
+          MapSample(),
           UserPage(type: 'owner', nickName: Owner().nickName,),
         ],
       ),

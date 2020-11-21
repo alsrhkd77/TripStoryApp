@@ -30,6 +30,7 @@ class _UserPageState extends State<UserPage>
   final UserBloc _bloc = new UserBloc();
   String view = 'post';
   String _nickName = '';
+  String _type = 'other';
 
   /*
   @override
@@ -43,7 +44,8 @@ class _UserPageState extends State<UserPage>
   @override
   void initState() {
     super.initState();
-    if (this.widget.type == 'owner') {
+    if(this.widget.nickName == null || this.widget.nickName == Owner().nickName){
+      _type = 'owner';
       _nickName = Owner().nickName;
       wantKeepAlive = true;
     } else {
@@ -142,7 +144,7 @@ class _UserPageState extends State<UserPage>
   }
 
   Widget buildFollowButton(Friend _friend) {
-    if (this.widget.type == 'owner') {
+    if (_type == 'owner') {
       return SizedBox(
         height: 35.0,
       );
@@ -179,7 +181,7 @@ class _UserPageState extends State<UserPage>
   }
 
   Widget buildProfileTop() {
-    if (this.widget.type == 'owner') {
+    if (_type == 'owner') {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -322,7 +324,7 @@ class _UserPageState extends State<UserPage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      appBar: this.widget.type == 'owner'
+      appBar: _type == 'owner'
           ? BlankAppbar()
           : AppBar(
               title: Text(_nickName),
@@ -363,7 +365,7 @@ class _UserPageState extends State<UserPage>
           ),
         ),
       ),
-      floatingActionButton: this.widget.type == 'owner'
+      floatingActionButton: _type == 'owner'
           ? FloatingActionButton.extended(
               heroTag: 'makeTrip',
               label: Text('여행 작성'),

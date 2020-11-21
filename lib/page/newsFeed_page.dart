@@ -16,7 +16,7 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
     print('해당 유저페이지로 이동');
   }
 
-  List<Widget> buildTagChip(List<String> tagList) {
+  List<Widget> buildTagChip(List tagList) {
     List<Widget> _tags = new List();
     for (String i in tagList) {
       Container _chip = new Container(
@@ -41,6 +41,7 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
 
   Widget type1(){
     Trip _trip = new Trip();
+    _trip.makeSample();
     int _index = 0;
     return Container(
       width: MediaQuery.of(context).size.width,
@@ -290,6 +291,7 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
 
   Widget type3(){
     Trip _trip = new Trip();
+    _trip.makeSample();
     int _index = 0;
 
     return Container(
@@ -388,7 +390,7 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
                 ],
               ),
               trailing: Text(
-                DateFormat('yy. MM. dd HH:mm').format(_trip.writeDate),
+                DateFormat('yy. MM. dd HH:mm').format(DateTime.now()),
                 style: TextStyle(
                     fontStyle: FontStyle.italic, color: Colors.black54, fontSize: 12.0),
               ),
@@ -422,6 +424,7 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
 
   Widget type4(){
     Trip _trip = new Trip();
+    _trip.makeSample();
     int _index = 0;
 
     return Container(
@@ -554,12 +557,13 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
   }
 
   Widget type5(){
-    Trip _trip = new Trip();
+    Trip _post = new Trip();
+    _post.makeSample();
     int _index = 0;
 
     return Container(
-      //width: MediaQuery.of(context).size.width * 19 / 20,
-      //padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+      //width: MediaQuery.of(context).size.width,
+      padding: EdgeInsets.symmetric(horizontal: 6.0, vertical: 4.0),
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0),
@@ -570,6 +574,7 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
         elevation: 3.0,
         child: Column(
           children: [
+            /*
             Row(
               children: [
                 Container(
@@ -596,21 +601,22 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
                 ),
               ],
             ),
+             */
 
             Container(
-              width: MediaQuery.of(context).size.width * 19 / 20,
-              height: MediaQuery.of(context).size.width * 19 / 20,
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.width,
               color: Colors.black,
               child: Stack(
                 children: [
                   PageView.builder(
                       onPageChanged: (int index) =>
                           setState(() => _index = index),
-                      itemCount: _trip.imageList.length,
+                      itemCount: _post.imageList.length,
                       itemBuilder: (_, i) {
                         return Image.network(
-                          _trip.imageList[i],
-                          fit: BoxFit.contain,
+                          _post.imageList[i],
+                          fit: BoxFit.cover,
                         );
                       }),
                   Positioned(
@@ -624,7 +630,7 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
                           title: Row(
                             children: [
                               IconButton(
-                                  icon: _trip.liked
+                                  icon: _post.liked
                                       ? Icon(
                                     Icons.favorite,
                                     color: Colors.red,
@@ -632,7 +638,7 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
                                       : Icon(Icons.favorite_border, color: Colors.white38,),
                                   onPressed: () {
                                     setState(() {
-                                      _trip.liked = !_trip.liked;
+                                      _post.liked = !_post.liked;
                                       //TODO: 좋아요 추가, 제거 서버에 요청
                                     });
                                   }),
@@ -655,7 +661,7 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
                             ],
                           ),
                           trailing: Text(
-                            DateFormat('yy. MM. dd HH:mm').format(_trip.writeDate),
+                            DateFormat('yy. MM. dd HH:mm').format(_post.writeDate),
                             style: TextStyle(
                                 fontStyle: FontStyle.italic, color: Colors.white38, fontSize: 12.0),
                           ),
@@ -667,10 +673,10 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
             ),
 
             /// 본문
-            _trip.content != ''
+            _post.content != ''
                 ? Container(
               padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-              child: Text(_trip.content, maxLines: 2, overflow: TextOverflow.ellipsis,),
+              child: Text(_post.content, maxLines: 2, overflow: TextOverflow.ellipsis,),
             )
                 : SizedBox(
               height: 0,
@@ -683,7 +689,7 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
               child: Wrap(
                 alignment: WrapAlignment.center,
                 direction: Axis.horizontal,
-                children: buildTagChip(_trip.tagList).toList(),
+                children: buildTagChip(_post.tagList).toList(),
               ),
             ),
             SizedBox(height: 5.0,)
@@ -704,10 +710,10 @@ class _NewsFeedPageState extends State<NewsFeedPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              type2(),
-              type2(),
-              type2(),
-              type2(),
+              type5(),
+              type5(),
+              type5(),
+              type5(),
             ],
           ),
         )

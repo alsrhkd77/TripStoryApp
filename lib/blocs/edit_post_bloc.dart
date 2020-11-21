@@ -58,9 +58,7 @@ class EditPostBloc {
 
   //방문 날짜 자동 업데이트
   autoDate(){
-    if (_imgDate.isEmpty) {
-      return;
-    } else {
+    if (_imgDate.isNotEmpty) {
       _imgDate.sort();
       if (_imgDate[0].compareTo(DateTime.now()) < 0) {
         setStartDate(_imgDate[0]);

@@ -11,6 +11,9 @@ class MapSample extends StatefulWidget {
 class MapSampleState extends State<MapSample> {
   Completer<GoogleMapController> _controller = Completer();
 
+  static final _gwanghwamun = CameraPosition(
+      target: LatLng(37.575929, 126.976849), zoom: 11.151926040649414);
+
   static final CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(37.42796133580664, -122.085749655962),
     zoom: 14.4746,
@@ -27,17 +30,12 @@ class MapSampleState extends State<MapSample> {
     return new Scaffold(
       body: Container(
         child: GoogleMap(
-          mapType: MapType.hybrid,
-          initialCameraPosition: _kGooglePlex,
+          mapType: MapType.normal,
+          initialCameraPosition: _gwanghwamun,
           onMapCreated: (GoogleMapController controller) {
             _controller.complete(controller);
           },
         ),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _goToTheLake,
-        label: Text('To the lake!'),
-        icon: Icon(Icons.directions_boat),
       ),
     );
   }

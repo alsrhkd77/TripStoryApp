@@ -6,6 +6,7 @@ import 'package:trip_story/common/blank_appbar.dart';
 import 'package:trip_story/common/paged_image_view.dart';
 import 'package:trip_story/models/post.dart';
 import 'package:trip_story/page/network_image_view_page.dart';
+import 'package:trip_story/page/search_page.dart';
 import 'package:trip_story/page/user_page.dart';
 import 'package:trip_story/page/view_post_page.dart';
 import 'package:trip_story/page/view_trip_page.dart';
@@ -48,20 +49,25 @@ class _TimeLinePageState extends State<TimeLinePage> with AutomaticKeepAliveClie
   List<Widget> buildTagChip(List tagList) {
     List<Widget> _tags = new List();
     for (String i in tagList) {
-      Container _chip = new Container(
-        padding: EdgeInsets.symmetric(horizontal: 5.0),
-        child: Chip(
-          elevation: 5.0,
-          shape: StadiumBorder(side: BorderSide(color: Colors.transparent)),
-          backgroundColor: Colors.transparent,
-          label: Text(
-            '# ' + i,
-            style: TextStyle(
-                fontSize: 12.0,
-                fontWeight: FontWeight.bold,
-                decoration: TextDecoration.underline),
+      InkWell _chip = new InkWell(
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 5.0),
+          child: Chip(
+            elevation: 5.0,
+            shape: StadiumBorder(side: BorderSide(color: Colors.transparent)),
+            backgroundColor: Colors.transparent,
+            label: Text(
+              '# ' + i,
+              style: TextStyle(
+                  fontSize: 12.0,
+                  fontWeight: FontWeight.bold,
+                  decoration: TextDecoration.underline),
+            ),
           ),
         ),
+        onTap: (){
+          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => SearchPage(type: 'sub', keyWord: i,)));
+        },
       );
       _tags.add(_chip);
     }
@@ -226,6 +232,8 @@ class _TimeLinePageState extends State<TimeLinePage> with AutomaticKeepAliveClie
                           ),
                           itemBuilder: (context, index) {
                             return InkWell(
+                              child: postCard(
+                                  context, snapshot.data[index]['item'], index, snapshot.data[index]['type']),
                               onTap: () {
                                 if (snapshot.data[index]['type'] == 'NORMAL') {
                                   Navigator.push(
@@ -250,8 +258,6 @@ class _TimeLinePageState extends State<TimeLinePage> with AutomaticKeepAliveClie
                                               )));
                                 }
                               },
-                              child: postCard(
-                                  context, snapshot.data[index]['item'], index, snapshot.data[index]['type']),
                             );
                           },
                         )
