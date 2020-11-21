@@ -8,7 +8,7 @@ import 'package:trip_story/handler/friend_handler.dart';
 import 'package:trip_story/models/friend.dart';
 import 'package:http/http.dart' as http;
 
-class FriendBloc{
+class FriendBloc {
   List<Friend> _friendList;
   Set<Friend> _result;
   String _searchWord;
@@ -20,26 +20,27 @@ class FriendBloc{
   final _titleBehavior = BehaviorSubject<String>();
 
   Stream<Set> get listStream => _listBehavior.stream;
+
   Stream<String> get textStream => _searchWordBehavior.stream;
+
   Stream<String> get titleStream => _titleBehavior.stream;
 
-  FriendBloc(){
+  FriendBloc() {
     _searchWord = '';
     _title = '';
     _titleBehavior.sink.add(_title);
     _searchWordBehavior.sink.add(_searchWord);
   }
 
-  searchFriend(String value){
+  searchFriend(String value) {
     _result.clear();
     _searchWord = value;
     _searchWordBehavior.sink.add(_searchWord);
     _listBehavior.sink.add(_result);
     _friendList.forEach((element) {
-      if(element.nickName.contains(value)){
+      if (element.nickName.contains(value)) {
         _result.add(element);
-      }
-      else if(element.name.contains(value)){
+      } else if (element.name.contains(value)) {
         _result.add(element);
       }
     });
@@ -47,7 +48,7 @@ class FriendBloc{
   }
 
   fetchAllData(String nickName, String type) async {
-    if(Owner().nickName == nickName){
+    if (Owner().nickName == nickName) {
       owner = true;
     }
     _result = new Set<Friend>();
@@ -62,13 +63,14 @@ class FriendBloc{
     _result.remove(friend);
     _friendList.remove(friend);
     _listBehavior.sink.add(_result);
-    http.Response response = await http.delete(AddressBook.friends + '/${Owner().id}/${friend.nickName}',
+    http.Response response = await http.delete(
+        AddressBook.friends + '/${Owner().id}/${friend.nickName}',
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         });
   }
 
-  dispose(){
+  dispose() {
     _listBehavior.close();
     _searchWordBehavior.close();
     _titleBehavior.close();

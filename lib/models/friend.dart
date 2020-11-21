@@ -1,6 +1,6 @@
 import 'package:trip_story/common/address_book.dart';
 
-class Friend{
+class Friend {
   String name = '';
   String nickName = '';
   String profile = AddressBook.defaultProfileUrl;
@@ -12,7 +12,7 @@ class Friend{
 
   Friend.init(this.name, this.nickName, this.profile);
 
-  Friend fromJson(value){
+  Friend fromJson(value) {
     this.name = value['name'];
     this.nickName = value['nickName'];
     this.profile = value['profileImagePath'];

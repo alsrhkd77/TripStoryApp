@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -25,7 +24,6 @@ class _EditPlanPageState extends State<EditPlanPage> {
   Set<Marker> _markers = Set();
   TravelPlan _travelPlan = new TravelPlan();
 
-
   @override
   void initState() {
     super.initState();
@@ -42,13 +40,11 @@ class _EditPlanPageState extends State<EditPlanPage> {
     });
   }
 
-  void buildMarker(){
+  void buildMarker() {}
 
-  }
+  void buildPolyLine() {}
 
-  void buildPolyLine(){}
-
-  void addPlace(value, index){
+  void addPlace(value, index) {
     _travelPlan.places[index].add(value);
   }
 
@@ -57,13 +53,15 @@ class _EditPlanPageState extends State<EditPlanPage> {
     for (int index = 0; index < _travelPlan.places[i].length; index++) {
       Card temp = new Card(
         margin: EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
-
         child: ListTile(
           leading: Text('#${index + 1}'),
           title: Text(_travelPlan.places[i][index]['placeName']),
           trailing: IconButton(
-            icon: Icon(Icons.remove, color: Colors.red,),
-            onPressed: (){},
+            icon: Icon(
+              Icons.remove,
+              color: Colors.red,
+            ),
+            onPressed: () {},
           ),
         ),
       );
@@ -126,7 +124,7 @@ class _EditPlanPageState extends State<EditPlanPage> {
                                   builder: (BuildContext context) =>
                                       SearchPlacePage()));
                           print(value);
-                          if(value != null){
+                          if (value != null) {
                             addPlace(value, index);
                           }
                         },
@@ -136,7 +134,9 @@ class _EditPlanPageState extends State<EditPlanPage> {
                 ),
               ),
             ),
-            SizedBox(height: 12.0,)
+            SizedBox(
+              height: 12.0,
+            )
           ],
         );
       },
@@ -149,7 +149,6 @@ class _EditPlanPageState extends State<EditPlanPage> {
       appBar: AppBar(
         title: Text('여행 일정'),
       ),
-
       body: SingleChildScrollView(
         padding: EdgeInsets.all(8.0),
         child: Column(
@@ -166,15 +165,20 @@ class _EditPlanPageState extends State<EditPlanPage> {
               padding: EdgeInsets.symmetric(horizontal: 25.0),
               alignment: Alignment.centerLeft,
               child: InkWell(
-                child: Text(DateFormat('yyyy. MM. dd').format(_travelPlan.itinerary.first) + ' ~ ' + DateFormat('yyyy. MM. dd').format(_travelPlan.itinerary.last)),
+                child: Text(DateFormat('yyyy. MM. dd')
+                        .format(_travelPlan.itinerary.first) +
+                    ' ~ ' +
+                    DateFormat('yyyy. MM. dd')
+                        .format(_travelPlan.itinerary.last)),
                 onTap: () async {
-                  final List<DateTime> picked = await DateRagePicker.showDatePicker(
-                      context: context,
-                      initialFirstDate: new DateTime.now(),
-                      initialLastDate: new DateTime.now(),
-                      firstDate: new DateTime(1945),
-                      lastDate: new DateTime.now().add(Duration(days: 1825))
-                  );
+                  final List<DateTime> picked =
+                      await DateRagePicker.showDatePicker(
+                          context: context,
+                          initialFirstDate: new DateTime.now(),
+                          initialLastDate: new DateTime.now(),
+                          firstDate: new DateTime(1945),
+                          lastDate:
+                              new DateTime.now().add(Duration(days: 1825)));
                   if (picked != null && picked.length >= 2) {
                     setState(() {
                       _travelPlan.itinerary = picked;

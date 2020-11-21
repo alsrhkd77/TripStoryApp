@@ -1,11 +1,11 @@
 import 'package:trip_story/models/friend.dart';
 import 'package:trip_story/provider/friend_provider.dart';
 
-class FriendHandler{
+class FriendHandler {
   final FriendProvider _friendProvider = FriendProvider();
 
   Future<List<Friend>> fetchAll(String nickName, String type) async {
-    switch(type){
+    switch (type) {
       case 'following':
         return await _friendProvider.fetchAllFollowing(nickName);
         break;
@@ -18,10 +18,12 @@ class FriendHandler{
     }
   }
 
-  Future<Friend> fetchProfile(String nickName) async => await _friendProvider.fetchProfile(nickName);
+  Future<Friend> fetchProfile(String nickName) async =>
+      await _friendProvider.fetchProfile(nickName);
 
-  Future<void> follow(String nickName) async => await _friendProvider.follow(nickName);
+  Future<void> follow(String nickName) async =>
+      await _friendProvider.follow(nickName);
 
-  Future<void> unfollow(String nickName) async => await _friendProvider.unfollow(nickName);
-  
+  Future<void> unfollow(String nickName) async =>
+      await _friendProvider.unfollow(nickName);
 }

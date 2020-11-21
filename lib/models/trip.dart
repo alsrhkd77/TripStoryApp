@@ -59,7 +59,7 @@ class Trip extends Post {
       points[latLng].add(DateTime.parse(point['passDate']));
     }
 
-    for (var posts in result['posts']){
+    for (var posts in result['posts']) {
       Post temp = new Post();
       temp.id = posts['postId'];
       temp.comments = posts['comments'];
@@ -69,10 +69,10 @@ class Trip extends Post {
       this.postList.add(temp);
     }
 
+    //방문날짜
     this.startDate = DateTime.parse(result['travelStart']); //방문 시작일
     this.endDate = DateTime.parse(result['travelEnd']); //방문 종료일
 
-    //방문날짜 사용 여부
     if (this.startDate == null || this.endDate == null) {
       this.useVisit = false;
     } else {
@@ -80,14 +80,5 @@ class Trip extends Post {
     }
 
     return this;
-  }
-
-  makeSample() {
-    super.makeSample();
-    for (int i = 0; i < 5; i++) {
-      Post t = new Post();
-      t.makeSample();
-      postList.add(t);
-    }
   }
 }

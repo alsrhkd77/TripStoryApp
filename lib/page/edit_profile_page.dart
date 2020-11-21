@@ -21,12 +21,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
   String editNickName = '-';
   String _memberNickName;
 
-  void changeProfile(context){
+  void changeProfile(context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0)), //this right here
           content: new Wrap(
             direction: Axis.vertical,
             spacing: 15.0,
@@ -35,7 +37,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width * 2 / 3,
                   height: 25.0,
-                  child: Text('기본 이미지로 설정하기', textAlign: TextAlign.center,),
+                  child: Text(
+                    '기본 이미지로 설정하기',
+                    textAlign: TextAlign.center,
+                  ),
                 ),
                 onTap: sendDefaultProfile,
               ),
@@ -43,7 +48,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width * 2 / 3,
                   height: 25.0,
-                  child: Text('갤러리에서 사진 선택하기', textAlign: TextAlign.center,),
+                  child: Text(
+                    '갤러리에서 사진 선택하기',
+                    textAlign: TextAlign.center,
+                  ),
                 ),
                 onTap: sendChangeProfile,
               ),
@@ -53,7 +61,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       },
     );
   }
-  
+
   Future<void> sendChangeProfile() async {
     Navigator.pop(context);
 
@@ -62,10 +70,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
     showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (BuildContext context){
+        builder: (BuildContext context) {
           return WillPopScope(
             onWillPop: () async => false,
             child: AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0)), //this right here
               title: Text('변경 중입니다'),
               content: Container(
                 padding: EdgeInsets.all(15.0),
@@ -76,10 +86,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
               ),
             ),
           );
-        }
-    );
+        });
 
-    var request = new http.MultipartRequest("PUT", Uri.parse(AddressBook.changeProfile));
+    var request =
+        new http.MultipartRequest("PUT", Uri.parse(AddressBook.changeProfile));
     request.fields['memberId'] = Owner().id;
     request.files.add(await http.MultipartFile.fromPath('image', image.path));
     var response = await (await request.send()).stream.bytesToString();
@@ -87,35 +97,39 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
     Navigator.pop(context);
     print(resData);
-    if(resData['result'] == 'success'){
+    if (resData['result'] == 'success') {
       setState(() {
         Owner().profile = resData['profileImagePath'];
       });
-    }else if(resData['errors'] != null){
+    } else if (resData['errors'] != null) {
       _showDialog('프로필 변경', '프로필 변경에 실패하였습니다.\n${resData['errors']}');
-    }else{
+    } else {
       _showDialog('프로필 변경', '프로필 변경에 실패하였습니다.\n잠시후에 다시 시도해주세요.');
     }
   }
 
-  void sendDefaultProfile(){
+  void sendDefaultProfile() {
     Navigator.pop(context);
+    _showDialog('프로필 변경', '프로필 변경에 실패하였습니다.\n잠시후에 다시 시도해주세요.');
   }
 
   Future<void> sendChangeNickName() async {
-    http.Response nickNameCheckResponse = await http.post(AddressBook.nickNameCheck,
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode({'memberNickName': _memberNickName}));
+    http.Response nickNameCheckResponse =
+        await http.post(AddressBook.nickNameCheck,
+            headers: <String, String>{
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: jsonEncode({'memberNickName': _memberNickName}));
     var nickNameCheckResult = jsonDecode(nickNameCheckResponse.body);
 
     if (nickNameCheckResult['result'] == "success") {
-      http.Response nickNameChangeResponse = await http.put(AddressBook.changeNickName,
+      http.Response nickNameChangeResponse = await http.put(
+          AddressBook.changeNickName,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
-          body: jsonEncode({'memberId' : Owner().id, 'memberNickName': _memberNickName}));
+          body: jsonEncode(
+              {'memberId': Owner().id, 'memberNickName': _memberNickName}));
 
       var nickNameChangeResult = jsonDecode(nickNameChangeResponse.body);
 
@@ -126,35 +140,41 @@ class _EditProfilePageState extends State<EditProfilePage> {
       } else {
         _showDialog('닉네임 변경', nickNameChangeResult['errors']);
       }
-    } else if(nickNameCheckResult['result'] == "duplicate"){
+    } else if (nickNameCheckResult['result'] == "duplicate") {
       Navigator.pop(context);
       _showDialog('닉네임 변경', '중복된 닉네임 입니다.');
-    }else {
+    } else {
       Navigator.pop(context);
       _showDialog('닉네임 변경', nickNameCheckResult['errors']);
     }
   }
 
-  Widget buildEditButton(){
-    if(editNickName == 'editing'){
+  Widget buildEditButton() {
+    if (editNickName == 'editing') {
       return Container(
         decoration: new BoxDecoration(
           color: Colors.greenAccent[400],
           borderRadius: new BorderRadius.circular(10.0),
         ),
         child: IconButton(
-          icon: Icon(Icons.check, color: Colors.white,),
+          icon: Icon(
+            Icons.check,
+            color: Colors.white,
+          ),
           onPressed: () async {
             final form = formKey.currentState;
-            if(form.validate()){
+            if (form.validate()) {
               form.save();
               showDialog(
                   context: context,
                   barrierDismissible: false,
-                  builder: (BuildContext context){
+                  builder: (BuildContext context) {
                     return WillPopScope(
                       onWillPop: () async => false,
                       child: AlertDialog(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0)),
+                        //this right here
                         title: Text('변경 중입니다'),
                         content: Container(
                           padding: EdgeInsets.all(15.0),
@@ -165,11 +185,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         ),
                       ),
                     );
-                  }
-              );
+                  });
               await sendChangeNickName();
-              if(nickNameUploadingState == 'success'){
-                FocusManager.instance.primaryFocus.unfocus();   //키보드 닫기
+              if (nickNameUploadingState == 'success') {
+                FocusManager.instance.primaryFocus.unfocus(); //키보드 닫기
                 setState(() {
                   editNickName = '-';
                 });
@@ -178,11 +197,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
           },
         ),
       );
-    }
-    else{
+    } else {
       return IconButton(
         icon: Icon(Icons.create),
-        onPressed: (){
+        onPressed: () {
           setState(() {
             editNickName = 'editing';
           });
@@ -197,6 +215,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0)), //this right here
           title: new Text(title),
           content: new Text(body),
           actions: <Widget>[
@@ -219,12 +239,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
         title: Text('내 프로필'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios),
-          onPressed: (){
+          onPressed: () {
             Navigator.pushAndRemoveUntil(
                 context,
                 new MaterialPageRoute(
                     builder: (BuildContext context) => MainStatefulWidget()),
-                    (route) => false);
+                (route) => false);
           },
         ),
       ),
@@ -232,18 +252,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
         child: Column(
           children: [
             Center(
-              child: Container(
-                padding: EdgeInsets.all(25.0),
+                child: Container(
+              padding: EdgeInsets.all(25.0),
+              child: CircleAvatar(
+                radius: MediaQuery.of(context).size.width / 4,
+                backgroundColor: Colors.blueAccent,
                 child: CircleAvatar(
-                  radius: MediaQuery.of(context).size.width / 4,
-                  backgroundColor: Colors.blueAccent,
-                  child: CircleAvatar(
-                    radius: (MediaQuery.of(context).size.width / 4) - 2.5,
-                    backgroundImage: NetworkImage(Owner().profile),
-                  ),
+                  radius: (MediaQuery.of(context).size.width / 4) - 2.5,
+                  backgroundImage: NetworkImage(Owner().profile),
                 ),
-              )
-            ),
+              ),
+            )),
             SizedBox(
               width: MediaQuery.of(context).size.width * 4 / 5,
               child: OutlineButton(
@@ -252,7 +271,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 onPressed: () => changeProfile(context),
               ),
             ),
-            SizedBox(height: 20.0,),
+            SizedBox(
+              height: 20.0,
+            ),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 8.0),
               child: ListTile(
@@ -272,29 +293,32 @@ class _EditProfilePageState extends State<EditProfilePage> {
             Container(
               padding: EdgeInsets.symmetric(horizontal: 8.0),
               child: ListTile(
-                  leading: Icon(Icons.account_circle),
-                  title: editNickName == 'editing' ? Form(
-                    key: formKey,
-                    child: TextFormField(
-                      maxLines: 1,
-                      initialValue: Owner().nickName,
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Nick name can\'t be empty!';
-                        } else if (!RegExp(r"^[ㄱ-ㅎ|ㅏ-ㅣ|가-힣A-Za-z0-9+]+$")
-                            .hasMatch(value)) {
-                          return 'Use only Alphabet and Numbers.';
-                        } else if (!RegExp(r"^[ㄱ-ㅎ|ㅏ-ㅣ|가-힣A-Za-z0-9+]{1,10}$")
-                            .hasMatch(value)) {
-                          return 'Must be between 1 and 10 characters';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) => _memberNickName = value,
-                    ),
-                  ) : Text(Owner().nickName),
-                  subtitle: editNickName == 'editing' ? null : Text('닉네임'),
-                  trailing: buildEditButton(),
+                leading: Icon(Icons.account_circle),
+                title: editNickName == 'editing'
+                    ? Form(
+                        key: formKey,
+                        child: TextFormField(
+                          maxLines: 1,
+                          initialValue: Owner().nickName,
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Nick name can\'t be empty!';
+                            } else if (!RegExp(r"^[ㄱ-ㅎ|ㅏ-ㅣ|가-힣A-Za-z0-9+]+$")
+                                .hasMatch(value)) {
+                              return 'Use only Alphabet and Numbers.';
+                            } else if (!RegExp(
+                                    r"^[ㄱ-ㅎ|ㅏ-ㅣ|가-힣A-Za-z0-9+]{1,10}$")
+                                .hasMatch(value)) {
+                              return 'Must be between 1 and 10 characters';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) => _memberNickName = value,
+                        ),
+                      )
+                    : Text(Owner().nickName),
+                subtitle: editNickName == 'editing' ? null : Text('닉네임'),
+                trailing: buildEditButton(),
               ),
             ),
           ],

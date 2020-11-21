@@ -22,15 +22,11 @@ import 'package:trip_story/page/view_post_page.dart';
 // ignore: must_be_immutable
 class ViewTripPage extends ViewPostPage {
   Completer<GoogleMapController> _controller = Completer();
-  Set<Marker> _markers = Set();
-  Set<Polyline> _polyLines = Set();
 
   final feedId;
 
   ViewTripPage({Key key, this.feedId, type})
-      : super(key: key, feedId: feedId, type: type) {
-    //feedBloc.fetchPost(feedId, type);
-  }
+      : super(key: key, feedId: feedId, type: type);
 
   static final _gwanghwamun = CameraPosition(
       target: LatLng(37.575929, 126.976849), zoom: 11.151926040649414);
@@ -49,7 +45,7 @@ class ViewTripPage extends ViewPostPage {
       var resData = jsonDecode(response.body);
       result = resData['results'][0]['formatted_address'];
     } else {
-      result = '${point.latitude},${point.longitude}';
+      result = '${point.latitude}, ${point.longitude}';
     }
     return result;
   }
@@ -72,19 +68,22 @@ class ViewTripPage extends ViewPostPage {
               builder: (context) {
                 return StatefulBuilder(
                     builder: (BuildContext context, StateSetter setState) {
-                      if (_place == null)
-                        getPlaceName(point).then((value) {
-                          setState(() {
-                            _place = value;
-                          });
-                        });
+                  if (_place == null)
+                    getPlaceName(point).then((value) {
+                      setState(() {
+                        _place = value;
+                      });
+                    });
                   return Container(
                     height: MediaQuery.of(context).copyWith().size.height / 2,
                     child: Column(
                       children: [
                         Container(
                           padding: EdgeInsets.all(12.0),
-                          height: (MediaQuery.of(context).copyWith().size.height / 2) / 6,
+                          height:
+                              (MediaQuery.of(context).copyWith().size.height /
+                                      2) /
+                                  6,
                           child: Text(
                             _place == null ? '위치 정보 없음' : _place,
                             style: TextStyle(fontWeight: FontWeight.bold),
@@ -177,14 +176,12 @@ class ViewTripPage extends ViewPostPage {
             height: MediaQuery.of(context).copyWith().size.height / 2,
             child: Column(
               children: [
+                ///댓글 작성
                 Container(
                   padding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0.0),
                   height:
                       (MediaQuery.of(context).copyWith().size.height / 2) / 6,
-                  child:
-
-                      ///댓글 작성
-                      ListTile(
+                  child: ListTile(
                     leading: CircleAvatar(
                       radius: MediaQuery.of(context).size.width / 25,
                       backgroundColor: Colors.blueAccent,
@@ -207,7 +204,7 @@ class ViewTripPage extends ViewPostPage {
                         commentBloc.addComment(_commentTextController.text);
                         _commentTextController.text = '';
                         feedBloc.addComment();
-                        FocusManager.instance.primaryFocus.unfocus();   //키보드 닫기
+                        FocusManager.instance.primaryFocus.unfocus(); //키보드 닫기
                       },
                     ),
                   ),
@@ -234,21 +231,21 @@ class ViewTripPage extends ViewPostPage {
         });
   }
 
-  Widget buildPostView(){
+  Widget buildPostView() {
     return StreamBuilder(
-      stream: feedBloc.feedStream,
-        builder: (context, snapshot){
-      return ListView.builder(
-        physics: NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        itemCount: snapshot.data.postList.length,
-          itemBuilder: (context, index){
-            return postCard(context, snapshot.data.postList[index], index);
-      });
-    });
+        stream: feedBloc.feedStream,
+        builder: (context, snapshot) {
+          return ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: snapshot.data.postList.length,
+              itemBuilder: (context, index) {
+                return postCard(context, snapshot.data.postList[index], index);
+              });
+        });
   }
 
-  Widget postCard(context, Post _post, index){
+  Widget postCard(context, Post _post, index) {
     return Column(
       children: [
         Container(
@@ -281,14 +278,15 @@ class ViewTripPage extends ViewPostPage {
                             IconButton(
                               icon: _post.liked
                                   ? Icon(
-                                Icons.favorite,
-                                color: Colors.red,
-                              )
+                                      Icons.favorite,
+                                      color: Colors.red,
+                                    )
                                   : Icon(
-                                Icons.favorite_border,
-                                color: Colors.white54,
-                              ),
-                              onPressed: () => feedBloc.tapPostLike(index),  //TODO: tap post like
+                                      Icons.favorite_border,
+                                      color: Colors.white54,
+                                    ),
+                              onPressed: () => feedBloc
+                                  .tapPostLike(index), //TODO: tap post like
                             ),
                             Text(
                               _post.likes.toString(),
@@ -324,11 +322,13 @@ class ViewTripPage extends ViewPostPage {
               ),
             ),
             onTap: () {
-              //TODO: connect post
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (BuildContext context) => ViewPostPage(feedId: _post.id, type: 'post',)));
+                      builder: (BuildContext context) => ViewPostPage(
+                            feedId: _post.id,
+                            type: 'post',
+                          )));
             },
           ),
         ),
@@ -403,6 +403,7 @@ class ViewTripPage extends ViewPostPage {
                               scrollGesturesEnabled: true,
                               rotateGesturesEnabled: false,
                               tiltGesturesEnabled: false,
+                              mapToolbarEnabled: false,
                               markers:
                                   addMarkers(context, snapshot.data.points),
                               polylines: updatePolyline(snapshot.data),
@@ -425,7 +426,8 @@ class ViewTripPage extends ViewPostPage {
                           spacing: 10.0,
                           alignment: WrapAlignment.center,
                           direction: Axis.horizontal,
-                          children: buildTagChip(context, snapshot.data).toList(),
+                          children:
+                              buildTagChip(context, snapshot.data).toList(),
                         ),
                       ),
                       Divider(),

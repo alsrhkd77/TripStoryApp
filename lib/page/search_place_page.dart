@@ -51,7 +51,7 @@ class _SearchPlacePageState extends State<SearchPlacePage> {
           });
     } else {
       String text = CommonTable.googlePlaceApiStatus[_status];
-      if(text == null){
+      if (text == null) {
         text = '검색 결과가 없습니다.';
       }
       return Center(
@@ -68,7 +68,8 @@ class _SearchPlacePageState extends State<SearchPlacePage> {
         child: Text('선택'),
         onPressed: () {
           Map value = new Map();
-          value['placeName'] = _placeList[index]['structured_formatting']['main_text'];
+          value['placeName'] =
+              _placeList[index]['structured_formatting']['main_text'];
           value['placeId'] = _placeList[index]['place_id'];
           Navigator.pop(context, value);
         },

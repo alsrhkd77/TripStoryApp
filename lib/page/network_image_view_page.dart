@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class NetworkImageViewPage extends StatefulWidget {
   final String url;
-  
+
   NetworkImageViewPage({this.url});
-  
+
   @override
   _NetworkImageViewPageState createState() => _NetworkImageViewPageState();
 }
@@ -20,7 +20,10 @@ class _NetworkImageViewPageState extends State<NetworkImageViewPage> {
       body: Center(
         child: InteractiveViewer(
           maxScale: 5.0,
-          child: Image.network(this.widget.url, fit: BoxFit.contain,),
+          child: Image.network(
+            this.widget.url,
+            fit: BoxFit.contain,
+          ),
         ),
       ),
     );

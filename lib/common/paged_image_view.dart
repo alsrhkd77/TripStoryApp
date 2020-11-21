@@ -6,6 +6,7 @@ class PagedImageView extends StatelessWidget {
   final List list;
   final bool zoomAble;
   final BoxFit fit;
+
   //final controller = PageController(viewportFraction: 0.8);
   final controller = PageController();
 
@@ -43,20 +44,24 @@ class PagedImageView extends StatelessWidget {
                 );
               }
             }),
-        list.length > 1 ? Container(
-          padding: EdgeInsets.all(8.0),
-          child: SmoothPageIndicator(
-            controller: controller,
-            count: list.length,
-            effect: WormEffect(
-              dotColor: Colors.white60,
-              activeDotColor: Colors.blue,
-              dotHeight: 6.0,
-              dotWidth: 6.0,
-              spacing: 10.0,
-            ),
-          ),
-        ) : SizedBox(height: 0.0,),
+        list.length > 1
+            ? Container(
+                padding: EdgeInsets.all(8.0),
+                child: SmoothPageIndicator(
+                  controller: controller,
+                  count: list.length,
+                  effect: WormEffect(
+                    dotColor: Colors.white60,
+                    activeDotColor: Colors.blue,
+                    dotHeight: 10.0,
+                    dotWidth: 10.0,
+                    spacing: 15.0,
+                  ),
+                ),
+              )
+            : SizedBox(
+                height: 0.0,
+              ),
       ],
     );
   }

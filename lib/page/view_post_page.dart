@@ -11,7 +11,6 @@ import 'package:trip_story/common/view_appbar.dart';
 import 'package:trip_story/main.dart';
 import 'package:trip_story/models/comment.dart';
 import 'package:trip_story/models/post.dart';
-import 'package:trip_story/page/network_image_view_page.dart';
 import 'package:trip_story/page/search_page.dart';
 
 // ignore: must_be_immutable
@@ -35,14 +34,16 @@ class ViewPostPage extends StatelessWidget {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0)), //this right here
             title: Text('삭제'),
             content: Text('정말 삭제하시겠습니까?\n삭제한 데이터는 복구할 수 없습니다.'),
             actions: [
               FlatButton(
                 child: Text('취소'),
-                  onPressed: () {
-                    Navigator.pop(context, 'Cancel');
-                  },
+                onPressed: () {
+                  Navigator.pop(context, 'Cancel');
+                },
               ),
               FlatButton(
                 child: Text('삭제'),
@@ -54,7 +55,7 @@ class ViewPostPage extends StatelessWidget {
           );
         });
 
-    if(check == 'Cancel'){
+    if (check == 'Cancel') {
       return;
     }
 
@@ -65,6 +66,8 @@ class ViewPostPage extends StatelessWidget {
           return WillPopScope(
             onWillPop: () async => false,
             child: AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0)), //this right here
               title: Text('게시물 삭제 중입니다'),
               content: Container(
                 padding: EdgeInsets.all(15.0),
@@ -91,6 +94,8 @@ class ViewPostPage extends StatelessWidget {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0)), //this right here
               title: Text('삭제 실패'),
               content: Text(result),
               actions: [
@@ -122,8 +127,14 @@ class ViewPostPage extends StatelessWidget {
                 decoration: TextDecoration.underline),
           ),
         ),
-        onTap: (){
-          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => SearchPage(type: 'sub', keyWord: i,)));
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => SearchPage(
+                        type: 'sub',
+                        keyWord: i,
+                      )));
         },
       );
       _tags.add(_chip);
@@ -310,6 +321,9 @@ class ViewPostPage extends StatelessWidget {
                   showDialog(
                       context: context,
                       child: AlertDialog(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0)),
+                        //this right here
                         contentPadding: EdgeInsets.all(16.0),
                         title: Text('댓글 삭제'),
                         content: Text('해당 댓글을 삭제하시겠습니까?\n(삭제한 댓글은 복구할 수 없습니다)'),
@@ -395,7 +409,8 @@ class ViewPostPage extends StatelessWidget {
                           spacing: 10.0,
                           alignment: WrapAlignment.center,
                           direction: Axis.horizontal,
-                          children: buildTagChip(context, snapshot.data).toList(),
+                          children:
+                              buildTagChip(context, snapshot.data).toList(),
                         ),
                       ),
                       Divider(),

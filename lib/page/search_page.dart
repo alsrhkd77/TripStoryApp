@@ -61,7 +61,6 @@ class _SearchPageState extends State<SearchPage>
           if (data['nickName'] != Owner().nickName) {
             Friend _friend = new Friend.init(
                 data['name'], data['nickName'], data['profileImagePath']);
-
             _list.add(_friend);
           }
         }
@@ -88,7 +87,6 @@ class _SearchPageState extends State<SearchPage>
           if (data['nickName'] != Owner().nickName) {
             Friend _friend = new Friend.init(
                 data['name'], data['nickName'], data['profileImagePath']);
-
             _list.add(_friend);
           }
         }
@@ -107,7 +105,6 @@ class _SearchPageState extends State<SearchPage>
   Future<void> getFeedWithTag(String value) async {
     http.Response _response =
         await http.get(AddressBook.searchFeedWithTag + value);
-    print(_response.body);
     if (_response.statusCode == 200) {
       var resData = jsonDecode(_response.body);
       if (resData['result'] == 'success') {
@@ -133,7 +130,6 @@ class _SearchPageState extends State<SearchPage>
   }
 
   Widget friendTile(Friend friend) {
-    //TODO: 본인 팔로잉에서만 수정버튼 보이기
     return InkWell(
       child: Container(
         width: MediaQuery.of(context).size.width,
@@ -205,7 +201,6 @@ class _SearchPageState extends State<SearchPage>
   Widget feedTemplate(Map item) {
     Post _post = item['item'];
     return Container(
-      //width: MediaQuery.of(context).size.width,
       padding: EdgeInsets.symmetric(horizontal: 6.0, vertical: 4.0),
       child: InkWell(
         child: Card(
@@ -229,15 +224,14 @@ class _SearchPageState extends State<SearchPage>
                       fit: BoxFit.cover,
                       zoomAble: false,
                     ),
+
+                    ///좋아요, 댓글, 작성일자
                     Positioned(
                       bottom: 0,
                       child: Container(
                         width: MediaQuery.of(context).size.width * 19 / 20,
                         color: Color.fromRGBO(0, 0, 0, 150),
-                        child:
-
-                            ///좋아요, 댓글, 작성일자
-                            ListTile(
+                        child: ListTile(
                           title: Row(
                             children: [
                               IconButton(
@@ -323,25 +317,25 @@ class _SearchPageState extends State<SearchPage>
             ],
           ),
         ),
-        onTap: (){
+        onTap: () {
           print(item['type']);
           if (item['type'] == 'NORMAL') {
             Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (BuildContext context) => ViewPostPage(
-                      feedId: _post.id,
-                      type: 'post',
-                    )));
+                          feedId: _post.id,
+                          type: 'post',
+                        )));
           }
           if (item['type'] == 'TRAVEL') {
             Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (BuildContext context) => ViewTripPage(
-                      feedId: _post.id,
-                      type: 'trip',
-                    )));
+                          feedId: _post.id,
+                          type: 'trip',
+                        )));
           }
         },
       ),
@@ -430,7 +424,6 @@ class _SearchPageState extends State<SearchPage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       appBar: _type == 'main'
           ? BlankAppbar()
           : AppBar(

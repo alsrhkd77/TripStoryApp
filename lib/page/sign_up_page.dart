@@ -36,6 +36,9 @@ class _SignUpPageState extends State<SignUpPage> {
             return WillPopScope(
               onWillPop: () async => false,
               child: AlertDialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0)),
+                //this right here
                 title: Text('잠시만 기다려주세요...'),
                 content: Container(
                   padding: EdgeInsets.all(15.0),
@@ -62,9 +65,9 @@ class _SignUpPageState extends State<SignUpPage> {
           idCheck = true;
         });
         _showDialog('ID 중복확인', '사용가능한 ID입니다.');
-      } else if(resData['result'] == "duplicate"){
+      } else if (resData['result'] == "duplicate") {
         _showDialog('ID 중복확인', '중복된 ID입니다.');
-      }else {
+      } else {
         _showDialog('ID 중복확인', resData['errors']);
       }
     } else {
@@ -85,6 +88,9 @@ class _SignUpPageState extends State<SignUpPage> {
             return WillPopScope(
               onWillPop: () async => false,
               child: AlertDialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0)),
+                //this right here
                 title: Text('잠시만 기다려주세요...'),
                 content: Container(
                   padding: EdgeInsets.all(15.0),
@@ -111,9 +117,9 @@ class _SignUpPageState extends State<SignUpPage> {
           nickNameCheck = true;
         });
         _showDialog('닉네임 중복확인', '사용가능한 닉네임 입니다.');
-      } else if(resData['result'] == "duplicate"){
+      } else if (resData['result'] == "duplicate") {
         _showDialog('닉네임 중복확인', '중복된 닉네임 입니다.');
-      }else {
+      } else {
         _showDialog('닉네임 중복확인', resData['errors']);
       }
     } else {
@@ -125,12 +131,12 @@ class _SignUpPageState extends State<SignUpPage> {
   Future<void> registration() async {
     final form = signUpFormKey.currentState;
 
-    if(!idCheck){
+    if (!idCheck) {
       _showDialog('회원가입', '회원가입에 실패하였습니다.\nID 중복체크를 먼저 진행하세요');
       return;
     }
 
-    if(!nickNameCheck){
+    if (!nickNameCheck) {
       _showDialog('회원가입', '회원가입에 실패하였습니다.\n닉네임 중복체크를 먼저 진행하세요');
       return;
     }
@@ -159,6 +165,8 @@ class _SignUpPageState extends State<SignUpPage> {
           builder: (BuildContext context) {
             // return object of type Dialog
             return AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0)), //this right here
               title: new Text('회원가입'),
               content: new Text('회원가입이 완료되었습니다.'),
               actions: <Widget>[
@@ -189,6 +197,8 @@ class _SignUpPageState extends State<SignUpPage> {
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0)), //this right here
           title: new Text(title),
           content: new Text(body),
           actions: <Widget>[
@@ -207,7 +217,9 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('회원가입'),),
+      appBar: AppBar(
+        title: Text('회원가입'),
+      ),
       body: Form(
         key: signUpFormKey,
         child: SingleChildScrollView(
@@ -217,7 +229,11 @@ class _SignUpPageState extends State<SignUpPage> {
               SizedBox(
                 height: 32.0,
               ),
-              Image.asset('images/logo.png', width: MediaQuery.of(context).size.width / 2, height: MediaQuery.of(context).size.width / 2,),
+              Image.asset(
+                'images/logo.png',
+                width: MediaQuery.of(context).size.width / 2,
+                height: MediaQuery.of(context).size.width / 2,
+              ),
               SizedBox(
                 height: 22.0,
               ),
@@ -237,7 +253,9 @@ class _SignUpPageState extends State<SignUpPage> {
                         },
                         maxLength: 12,
                         decoration: InputDecoration(
-                            border: OutlineInputBorder(), labelText: 'ID', hintText: '6~12 Alphabet and Numbers.'),
+                            border: OutlineInputBorder(),
+                            labelText: 'ID',
+                            hintText: '6~12 Alphabet and Numbers.'),
                         validator: (value) {
                           if (value.isEmpty) {
                             return 'ID can\'t be empty!';
@@ -279,7 +297,9 @@ class _SignUpPageState extends State<SignUpPage> {
                         },
                         maxLength: 10,
                         decoration: InputDecoration(
-                            border: OutlineInputBorder(), labelText: 'Nick Name', hintText: 'Use only Alphabet, Numbers, 한글.'),
+                            border: OutlineInputBorder(),
+                            labelText: 'Nick Name',
+                            hintText: 'Use only Alphabet, Numbers, 한글.'),
                         validator: (value) {
                           if (value.isEmpty) {
                             return 'Nick name can\'t be empty!';
@@ -339,7 +359,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   decoration: InputDecoration(
                       border: OutlineInputBorder(), labelText: 'Name'),
                   validator: (value) =>
-                  value.isEmpty ? 'Name can\'t be empty!' : null,
+                      value.isEmpty ? 'Name can\'t be empty!' : null,
                   onSaved: (value) => _memberName = value,
                 ),
               ),
@@ -354,7 +374,8 @@ class _SignUpPageState extends State<SignUpPage> {
                   validator: (value) {
                     if (value.isEmpty) {
                       return 'Email can\'t be empty';
-                    } else if (!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                    } else if (!RegExp(
+                            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
                         .hasMatch(value)) {
                       return 'Please write in the correct email format.';
                     }

@@ -20,11 +20,14 @@ class UserBloc {
   final BehaviorSubject _feedCountBehavior = new BehaviorSubject<int>();
 
   Stream get profileStream => _profileBehavior.stream;
+
   Stream get postStream => _postBehavior.stream;
+
   Stream get tripStream => _tripBehavior.stream;
+
   Stream get feedCountStream => _feedCountBehavior.stream;
 
-  UserBloc(){
+  UserBloc() {
     _feedCountBehavior.sink.add(0);
     _profileBehavior.sink.add(_friend);
   }
@@ -40,10 +43,10 @@ class UserBloc {
   }
 
   _fetchFeed(String nickName) async {
-    if(nickName == Owner().nickName){
+    if (nickName == Owner().nickName) {
       _postList = await _feedHandler.fetchPostList();
       _tripList = await _feedHandler.fetchTripList();
-    }else{
+    } else {
       _postList = await _feedHandler.fetchPostList(nickName);
       _tripList = await _feedHandler.fetchTripList(nickName);
     }
@@ -52,25 +55,24 @@ class UserBloc {
     _tripBehavior.sink.add(_tripList.reversed.toList());
   }
 
-  follow(String nickName){
+  follow(String nickName) {
     _friendHandler.follow(nickName);
     _friend.followed = true;
     _friend.follower = _friend.follower + 1;
     _profileBehavior.sink.add(_friend);
   }
 
-  unfollow(String nickName){
+  unfollow(String nickName) {
     _friendHandler.unfollow(nickName);
     _friend.followed = false;
     _friend.follower = _friend.follower - 1;
     _profileBehavior.sink.add(_friend);
   }
 
-  dispose(){
+  dispose() {
     _profileBehavior.close();
     _postBehavior.close();
     _tripBehavior.close();
     _feedCountBehavior.close();
   }
-
 }

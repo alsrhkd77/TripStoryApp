@@ -7,10 +7,8 @@ import 'package:trip_story/models/trip.dart';
 
 class TripProvider {
   Future<Trip> fetchTripView(feedId) async {
-    http.Response _response = await http.get(AddressBook.tripView +
-        feedId.toString() +
-        '/' +
-        Owner().id.toString());
+    http.Response _response = await http.get(
+        AddressBook.tripView + feedId.toString() + '/' + Owner().id.toString());
     var resData = jsonDecode(_response.body);
     var state = resData['result'];
     if (state == 'success') {
@@ -61,7 +59,8 @@ class TripProvider {
   }
 
   Future<String> removeTrip(feedId) async {
-    http.Response _response = await http.delete(AddressBook.tripView + feedId.toString() + '/' + Owner().id);
+    http.Response _response = await http
+        .delete(AddressBook.tripView + feedId.toString() + '/' + Owner().id);
     var resData = jsonDecode(_response.body);
     if (resData['result'] == 'success') {
       return 'success';

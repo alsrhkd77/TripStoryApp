@@ -1,21 +1,13 @@
-// This example shows a [Scaffold] with an [AppBar], a [BottomAppBar] and a
-// [FloatingActionButton]. The [body] is a [Text] placed in a [Center] in order
-// to center the text within the [Scaffold]. The [FloatingActionButton] is
-// centered and docked within the [BottomAppBar] using
-// [FloatingActionButtonLocation.centerDocked]. The [FloatingActionButton] is
-// connected to a callback that increments a counter.
-//
 // ![](https://flutter.github.io/assets-for-api-docs/assets/material/scaffold_bottom_app_bar.png)
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:trip_story/Common/blank_appbar.dart';
-import 'package:trip_story/Common/owner.dart';
+import 'package:trip_story/common/blank_appbar.dart';
+import 'package:trip_story/common/owner.dart';
 import 'package:trip_story/page/blank_page.dart';
 import 'package:trip_story/page/edit_post_page.dart';
 import 'package:trip_story/page/login_page.dart';
-import 'package:trip_story/page/map_sample.dart';
-import 'package:trip_story/page/newsFeed_page.dart';
+import 'package:trip_story/page/peripheral_search_page.dart';
 import 'package:trip_story/page/search_page.dart';
 import 'package:trip_story/page/timeline_page.dart';
 import 'package:trip_story/page/user_page.dart';
@@ -48,7 +40,6 @@ class MainStatefulWidget extends StatefulWidget {
 class _MainStatefulWidgetState extends State<MainStatefulWidget>
     with SingleTickerProviderStateMixin {
   TabController tabController;
-  List<Widget> _page = new List<Widget>();
 
   @override
   void initState() {
@@ -64,16 +55,22 @@ class _MainStatefulWidgetState extends State<MainStatefulWidget>
 
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: BlankAppbar(),
       body: TabBarView(
         controller: tabController,
         physics: NeverScrollableScrollPhysics(),
         children: [
           TimeLinePage(),
-          SearchPage(type: 'main',),
+          SearchPage(
+            type: 'main',
+          ),
           BlankPage(),
-          MapSample(),
-          UserPage(type: 'owner', nickName: Owner().nickName,),
+          PeripheralSearchPage(),
+          UserPage(
+            type: 'owner',
+            nickName: Owner().nickName,
+          ),
         ],
       ),
       bottomNavigationBar: BottomAppBar(
@@ -127,21 +124,6 @@ class _MainStatefulWidgetState extends State<MainStatefulWidget>
         child: Icon(Icons.add),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-    );
-  }
-}
-
-//임시 페이지
-class TempPage extends StatefulWidget {
-  @override
-  _TempPageState createState() => _TempPageState();
-}
-
-class _TempPageState extends State<TempPage> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Text('Hello World!'),
     );
   }
 }

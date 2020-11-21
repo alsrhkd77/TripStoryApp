@@ -3,15 +3,18 @@ import 'package:trip_story/models/travel_plan.dart';
 
 class PlannerBloc {
   List<TravelPlan> _myPlans = new List();
+
   //List<TravelPlan> _taggedPlans = new List();
 
   BehaviorSubject myPlanBehavior = new BehaviorSubject<List>();
+
   //BehaviorSubject taggedPlanBehavior = new BehaviorSubject<List>();
 
   Stream get myPlansStream => myPlanBehavior.stream;
+
   //Stream get taggedPlansStream => taggedPlanBehavior.stream;
 
-  PlannerBloc(){
+  PlannerBloc() {
     myPlanBehavior.sink.add(_myPlans);
     //taggedPlanBehavior.sink.add(_taggedPlans);
   }
@@ -31,12 +34,17 @@ class PlannerBloc {
     });
   }
 
-  addNewPlan(String title, List<DateTime> itinerary){
+  addNewPlan(String title, List<DateTime> itinerary) {
     //upload to server
     TravelPlan travelPlan = new TravelPlan();
     travelPlan.title = title;
     travelPlan.itinerary = itinerary;
-    for(int i=0; i<=travelPlan.itinerary.last.difference(travelPlan.itinerary.first).inDays; i++){
+    for (int i = 0;
+        i <=
+            travelPlan.itinerary.last
+                .difference(travelPlan.itinerary.first)
+                .inDays;
+        i++) {
       List temp = new List();
       travelPlan.places.add(temp);
     }
@@ -44,7 +52,7 @@ class PlannerBloc {
     myPlanBehavior.sink.add(_myPlans);
   }
 
-  onReorder(int oldIndex, int newIndex){
+  onReorder(int oldIndex, int newIndex) {
     if (newIndex > oldIndex) {
       newIndex -= 1;
     }
@@ -53,12 +61,12 @@ class PlannerBloc {
     myPlanBehavior.sink.add(_myPlans);
   }
 
-  removePlan(){
+  removePlan() {
     //upload to server
     myPlanBehavior.sink.add(_myPlans);
   }
 
-  dispose(){
+  dispose() {
     myPlanBehavior.close();
     //taggedPlanBehavior.close();
   }

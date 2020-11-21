@@ -63,7 +63,7 @@ class FeedHandler {
         body: jsonEncode({'postId': feedId, 'memberId': Owner().id}));
     var resData = jsonDecode(response.body);
   }
-  
+
   Future<String> removeFeed(feedId, type) async {
     switch (type) {
       case 'post':
@@ -77,5 +77,4 @@ class FeedHandler {
         break;
     }
   }
-
 }

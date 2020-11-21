@@ -10,7 +10,6 @@ import 'package:trip_story/common/address_book.dart';
 import 'package:trip_story/common/owner.dart';
 import 'package:trip_story/models/post.dart';
 import 'package:trip_story/models/trip.dart';
-import 'package:trip_story/provider/post_provider.dart';
 
 class EditTripBloc extends EditPostBloc {
   var feed;
@@ -18,27 +17,27 @@ class EditTripBloc extends EditPostBloc {
 
   Stream<Set> get polylineStream => _polylineBehavior.stream;
 
-  EditTripBloc(){
+  EditTripBloc() {
     feed = new Trip();
     feedBehavior = BehaviorSubject<Trip>();
     feedBehavior.sink.add(feed);
   }
 
-  switchingUseMaps(){
+  switchingUseMaps() {
     feed.useMaps = !feed.useMaps;
     feedBehavior.sink.add(feed);
   }
 
-  setUseMaps(bool value){
+  setUseMaps(bool value) {
     feed.useMaps = value;
     feedBehavior.sink.add(feed);
   }
 
-  bool addPoint(LatLng point, DateTime visit){
+  bool addPoint(LatLng point, DateTime visit) {
     bool result = true;
-    if(feed.points.containsKey(point)){
+    if (feed.points.containsKey(point)) {
       result = false;
-    }else{
+    } else {
       feed.points[point] = new List<DateTime>();
       result = true;
     }
@@ -48,13 +47,13 @@ class EditTripBloc extends EditPostBloc {
     return result;
   }
 
-  updatePointVisit(LatLng point, int index, DateTime visit){
+  updatePointVisit(LatLng point, int index, DateTime visit) {
     feed.points[point][index] = visit;
     feedBehavior.sink.add(feed);
     updatePolyline();
   }
 
-  removePointVisit(LatLng point, int index){
+  removePointVisit(LatLng point, int index) {
     feedBehavior.sink.add(feed);
     updatePolyline();
   }
@@ -67,7 +66,7 @@ class EditTripBloc extends EditPostBloc {
 
   ///경로
   updatePolyline() {
-    if(feed.points.length < 2){
+    if (feed.points.length < 2) {
       return;
     }
     Set<Polyline> _polylines = Set();
@@ -94,12 +93,12 @@ class EditTripBloc extends EditPostBloc {
     _polylineBehavior.sink.add(_polylines);
   }
 
-  addPost(Post post){
+  addPost(Post post) {
     feed.postList.add(post);
     feedBehavior.sink.add(feed);
   }
 
-  removePost(index){
+  removePost(index) {
     feed.postList.removeAt(index);
     feedBehavior.sink.add(feed);
   }
@@ -108,13 +107,13 @@ class EditTripBloc extends EditPostBloc {
   autoDate() {
     super.autoDate();
     List<Post> _list = feed.postList;
-    if(_list.isNotEmpty){
+    if (_list.isNotEmpty) {
       _list.sort((x, y) => x.startDate.compareTo(y.startDate));
-      if(_list.first.startDate.compareTo(feed.startDate) < 0){
+      if (_list.first.startDate.compareTo(feed.startDate) < 0) {
         setStartDate(_list.first.startDate);
       }
       _list.sort((x, y) => x.endDate.compareTo(y.endDate));
-      if(_list.first.startDate.compareTo(feed.endDate) > 0){
+      if (_list.first.startDate.compareTo(feed.endDate) > 0) {
         setEndDate(_list.first.endDate);
       }
     }
@@ -122,8 +121,8 @@ class EditTripBloc extends EditPostBloc {
 
   @override
   uploadNewFeed() async {
-    var request = new http.MultipartRequest(
-        "POST", Uri.parse(AddressBook.uploadTrip));
+    var request =
+        new http.MultipartRequest("POST", Uri.parse(AddressBook.uploadTrip));
     request.fields['author'] = Owner().id;
     request.fields['content'] = feed.content;
     request.fields['scope'] = feed.scope.toUpperCase();
@@ -141,8 +140,8 @@ class EditTripBloc extends EditPostBloc {
             'lng': k.longitude,
             'passDate': DateFormat('yyyy-MM-ddTHH:mm').format(d),
           });
-          request.files.add(
-              http.MultipartFile.fromString('courses', temp.toString()));
+          request.files
+              .add(http.MultipartFile.fromString('courses', temp.toString()));
         }
       }
     }
@@ -153,26 +152,17 @@ class EditTripBloc extends EditPostBloc {
       request.files.add(http.MultipartFile.fromString('tags', t));
     }
     for (Post p in feed.postList) {
-      request.files.add(
-          http.MultipartFile.fromString('posts', p.id.toString()));
+      request.files
+          .add(http.MultipartFile.fromString('posts', p.id.toString()));
     }
-    //request.fields['postTags'] = formData['memberEmail'];
-    /*
-    request.files.add(http.MultipartFile.fromString('postTags', 'value1'));
-    request.files.add(http.MultipartFile.fromString('postTags', 'value2'));
-    request.files.add(http.MultipartFile.fromString('postTags', 'value3'));
-     */
 
     var response = await (await request.send()).stream.bytesToString();
     var resData = jsonDecode(response);
     uploadState = resData['result'];
-    print(resData);
   }
 
   @override
-  uploadEditFeed() {
-
-  }
+  uploadEditFeed() {}
 
   @override
   dispose() {

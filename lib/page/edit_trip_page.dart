@@ -89,6 +89,7 @@ class _EditTripPageState extends State<EditTripPage> {
                                 scrollGesturesEnabled: true,
                                 rotateGesturesEnabled: false,
                                 tiltGesturesEnabled: false,
+                                mapToolbarEnabled: false,
                                 markers: _markers,
                                 polylines: polylineSnapshot.data,
                                 onTap: (LatLng point) async {
@@ -260,7 +261,6 @@ class _EditTripPageState extends State<EditTripPage> {
           markerId: MarkerId(point.toString()),
           position: point,
           onTap: () {
-            //TODO: Marker option
             String _place;
             setState(() {
               _scaffoldKey.currentState.hideCurrentSnackBar();
@@ -294,7 +294,6 @@ class _EditTripPageState extends State<EditTripPage> {
                                   fontSize: 25.0, fontWeight: FontWeight.bold),
                             ),
                           ),
-                          //SizedBox(height: 15.0,),
                           StreamBuilder(
                             builder: (context, snapshot) {
                               return Container(
@@ -338,7 +337,7 @@ class _EditTripPageState extends State<EditTripPage> {
                                                         .points[point][index]
                                                         .minute);
                                                 _bloc.updatePointVisit(
-                                                    point, index, visit);
+                                                    point, index, _visit);
                                               }
                                             },
                                           ),
@@ -354,7 +353,7 @@ class _EditTripPageState extends State<EditTripPage> {
                                                       initialTime:
                                                           TimeOfDay.now());
                                               if (time != null) {
-                                                DateTime visit = new DateTime(
+                                                DateTime _visit = new DateTime(
                                                     snapshot
                                                         .data
                                                         .points[point][index]
@@ -369,6 +368,8 @@ class _EditTripPageState extends State<EditTripPage> {
                                                         .day,
                                                     time.hour,
                                                     time.minute);
+                                                _bloc.updatePointVisit(
+                                                    point, index, _visit);
                                               }
                                             },
                                           ),
@@ -392,7 +393,6 @@ class _EditTripPageState extends State<EditTripPage> {
                               );
                             },
                           ),
-                          //SizedBox(height: 15.0,),
                           SizedBox(
                             width: MediaQuery.of(context).size.width * 2 / 3,
                             child: RaisedButton(
@@ -429,7 +429,6 @@ class _EditTripPageState extends State<EditTripPage> {
       _scaffoldKey.currentState.hideCurrentSnackBar();
       _addingMarker = false;
     });
-    //_bloc.updatePolyline();
     _goToTarget(point);
   }
 
@@ -468,8 +467,7 @@ class _EditTripPageState extends State<EditTripPage> {
                   margin: EdgeInsets.all(5.0),
                   decoration: BoxDecoration(
                       border: Border.all(width: 1.0, color: Colors.blueAccent),
-                      borderRadius: BorderRadius.all(Radius.circular(25.0))
-                  ),
+                      borderRadius: BorderRadius.all(Radius.circular(25.0))),
                   child: Icon(
                     Icons.add_photo_alternate_outlined,
                     color: Colors.blue,
@@ -484,14 +482,16 @@ class _EditTripPageState extends State<EditTripPage> {
                 child: InkWell(
                   onLongPress: () => _bloc.removeImage(index),
                   child: Card(
-                      color: Colors.black,
-                      elevation: 4.0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25.0),
-                      ),
-                      semanticContainer: true,
-                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                      child: Image.file(File(snapshot.data.imageList[index]),),
+                    color: Colors.black,
+                    elevation: 4.0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25.0),
+                    ),
+                    semanticContainer: true,
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    child: Image.file(
+                      File(snapshot.data.imageList[index]),
+                    ),
                   ),
                 ),
               );
@@ -537,8 +537,7 @@ class _EditTripPageState extends State<EditTripPage> {
                   margin: EdgeInsets.all(5.0),
                   decoration: BoxDecoration(
                       border: Border.all(width: 1.0, color: Colors.blueAccent),
-                      borderRadius: BorderRadius.all(Radius.circular(25.0))
-                  ),
+                      borderRadius: BorderRadius.all(Radius.circular(25.0))),
                   child: Icon(
                     Icons.post_add,
                     color: Colors.blue,
@@ -565,7 +564,9 @@ class _EditTripPageState extends State<EditTripPage> {
                     child: Stack(
                       children: [
                         Center(
-                          child: CustomImage(snapshot.data.postList[index].imageList[0]).image,
+                          child: CustomImage(
+                                  snapshot.data.postList[index].imageList[0])
+                              .image,
                         ),
                         Center(
                           child: Container(
@@ -610,10 +611,12 @@ class _EditTripPageState extends State<EditTripPage> {
     showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (BuildContext context){
+        builder: (BuildContext context) {
           return WillPopScope(
             onWillPop: () async => false,
             child: AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0)), //this right here
               title: Text('이미지를 추가하는 중입니다'),
               content: Container(
                 padding: EdgeInsets.all(15.0),
@@ -624,15 +627,14 @@ class _EditTripPageState extends State<EditTripPage> {
               ),
             ),
           );
-        }
-    );
+        });
 
     //check image format
     String check = image.path.toString().toUpperCase();
-    for(String type in CommonTable.imageFormat){
-      if(check.endsWith(type)){
+    for (String type in CommonTable.imageFormat) {
+      if (check.endsWith(type)) {
         Map<String, double> _imgLocation =
-        await ImageData.getImageLocation(image.path);
+            await ImageData.getImageLocation(image.path);
         DateTime _imgDate = await ImageData.getImageDateTime(image.path);
 
         await _bloc.addImage(image.path, _imgDate);
@@ -661,16 +663,21 @@ class _EditTripPageState extends State<EditTripPage> {
     Post _post = await Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (BuildContext context) => SelectPostPage(selected: selected,)));
+            builder: (BuildContext context) => SelectPostPage(
+                  selected: selected,
+                )));
 
-    if(_post != null){
+    if (_post != null) {
       showDialog(
           context: context,
           barrierDismissible: false,
-          builder: (BuildContext context){
+          builder: (BuildContext context) {
             return WillPopScope(
               onWillPop: () async => false,
               child: AlertDialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0)),
+                //this right here
                 title: Text('게시물을 추가하는 중입니다'),
                 content: Container(
                   padding: EdgeInsets.all(15.0),
@@ -681,12 +688,11 @@ class _EditTripPageState extends State<EditTripPage> {
                 ),
               ),
             );
-          }
-      );
+          });
 
-      for(String img in _post.imageList){
+      for (String img in _post.imageList) {
         Map<String, double> _imgLocation =
-        await ImageData.getImageLocation(img);
+            await ImageData.getImageLocation(img);
         DateTime _imgDate = await ImageData.getImageDateTime(img);
 
         if (_imgLocation['none'] == 0.0 &&
@@ -698,9 +704,6 @@ class _EditTripPageState extends State<EditTripPage> {
       await _bloc.addPost(_post);
       Navigator.pop(context);
     }
-    //TODO: 게시물 선택 화면
-    //Post _post = new Post();
-    //_post.makeSample();
   }
 
   Future<DateTime> pickDateTime() async {
@@ -712,6 +715,9 @@ class _EditTripPageState extends State<EditTripPage> {
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0)),
+              //this right here
               title: Text('방문 일시'),
               content: Wrap(
                 children: [
@@ -819,6 +825,8 @@ class _EditTripPageState extends State<EditTripPage> {
           return WillPopScope(
             onWillPop: () async => false,
             child: AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0)), //this right here
               title: Text('업로드 중입니다'),
               content: Container(
                 padding: EdgeInsets.all(15.0),
@@ -858,9 +866,7 @@ class _EditTripPageState extends State<EditTripPage> {
         child: Column(
           children: [
             _template.buildScope(_bloc), //공개 범위 설정
-            //buildScope(),
             _template.buildDateTime(_bloc), //방문 시간 설정
-            //buildDateTime(),
             buildMap(),
             buildImageList(),
             SizedBox(height: 15.0),
@@ -871,16 +877,13 @@ class _EditTripPageState extends State<EditTripPage> {
               context: context,
               bloc: _bloc,
             ),
-            //buildTagView(),
             SizedBox(height: 12.0),
             _template.buildContent(_bloc), //본문 내용
-            //buildContent(),
             _template.buildSubmit(
               //작성 완료 버튼
               context: context,
               onPressed: _submit,
             ),
-            //buildSubmit(),
             SizedBox(height: 12.0),
           ],
         ),

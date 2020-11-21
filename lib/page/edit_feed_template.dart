@@ -161,7 +161,6 @@ class EditFeedTemplate {
               curve: Curves.fastOutSlowIn,
               child: MergeSemantics(
                 child: ListTile(
-                  //contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
                   title: Wrap(
                     children: [
                       InkWell(
@@ -303,6 +302,8 @@ class EditFeedTemplate {
     showDialog(
       context: context,
       child: AlertDialog(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0)), //this right here
         contentPadding: EdgeInsets.all(16.0),
         content: Row(
           children: [
@@ -346,7 +347,7 @@ class EditFeedTemplate {
           padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 5.0),
           child: TextField(
             maxLines: 5,
-            maxLength: 25,
+            maxLength: 1000,
             maxLengthEnforced: true,
             onChanged: bloc.changeContent,
             decoration: InputDecoration(

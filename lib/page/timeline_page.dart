@@ -16,7 +16,8 @@ class TimeLinePage extends StatefulWidget {
   _TimeLinePageState createState() => _TimeLinePageState();
 }
 
-class _TimeLinePageState extends State<TimeLinePage> with AutomaticKeepAliveClientMixin {
+class _TimeLinePageState extends State<TimeLinePage>
+    with AutomaticKeepAliveClientMixin {
   final TimelineBloc _bloc = new TimelineBloc();
   final ScrollController _scrollController = new ScrollController();
 
@@ -35,13 +36,13 @@ class _TimeLinePageState extends State<TimeLinePage> with AutomaticKeepAliveClie
         context,
         MaterialPageRoute(
             builder: (BuildContext context) => UserPage(
-              nickName: nickName,
-              type: 'other',
-            )));
+                  nickName: nickName,
+                  type: 'other',
+                )));
   }
 
-  _scrollListener(){
-    if(_scrollController.position.extentAfter < 500){
+  _scrollListener() {
+    if (_scrollController.position.extentAfter < 500) {
       _bloc.fetchNext();
     }
   }
@@ -65,8 +66,14 @@ class _TimeLinePageState extends State<TimeLinePage> with AutomaticKeepAliveClie
             ),
           ),
         ),
-        onTap: (){
-          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => SearchPage(type: 'sub', keyWord: i,)));
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => SearchPage(
+                        type: 'sub',
+                        keyWord: i,
+                      )));
         },
       );
       _tags.add(_chip);
@@ -120,21 +127,22 @@ class _TimeLinePageState extends State<TimeLinePage> with AutomaticKeepAliveClie
                     onTap: () => goUserPage(context, _post.author),
                   ),
                   subtitle: Text(visit),
-                  trailing: type == 'TRAVEL' ? Icon(Icons.dynamic_feed) : Icon(Icons.airport_shuttle),
+                  trailing: type == 'TRAVEL'
+                      ? Icon(Icons.dynamic_feed)
+                      : Icon(Icons.airport_shuttle),
                 ),
               ),
             ],
           ),
           Container(
-            color: Colors.black,
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.width,
-            child: PagedImageView(
-              list: _post.imageList,
-              fit: BoxFit.cover,
-              zoomAble: false,
-            )
-          ),
+              color: Colors.black,
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.width,
+              child: PagedImageView(
+                list: _post.imageList,
+                fit: BoxFit.cover,
+                zoomAble: false,
+              )),
 
           ///좋아요, 댓글, 작성일자
           ListTile(
@@ -143,9 +151,9 @@ class _TimeLinePageState extends State<TimeLinePage> with AutomaticKeepAliveClie
                 IconButton(
                     icon: _post.liked
                         ? Icon(
-                      Icons.favorite,
-                      color: Colors.red,
-                    )
+                            Icons.favorite,
+                            color: Colors.red,
+                          )
                         : Icon(Icons.favorite_border),
                     onPressed: () {
                       _bloc.tapLike(index);
@@ -180,16 +188,16 @@ class _TimeLinePageState extends State<TimeLinePage> with AutomaticKeepAliveClie
           /// 본문
           _post.content != ''
               ? Container(
-            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 10.0),
-            child: Text(
-              _post.content,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-          )
+                  padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 10.0),
+                  child: Text(
+                    _post.content,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                )
               : SizedBox(
-            height: 0,
-          ),
+                  height: 0,
+                ),
 
           ///태그
           Container(
@@ -216,7 +224,7 @@ class _TimeLinePageState extends State<TimeLinePage> with AutomaticKeepAliveClie
           controller: _scrollController,
           child: StreamBuilder(
             stream: _bloc.loadingStream,
-            builder: (context, status){
+            builder: (context, status) {
               return Column(
                 children: [
                   StreamBuilder(
@@ -224,60 +232,75 @@ class _TimeLinePageState extends State<TimeLinePage> with AutomaticKeepAliveClie
                       builder: (context, snapshot) {
                         return snapshot.hasData
                             ? ListView.separated(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: snapshot.data.length,
-                          separatorBuilder: (context, index) => Divider(
-                            color: Colors.black26,
-                          ),
-                          itemBuilder: (context, index) {
-                            return InkWell(
-                              child: postCard(
-                                  context, snapshot.data[index]['item'], index, snapshot.data[index]['type']),
-                              onTap: () {
-                                if (snapshot.data[index]['type'] == 'NORMAL') {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (BuildContext context) =>
-                                              ViewPostPage(
-                                                feedId: snapshot
-                                                    .data[index]['item'].id,
-                                                type: 'post',
-                                              )));
-                                }
-                                if (snapshot.data[index]['type'] == 'TRAVEL') {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (BuildContext context) =>
-                                              ViewTripPage(
-                                                feedId: snapshot
-                                                    .data[index]['item'].id,
-                                                type: 'trip',
-                                              )));
-                                }
-                              },
-                            );
-                          },
-                        )
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: snapshot.data.length,
+                                separatorBuilder: (context, index) => Divider(
+                                  color: Colors.black26,
+                                ),
+                                itemBuilder: (context, index) {
+                                  return InkWell(
+                                    child: postCard(
+                                        context,
+                                        snapshot.data[index]['item'],
+                                        index,
+                                        snapshot.data[index]['type']),
+                                    onTap: () {
+                                      if (snapshot.data[index]['type'] ==
+                                          'NORMAL') {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        ViewPostPage(
+                                                          feedId: snapshot
+                                                              .data[index]
+                                                                  ['item']
+                                                              .id,
+                                                          type: 'post',
+                                                        )));
+                                      }
+                                      if (snapshot.data[index]['type'] ==
+                                          'TRAVEL') {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        ViewTripPage(
+                                                          feedId: snapshot
+                                                              .data[index]
+                                                                  ['item']
+                                                              .id,
+                                                          type: 'trip',
+                                                        )));
+                                      }
+                                    },
+                                  );
+                                },
+                              )
                             : Center(
-                          heightFactor: 4,
+                                heightFactor: 4,
+                                child: LoadingBouncingGrid.square(
+                                  inverted: true,
+                                  backgroundColor: Colors.blueAccent,
+                                  size: 150.0,
+                                ),
+                              );
+                      }),
+                  status.data != '-'
+                      ? Center(
+                          heightFactor: 2,
                           child: LoadingBouncingGrid.square(
                             inverted: true,
                             backgroundColor: Colors.blueAccent,
-                            size: 150.0,
+                            size: 80.0,
                           ),
-                        );
-                      }),
-                  status.data != '-' ? Center(
-                    heightFactor: 2,
-                    child: LoadingBouncingGrid.square(
-                      inverted: true,
-                      backgroundColor: Colors.blueAccent,
-                      size: 80.0,
-                    ),
-                  ) : SizedBox(height: 0.0,),
+                        )
+                      : SizedBox(
+                          height: 0.0,
+                        ),
                 ],
               );
             },
@@ -287,4 +310,3 @@ class _TimeLinePageState extends State<TimeLinePage> with AutomaticKeepAliveClie
     );
   }
 }
-

@@ -1,10 +1,6 @@
 /*
 게시물 value를 가지는 클래스
  */
-import 'dart:convert';
-
-import 'package:trip_story/common/address_book.dart';
-
 class Post {
   //TODO: 게시물 id랑 작성자 id 어케되는지 물어보고 맞추기
   int id; //게시물 id
@@ -49,7 +45,6 @@ class Post {
       this.imageList});
 
   Post fromJson(var value) {
-    //Map result = jsonDecode(value);
     Map result;
     if (value.containsKey('postDetail')) {
       result = value['postDetail'];
@@ -63,17 +58,17 @@ class Post {
     this.content = result['content']; //본문
     this.scope = result['scope']; //public=전체 공개, friend=친구공개, private=비공개
     this.liked = result['liked'];
-    //this.useVisit = result['useVisit']; //방문날짜 사용 여부
     this.writeDate = DateTime.parse(result['createdTime']); //게시물 작성일자
     this.tagList = result['tags']; //태그
     this.imageList = result['imagePaths'];
 
+    //방문날짜
     if (value.containsKey('normalPostInfo')) {
       this.startDate =
           DateTime.parse(value['normalPostInfo']['visitStart']); //방문 시작일
       this.endDate =
           DateTime.parse(value['normalPostInfo']['visitEnd']); //방문 종료일
-      //방문날짜 사용 여부
+
       if (this.startDate == null || this.endDate == null) {
         this.useVisit = false;
       } else {
@@ -82,7 +77,6 @@ class Post {
     } else if (value.containsKey('startDate') && value.containsKey('endDate')) {
       this.startDate = DateTime.parse(value['startDate']); //방문 시작일
       this.endDate = DateTime.parse(value['endDate']); //방문 종료일
-      //방문날짜 사용 여부
       if (this.startDate == null || this.endDate == null) {
         this.useVisit = false;
       } else {
@@ -91,26 +85,5 @@ class Post {
     }
 
     return this;
-  }
-
-  makeSample() {
-    content =
-        'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
-    //mainText ='';
-    imageList.add(AddressBook.getSampleImg());
-    imageList.add(AddressBook.getSampleImg());
-    imageList.add(AddressBook.getSampleImg());
-    imageList.add(AddressBook.getSampleImg());
-    imageList.add(AddressBook.getSampleImg());
-    tagList.add('1');
-    tagList.add('2');
-    tagList.add('태그별로');
-    tagList.add('길이길면 어케되냐');
-    tagList.add('5add');
-    tagList.add('6번태그');
-    tagList.add('7번태그');
-    tagList.add('8번태그');
-    tagList.add('9번태그');
-    writeDate = DateTime.now();
   }
 }

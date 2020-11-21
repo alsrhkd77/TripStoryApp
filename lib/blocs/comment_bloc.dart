@@ -2,7 +2,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:trip_story/models/comment.dart';
 import 'package:trip_story/provider/comment_provider.dart';
 
-class CommentBloc{
+class CommentBloc {
   List<Comment> _list = new List();
   int _feedId;
   final CommentProvider _commentProvider = new CommentProvider();
@@ -11,7 +11,7 @@ class CommentBloc{
 
   Stream get commentStream => _commentListBehavior.stream;
 
-  CommentBloc(){
+  CommentBloc() {
     _commentListBehavior.sink.add(_list);
   }
 
@@ -31,7 +31,7 @@ class CommentBloc{
     fetchAllComment(_feedId);
   }
 
-  dispose(){
+  dispose() {
     _commentListBehavior.close();
   }
 }

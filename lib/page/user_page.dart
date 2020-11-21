@@ -1,6 +1,3 @@
-import 'dart:async';
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animations/loading_animations.dart';
@@ -32,19 +29,14 @@ class _UserPageState extends State<UserPage>
   String _nickName = '';
   String _type = 'other';
 
-  /*
-  @override
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => throw UnimplementedError();
-   */
-
   @override
   bool wantKeepAlive = false;
 
   @override
   void initState() {
     super.initState();
-    if(this.widget.nickName == null || this.widget.nickName == Owner().nickName){
+    if (this.widget.nickName == null ||
+        this.widget.nickName == Owner().nickName) {
       _type = 'owner';
       _nickName = Owner().nickName;
       wantKeepAlive = true;
@@ -261,18 +253,18 @@ class _UserPageState extends State<UserPage>
                         ],
                       ),
                       StreamBuilder(
-                        stream: _bloc.feedCountStream,
+                          stream: _bloc.feedCountStream,
                           builder: (context, snapshot) {
-                        return Column(
-                          children: [
-                            Text(
-                              '${snapshot.data}',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            Text('게시물')
-                          ],
-                        );
-                      }),
+                            return Column(
+                              children: [
+                                Text(
+                                  '${snapshot.data}',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                Text('게시물')
+                              ],
+                            );
+                          }),
                       InkWell(
                         child: Column(
                           children: [

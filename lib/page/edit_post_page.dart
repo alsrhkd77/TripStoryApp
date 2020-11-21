@@ -42,10 +42,10 @@ class _EditPostPageState extends State<EditPostPage> {
                         margin: EdgeInsets.all(25.0),
                         decoration: BoxDecoration(
                             color: Colors.white,
-                            border:
-                            Border.all(width: 1.0, color: Colors.blueAccent),
+                            border: Border.all(
+                                width: 1.0, color: Colors.blueAccent),
                             borderRadius:
-                            BorderRadius.all(Radius.circular(25.0))),
+                                BorderRadius.all(Radius.circular(25.0))),
                         child: Icon(
                           Icons.add_photo_alternate_outlined,
                           color: Colors.blue,
@@ -92,6 +92,8 @@ class _EditPostPageState extends State<EditPostPage> {
           return WillPopScope(
             onWillPop: () async => false,
             child: AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0)), //this right here
               title: Text('업로드 중입니다'),
               content: Container(
                 padding: EdgeInsets.all(15.0),
@@ -120,47 +122,6 @@ class _EditPostPageState extends State<EditPostPage> {
     }
   }
 
-  Widget buildBottomList() {
-    return StreamBuilder(
-      stream: _bloc.feedStream,
-      builder: (context, snapshot) {
-        return ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: snapshot.data.imageList.length + 1,
-          itemBuilder: (BuildContext context, int index) {
-            if (index == snapshot.data.imageList.length) {
-              return new IconButton(
-                icon: Icon(
-                  Icons.add,
-                  color: Colors.blue,
-                ),
-                onPressed: addImage,
-              );
-            } else {
-              return InkWell(
-                onTap: () {
-                  setState(() {
-                    _pageIndex = index;
-                    _pageController.animateToPage(_pageIndex,
-                        duration: Duration(milliseconds: 300),
-                        curve: Curves.decelerate);
-                  });
-                },
-                onLongPress: () => _bloc.removeImage(index),
-                child: Image.file(
-                  File(snapshot.data.imageList[index]),
-                  fit: BoxFit.contain,
-                  width: MediaQuery.of(context).size.width / 7,
-                  height: MediaQuery.of(context).size.width / 7,
-                ),
-              );
-            }
-          },
-        );
-      },
-    );
-  }
-
   Future<void> addImage() async {
     var image = await ImagePicker().getImage(source: ImageSource.gallery);
     if (image == null) {
@@ -170,10 +131,12 @@ class _EditPostPageState extends State<EditPostPage> {
     showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (BuildContext context){
+        builder: (BuildContext context) {
           return WillPopScope(
             onWillPop: () async => false,
             child: AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0)), //this right here
               title: Text('이미지를 추가하는 중입니다'),
               content: Container(
                 padding: EdgeInsets.all(15.0),
@@ -184,13 +147,12 @@ class _EditPostPageState extends State<EditPostPage> {
               ),
             ),
           );
-        }
-    );
+        });
 
     //check image format
     String check = image.path.toString().toUpperCase();
-    for(String type in CommonTable.imageFormat){
-      if(check.endsWith(type)){
+    for (String type in CommonTable.imageFormat) {
+      if (check.endsWith(type)) {
         DateTime _imgDate = await ImageData.getImageDateTime(image.path);
         await _bloc.addImage(image.path, _imgDate);
         Navigator.pop(context);
@@ -214,36 +176,23 @@ class _EditPostPageState extends State<EditPostPage> {
         child: Column(
           children: [
             _template.buildScope(_bloc),
-            //buildScope(),
             _template.buildDateTime(_bloc),
-            //buildDateTime(),
             buildImageView(),
             SizedBox(height: 15.0),
             _template.buildTagView(
               context: context,
               bloc: _bloc,
             ),
-            //buildTagView(),
             SizedBox(height: 12.0),
             _template.buildContent(_bloc),
-            //buildContent(),
             _template.buildSubmit(
               context: context,
               onPressed: _submit,
             ),
-            //buildSubmit(),
             SizedBox(height: 12.0),
           ],
         ),
       ),
-      /*
-      bottomNavigationBar: BottomAppBar(
-        child: Container(
-          height: MediaQuery.of(context).size.width / 7,
-          child: buildBottomList(),
-        ),
-      ),
-       */
     );
   }
 }

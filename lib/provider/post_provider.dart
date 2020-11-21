@@ -52,10 +52,8 @@ class PostProvider {
   }
 
   Future<Post> fetchPostView(feedId) async {
-    http.Response _response = await http.get(AddressBook.postView +
-        feedId.toString() +
-        '/' +
-        Owner().id.toString());
+    http.Response _response = await http.get(
+        AddressBook.postView + feedId.toString() + '/' + Owner().id.toString());
     var resData = jsonDecode(_response.body);
     var state = resData['result'];
     if (state == 'success') {
@@ -97,7 +95,8 @@ class PostProvider {
   }
 
   Future<String> removePost(feedId) async {
-    http.Response _response = await http.delete(AddressBook.postView + feedId.toString() + '/' + Owner().id);
+    http.Response _response = await http
+        .delete(AddressBook.postView + feedId.toString() + '/' + Owner().id);
     var resData = jsonDecode(_response.body);
     if (resData['result'] == 'success') {
       return 'success';

@@ -42,14 +42,14 @@ class _SelectPostPageState extends State<SelectPostPage> {
         for (var id in resData['posts']) {
           Post _post;
           _post = await _postProvider.fetchPostView(id);
-          if(this.widget.selected.isEmpty){
+          if (this.widget.selected.isEmpty) {
             _list.add(_post);
-          }else{
-            for(int i=0; i<this.widget.selected.length; i++){
-              if(this.widget.selected[i].id == _post.id){
+          } else {
+            for (int i = 0; i < this.widget.selected.length; i++) {
+              if (this.widget.selected[i].id == _post.id) {
                 break;
               }
-              if(i == this.widget.selected.length - 1){
+              if (i == this.widget.selected.length - 1) {
                 _list.add(_post);
               }
             }
@@ -124,7 +124,7 @@ class _SelectPostPageState extends State<SelectPostPage> {
                                                   Icons.favorite_border,
                                                   color: Colors.white54,
                                                 ),
-                                          onPressed: (){},
+                                          onPressed: () {},
                                         ),
                                         Text(
                                           list[index].likes.toString(),
@@ -157,8 +157,12 @@ class _SelectPostPageState extends State<SelectPostPage> {
                                   width: MediaQuery.of(context).size.width,
                                 ),
                                 Positioned(
-                                  child: Text(DateFormat('yyyy. MM. dd')
-                                      .format(list[index].writeDate), style: TextStyle(color: Colors.white54, fontStyle: FontStyle.italic)),
+                                  child: Text(
+                                      DateFormat('yyyy. MM. dd')
+                                          .format(list[index].writeDate),
+                                      style: TextStyle(
+                                          color: Colors.white54,
+                                          fontStyle: FontStyle.italic)),
                                   bottom: 15,
                                   right: 12,
                                 ),
@@ -168,12 +172,6 @@ class _SelectPostPageState extends State<SelectPostPage> {
                           onTap: () {
                             Navigator.pop(context, list[index]);
                             //TODO: connect post
-                            /*
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (BuildContext context) => ViewPostPage()));
-                       */
                           },
                         ),
                       );

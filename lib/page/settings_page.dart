@@ -13,7 +13,9 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('설정'),),
+      appBar: AppBar(
+        title: Text('설정'),
+      ),
       body: ListView(
         padding: const EdgeInsets.all(8.0),
         children: [
@@ -22,9 +24,11 @@ class _SettingsPageState extends State<SettingsPage> {
               leading: Icon(Icons.account_box),
               title: Text('내 프로필'),
             ),
-            onTap: (){
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (BuildContext context) => EditProfilePage()));
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => EditProfilePage()));
             },
           ),
           InkWell(
@@ -32,9 +36,11 @@ class _SettingsPageState extends State<SettingsPage> {
               leading: Icon(Icons.flight_takeoff),
               title: Text('실험실 (여행 플래너)'),
             ),
-            onTap: (){
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (BuildContext context) => PlannerPage()));
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => PlannerPage()));
             },
           ),
           InkWell(
@@ -52,7 +58,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   context,
                   new MaterialPageRoute(
                       builder: (BuildContext context) => LoginPage()),
-                      (route) => false);
+                  (route) => false);
             },
           ),
         ],

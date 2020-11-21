@@ -25,22 +25,22 @@ class ViewAppbar extends StatelessWidget {
       this.endDate});
 
   goUserPage(context) {
-    if(name == Owner().nickName){
+    if (name == Owner().nickName) {
       Navigator.push(
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => UserPage(
-                nickName: name,
-                type: 'owner',
-              )));
-    }else{
+                    nickName: name,
+                    type: 'owner',
+                  )));
+    } else {
       Navigator.push(
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => UserPage(
-                nickName: name,
-                type: 'other',
-              )));
+                    nickName: name,
+                    type: 'other',
+                  )));
     }
   }
 
@@ -80,7 +80,7 @@ class ViewAppbar extends StatelessWidget {
                     backgroundImage: NetworkImage(profileUrl),
                   ),
                 ),
-                onTap: (){
+                onTap: () {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
