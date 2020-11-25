@@ -108,9 +108,49 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
   }
 
-  void sendDefaultProfile() {
+  Future<void> sendDefaultProfile() async {
     Navigator.pop(context);
-    _showDialog('프로필 변경', '프로필 변경에 실패하였습니다.\n잠시후에 다시 시도해주세요.');
+
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return WillPopScope(
+            onWillPop: () async => false,
+            child: AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0)), //this right here
+              title: Text('변경 중입니다'),
+              content: Container(
+                padding: EdgeInsets.all(15.0),
+                child: LoadingBouncingGrid.square(
+                  backgroundColor: Colors.blueAccent,
+                  size: 90.0,
+                ),
+              ),
+            ),
+          );
+        });
+
+    var request =
+        new http.MultipartRequest("PUT", Uri.parse(AddressBook.changeProfile));
+    request.fields['memberId'] = Owner().id;
+    var response = await (await request.send()).stream.bytesToString();
+    var resData = jsonDecode(response);
+
+    Navigator.pop(context);
+    print(resData);
+    if (resData['result'] == 'success') {
+      setState(() {
+        Owner().profile = resData['profileImagePath'];
+      });
+    } else if (resData['errors'] != null) {
+      _showDialog('프로필 변경', '프로필 변경에 실패하였습니다.\n${resData['errors']}');
+    } else {
+      _showDialog('프로필 변경', '프로필 변경에 실패하였습니다.\n잠시후에 다시 시도해주세요.');
+    }
+
+    //_showDialog('프로필 변경', '프로필 변경에 실패하였습니다.\n잠시후에 다시 시도해주세요.');
   }
 
   Future<void> sendChangeNickName() async {

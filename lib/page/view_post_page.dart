@@ -157,10 +157,12 @@ class ViewPostPage extends StatelessWidget {
                   value: 1,
                   child: Text('삭제'),
                 ),
+                /*
                 PopupMenuItem(
                   value: 2,
                   child: Text('수정'),
                 ),
+                 */
               ],
               onSelected: (_value) {
                 print(_value);

@@ -357,7 +357,7 @@ class _UserPageState extends State<UserPage>
           ),
         ),
       ),
-      floatingActionButton: _type == 'owner'
+      floatingActionButton: _type == 'main'
           ? FloatingActionButton.extended(
               heroTag: 'makeTrip',
               label: Text('여행 작성'),
