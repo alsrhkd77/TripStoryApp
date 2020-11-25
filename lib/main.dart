@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:permission/permission.dart';
 import 'package:trip_story/common/blank_appbar.dart';
 import 'package:trip_story/common/owner.dart';
 import 'package:trip_story/page/blank_page.dart';
@@ -40,11 +41,24 @@ class MainStatefulWidget extends StatefulWidget {
 class _MainStatefulWidgetState extends State<MainStatefulWidget>
     with SingleTickerProviderStateMixin {
   TabController tabController;
+  List<Permissions> _permissions;
 
   @override
   void initState() {
     super.initState();
     tabController = new TabController(length: 5, vsync: this);
+    _getPermission();
+  }
+
+  _getPermission() async {
+    List<Permissions> temp = await Permission.requestPermissions([
+      PermissionName.Internet,
+      PermissionName.Storage,
+      PermissionName.Location
+    ]);
+    setState(() {
+      _permissions = temp;
+    });
   }
 
   @override

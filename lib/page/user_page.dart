@@ -35,6 +35,7 @@ class _UserPageState extends State<UserPage>
   @override
   void initState() {
     super.initState();
+    _type = this.widget.type;
     if (this.widget.nickName == null ||
         this.widget.nickName == Owner().nickName) {
       _nickName = Owner().nickName;

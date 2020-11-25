@@ -240,6 +240,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.9.2"
+  permission:
+    dependency: "direct main"
+    description:
+      name: permission
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.7"
   platform:
     dependency: transitive
     description:

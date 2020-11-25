@@ -34,6 +34,7 @@ dependencies:
   shared_preferences: ^0.5.12+2 #로컬 데이터 저장 패키지
   smooth_page_indicator: ^0.2.0 #page indicator 패키지
   geolocator: ^6.1.7 #현재 위치 및 location 기능 패키지
+  permission: ^0.1.7 #권한 관리 패키지
 
   reorderables: ^0.3.2  #드래그 앤 드롭 위젯 패키지(Reorderable widget)
   date_range_picker: ^1.0.6 #범위 날짜 선택 패키지

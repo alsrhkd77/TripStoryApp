@@ -306,6 +306,9 @@ class _PeripheralSearchPageState extends State<PeripheralSearchPage> {
           myLocationButtonEnabled: true,
           mapToolbarEnabled: false,
           onCameraMove: (position) => _position = position,
+          onMapCreated: (GoogleMapController controller) {
+            _controller.complete(controller);
+          },
         ),
       ),
       floatingActionButton: Padding(
