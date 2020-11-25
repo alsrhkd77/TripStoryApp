@@ -295,6 +295,7 @@ class _EditTripPageState extends State<EditTripPage> {
                             ),
                           ),
                           StreamBuilder(
+                            stream: _bloc.feedStream,
                             builder: (context, snapshot) {
                               return Container(
                                 height: MediaQuery.of(context)

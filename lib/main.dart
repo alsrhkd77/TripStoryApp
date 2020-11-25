@@ -68,7 +68,7 @@ class _MainStatefulWidgetState extends State<MainStatefulWidget>
           BlankPage(),
           PeripheralSearchPage(),
           UserPage(
-            type: 'owner',
+            type: 'main',
             nickName: Owner().nickName,
           ),
         ],

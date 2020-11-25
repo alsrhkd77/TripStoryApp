@@ -440,6 +440,11 @@ class _SearchPageState extends State<SearchPage>
                 controller: _textEditingController,
                 maxLength: 20,
                 onChanged: (value) {
+                  setState(() {
+                    friendWithNickName = new List();
+                    friendWithName = new List();
+                    feedList = new List();
+                  });
                   if (value.replaceAll(' ', '') != '') {
                     getFriendWithNickName(value);
                     getFriendWithName(value);

@@ -89,6 +89,9 @@ class _LoginPageState extends State<LoginPage> {
 
         var resData = jsonDecode(response.body);
         state = resData['result'];
+        if(response.statusCode != 200){
+          Navigator.pop(context);
+        }
 
         if (state == 'success') {
           //유저 정보 세팅
@@ -190,34 +193,38 @@ class _LoginPageState extends State<LoginPage> {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    if (resData['result'] == "success") {
-      var getUser = await getUserInfo();
-      if (!getUser) {
-        return;
-      }
-      if (_autoLoginChecked) {
-        Owner().type = 'us';
-        prefs.setBool('auto', true);
-        prefs.setString('type', 'us');
-        prefs.setString('id', _memberId);
-        prefs.setString('pw', _memberPw);
+    if(response.statusCode != 200) {
+      _errorMsg = '인터넷 연결에 실패하였습니다\n잠시후 다시 시도해주세요';
+    }else{
+      if (resData['result'] == "success") {
+        var getUser = await getUserInfo();
+        if (!getUser) {
+          return;
+        }
+        if (_autoLoginChecked) {
+          Owner().type = 'us';
+          prefs.setBool('auto', true);
+          prefs.setString('type', 'us');
+          prefs.setString('id', _memberId);
+          prefs.setString('pw', _memberPw);
+        } else {
+          prefs.setBool('auto', false);
+          prefs.setString('type', '');
+          prefs.setString('id', '');
+          prefs.setString('pw', '');
+        }
+        setState(() {
+          _globalLoginState = 'success';
+        });
+        print('login success');
       } else {
+        _errorMsg = resData['errors'];
         prefs.setBool('auto', false);
         prefs.setString('type', '');
         prefs.setString('id', '');
         prefs.setString('pw', '');
+        print('login failed');
       }
-      setState(() {
-        _globalLoginState = 'success';
-      });
-      print('login success');
-    } else {
-      _errorMsg = resData['errors'];
-      prefs.setBool('auto', false);
-      prefs.setString('type', '');
-      prefs.setString('id', '');
-      prefs.setString('pw', '');
-      print('login failed');
     }
   }
 

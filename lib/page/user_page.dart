@@ -37,7 +37,6 @@ class _UserPageState extends State<UserPage>
     super.initState();
     if (this.widget.nickName == null ||
         this.widget.nickName == Owner().nickName) {
-      _type = 'owner';
       _nickName = Owner().nickName;
       wantKeepAlive = true;
     } else {
@@ -136,7 +135,7 @@ class _UserPageState extends State<UserPage>
   }
 
   Widget buildFollowButton(Friend _friend) {
-    if (_type == 'owner') {
+    if (_nickName == Owner().nickName) {
       return SizedBox(
         height: 35.0,
       );
@@ -173,7 +172,7 @@ class _UserPageState extends State<UserPage>
   }
 
   Widget buildProfileTop() {
-    if (_type == 'owner') {
+    if (_nickName == Owner().nickName) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -316,7 +315,7 @@ class _UserPageState extends State<UserPage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      appBar: _type == 'owner'
+      appBar: _type == 'main'
           ? BlankAppbar()
           : AppBar(
               title: Text(_nickName),
