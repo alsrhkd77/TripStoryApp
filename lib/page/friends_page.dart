@@ -72,7 +72,7 @@ class FriendsPage extends StatelessWidget {
         ),
         title: Text(friend.nickName),
         subtitle: Text(friend.name),
-        trailing: _bloc.owner
+        trailing: _bloc.owner && this.type == 'following'
             ? IconButton(
                 icon: Icon(
                   Icons.more_vert,
@@ -98,6 +98,7 @@ class FriendsPage extends StatelessWidget {
                             ),
                             onTap: () {
                               _bloc.unfollow(friend);
+                              Navigator.pop(context);
                             },
                           ),
                         );

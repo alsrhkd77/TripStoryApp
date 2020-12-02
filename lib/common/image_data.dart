@@ -22,13 +22,11 @@ class ImageData {
     }
 
     /// Get Date of Photography
-    /*
     var dateTime = DateTime.parse(data['Image DateTime']
         .toString()
         .replaceFirst(":", "-")
         .replaceFirst(":", "-"));
     print(dateTime);
-     */
 
     /// GET Photograph Location
     if (data.containsKey('GPS GPSLatitude') &&
@@ -43,11 +41,9 @@ class ImageData {
     }
 
     //print all exif data
-    /*
     for (String key in data.keys) {
       print("$key (${data[key].tagType}): ${data[key]}");
     }
-     */
   }
 
   static Future<DateTime> getImageDateTime(String path) async {

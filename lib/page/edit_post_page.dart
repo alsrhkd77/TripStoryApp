@@ -106,7 +106,6 @@ class _EditPostPageState extends State<EditPostPage> {
             ),
           );
         });
-
     await _bloc.submit();
     Navigator.pop(context);
     if (_bloc.uploadState == 'success') {

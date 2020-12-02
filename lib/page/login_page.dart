@@ -201,6 +201,7 @@ class _LoginPageState extends State<LoginPage> {
         if (!getUser) {
           return;
         }
+
         if (_autoLoginChecked) {
           Owner().type = 'us';
           prefs.setBool('auto', true);

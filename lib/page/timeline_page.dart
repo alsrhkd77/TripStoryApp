@@ -81,6 +81,7 @@ class _TimeLinePageState extends State<TimeLinePage>
     return _tags;
   }
 
+
   Widget postCard(context, Post _post, int index, String type) {
     String visit = '';
     if (_post.useVisit) {

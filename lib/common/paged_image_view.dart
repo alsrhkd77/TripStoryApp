@@ -3,7 +3,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:trip_story/page/network_image_view_page.dart';
 
 class PagedImageView extends StatelessWidget {
-  final List list;
+  final List list;  //이미지 리스트
   final bool zoomAble;
   final BoxFit fit;
 

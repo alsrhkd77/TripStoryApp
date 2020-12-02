@@ -132,9 +132,13 @@ class EditPostBloc {
       request.files.add(http.MultipartFile.fromString('tags', t));
     }
 
-    var response = await (await request.send()).stream.bytesToString();
-    var resData = jsonDecode(response);
-    uploadState = resData['result'];
+    var response = await request.send();
+    if (response.statusCode == 200) {
+      var resData = jsonDecode(response.stream.toString());
+      uploadState = resData['result'];
+    } else {
+      uploadState = 'failed';
+    }
   }
 
   //소멸

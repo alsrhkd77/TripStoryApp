@@ -347,7 +347,7 @@ class EditFeedTemplate {
           padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 5.0),
           child: TextField(
             maxLines: 5,
-            maxLength: 1000,
+            maxLength: 250,
             maxLengthEnforced: true,
             onChanged: bloc.changeContent,
             decoration: InputDecoration(

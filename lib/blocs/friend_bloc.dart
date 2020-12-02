@@ -63,8 +63,7 @@ class FriendBloc {
     _result.remove(friend);
     _friendList.remove(friend);
     _listBehavior.sink.add(_result);
-    http.Response response = await http.delete(
-        AddressBook.friends + '/${Owner().id}/${friend.nickName}',
+    await http.delete(AddressBook.friends + '/${Owner().id}/${friend.nickName}',
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         });

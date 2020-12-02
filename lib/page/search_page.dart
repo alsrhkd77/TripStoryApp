@@ -50,9 +50,9 @@ class _SearchPageState extends State<SearchPage>
     }
   }
 
-  Future<void> getFriendWithName(String value) async {
+  Future<void> getFriendWithName(String keyWord) async {
     http.Response _response =
-        await http.get(AddressBook.searchFriendWithName + value);
+        await http.get(AddressBook.searchFriendWithName + keyWord);
     if (_response.statusCode == 200) {
       var resData = jsonDecode(_response.body);
       if (resData['result'] == 'success') {
@@ -76,9 +76,9 @@ class _SearchPageState extends State<SearchPage>
     }
   }
 
-  Future<void> getFriendWithNickName(String value) async {
+  Future<void> getFriendWithNickName(String keyWord) async {
     http.Response _response =
-        await http.get(AddressBook.searchFriendWithNickName + value);
+        await http.get(AddressBook.searchFriendWithNickName + keyWord);
     if (_response.statusCode == 200) {
       var resData = jsonDecode(_response.body);
       if (resData['result'] == 'success') {
@@ -102,9 +102,9 @@ class _SearchPageState extends State<SearchPage>
     }
   }
 
-  Future<void> getFeedWithTag(String value) async {
+  Future<void> getFeedWithTag(String keyWord) async {
     http.Response _response =
-        await http.get(AddressBook.searchFeedWithTag + value);
+        await http.get(AddressBook.searchFeedWithTag + keyWord);
     if (_response.statusCode == 200) {
       var resData = jsonDecode(_response.body);
       if (resData['result'] == 'success') {
