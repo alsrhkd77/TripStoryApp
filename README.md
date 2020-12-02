@@ -4,7 +4,7 @@
 
 
 
-## 개요
+## 프로젝트 개요
 
  현대인에게 여행은 단순한 휴식 이상의 의미가 있다. 새로운 사람을 만나기 위해 여행을 떠나기도 하며, 지루한 일상을 벗어나 신선한 자극을 주기 위해 여행을 떠나기도 한다. 페이스북, 인스타그램과 같은 SNS에서 여행 관련 게시물의 높은 조회 수는 여행에 대한 현대인의 큰 관심을 보여주는 한 예시이다.
 
@@ -25,9 +25,9 @@
 
 -  **shared_preferences** 패키지를 사용한 자동로그인 지원
 
-|일반 로그인|자동로그인|
-|:--------:|:--------:|
-|![로그인](https://github.com/alsrhkd77/TripStoryApp/blob/master/screenshot/gif/Login.gif?raw=true)|![자동로그인](https://github.com/alsrhkd77/TripStoryApp/blob/master/screenshot/gif/autoLogin.gif?raw=true)|
+|일반 로그인|자동로그인|로그아웃|
+|:--------:|:--------:|:--------:|
+|![로그인](https://github.com/alsrhkd77/TripStoryApp/blob/master/screenshot/gif/Login.gif?raw=true)|![자동로그인](https://github.com/alsrhkd77/TripStoryApp/blob/master/screenshot/gif/autoLogin.gif?raw=true)|![](https://github.com/alsrhkd77/TripStoryApp/blob/master/screenshot/gif/logout.gif?raw=true)|
 
 
 
@@ -66,9 +66,60 @@
 
 ### User profile
 
+- 조회한 프로필에 따라 필요한 부분만 변경하여 표시
+
 |                         본인 프로필                          |                         타인 프로필                          |
 | :----------------------------------------------------------: | :----------------------------------------------------------: |
 | ![](https://github.com/alsrhkd77/TripStoryApp/blob/master/screenshot/gif/myinfo.gif?raw=true) | ![](https://github.com/alsrhkd77/TripStoryApp/blob/master/screenshot/gif/yourinfo.gif?raw=true) |
+
+
+
+### Edit profile
+
+- 위젯 부분 재배치
+
+|                         프로필 변경                          |
+| :----------------------------------------------------------: |
+| ![](https://github.com/alsrhkd77/TripStoryApp/blob/master/screenshot/gif/editProfile.gif?raw=true) |
+
+
+
+### Make post
+
+- 사진 메타데이터를 이용한 **자동 날짜 설정**
+
+|                        자동 날짜 설정                        |                        수동 날짜 설정                        |
+| :----------------------------------------------------------: | :----------------------------------------------------------: |
+| ![](https://github.com/alsrhkd77/TripStoryApp/blob/master/screenshot/gif/makepost1.gif?raw=true) | ![](https://github.com/alsrhkd77/TripStoryApp/blob/master/screenshot/gif/makepost2.gif?raw=true) |
+
+
+
+### Make trip
+
+- 사진 메타데이터를 이용해 사진 생성 위치에 **마커 자동 추가**
+- 마커 좌표와 방문 일시를 이용해 **경로 자동 생성**
+- 일반 게시물 포함 가능
+- 특정 위치 수동 마커 추가 가능
+
+|                        자동 마커 생성                        |                        수동 마커 생성                        |
+| :----------------------------------------------------------: | :----------------------------------------------------------: |
+| ![](https://github.com/alsrhkd77/TripStoryApp/blob/master/screenshot/gif/automarker.gif?raw=true) | ![](https://github.com/alsrhkd77/TripStoryApp/blob/master/screenshot/gif/selfmarker.gif?raw=true) |
+
+
+
+### View post
+
+|                      댓글, 좋아요 기능                       |                    태그로 검색, 삭제 기능                    |
+| :----------------------------------------------------------: | :----------------------------------------------------------: |
+| ![](https://github.com/alsrhkd77/TripStoryApp/blob/master/screenshot/gif/post.gif?raw=true) | ![](https://github.com/alsrhkd77/TripStoryApp/blob/master/screenshot/gif/postRemove.gif?raw=true) |
+
+
+
+### View trip
+
+|                       댓글, 마커 기능                        |                      일반 게시물로 연결                      |
+| :----------------------------------------------------------: | :----------------------------------------------------------: |
+| ![](https://github.com/alsrhkd77/TripStoryApp/blob/master/screenshot/gif/trip1.gif?raw=true) | ![](https://github.com/alsrhkd77/TripStoryApp/blob/master/screenshot/gif/trip2.gif?raw=true) |
 
 
 
@@ -115,6 +166,13 @@
 
 
 
+### Custom Widget
+
+- [x] Page View + Page Indicator  [Link](https://github.com/alsrhkd77/TripStoryApp/blob/master/lib/common/paged_image_view.dart)
+- [x] Blank App Bar  [Link](https://github.com/alsrhkd77/TripStoryApp/blob/master/lib/common/blank_appbar.dart)
+
+
+
 ### Technical
 
 - [x] 사진 메타데이터 추출
@@ -141,6 +199,7 @@
 ## 버전 관리
  00.00.00
  Major ver.Minor ver.Build or Maintenance ver
+
  - Major: 전체를 뒤엎을 정도의 큰 변화가 발생했을 때(1부터 시작)
  - Minor: 없던 기능의 추가나 기존 기능의 수정 등의 변화가 발생했을 때(0부터 시작)
  - Build or Maintenance: 자잘한 버그나 내부적 코드 보완 등의 변화가 발생했을 때
