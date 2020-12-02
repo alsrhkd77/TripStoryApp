@@ -12,7 +12,7 @@
 
  이에 착안하여 일지의 기록과 공유를 쉽게 하고 나아가 수집된 일지로부터 객관적인 정보를 수집하여 필요한 여행자에게 제공하는 서비스를 제작 및 배포하는 것을 목표로 한다.
 
-> 프로젝트 상세 설명: ([Trip Story.md](https://github.com/alsrhkd77/TripStoryApp/Trip Story.md))
+> 프로젝트 상세 설명: ([Trip Story.md](https://github.com/alsrhkd77/TripStoryApp/blob/master/Trip%20Story.md))
 
 
 
