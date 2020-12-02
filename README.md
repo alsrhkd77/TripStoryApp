@@ -17,13 +17,13 @@
 ## Preview
 ### Sign Up
 
-- **TextFormFeild Widget**과 **Regular expression**을 사용한 형식 판단
+- **TextFormFeild Widget**과 **Regular expression**을 사용한 특수문자 및 공백문자 사용 제한, 이메일 형식 체크
 
 
 
 ### Login
 
--  **shared_preferences** 패키지를 사용해 자동로그인을 지원한다.
+-  **shared_preferences** 패키지를 사용한 자동로그인 지원
 
 |일반 로그인|자동로그인|
 |:--------:|:--------:|
@@ -43,23 +43,46 @@
 
 ### Search
 
-|                           검색결과                           | 페이지 라우팅 |
-| :----------------------------------------------------------: | :-----------: |
-| ![](https://github.com/alsrhkd77/TripStoryApp/blob/master/screenshot/gif/search.gif?raw=true) |               |
+- 검색 프로세스 비동기 처리
+- 단일 검색어를 통한 여러 카테고리 검색
+
+|                          검색 결과                           |                        페이지 라우팅                         |
+| :----------------------------------------------------------: | :----------------------------------------------------------: |
+| ![](https://github.com/alsrhkd77/TripStoryApp/blob/master/screenshot/gif/search.gif?raw=true) | ![](https://github.com/alsrhkd77/TripStoryApp/blob/master/screenshot/gif/search2.gif?raw=true) |
+
+
+
+### Peripheral search
+
+- 지도 중심좌표 기반 검색
+- 마커 선택 시 Google Geocoding API를 사용해 **"좌표->주소"** 출력
+- 데이터 요청량이 너무 많아 **"지도 이동 시 검색 -> 버튼 눌러서 검색"** 으로 변경
+
+|                          검색 결과                           |                        내 위치로 이동                        |
+| :----------------------------------------------------------: | :----------------------------------------------------------: |
+| ![](https://github.com/alsrhkd77/TripStoryApp/blob/master/screenshot/gif/map.gif?raw=true) | ![](https://github.com/alsrhkd77/TripStoryApp/blob/master/screenshot/gif/MyLocation.gif?raw=true) |
+
+
+
+### User profile
+
+|                         본인 프로필                          |                         타인 프로필                          |
+| :----------------------------------------------------------: | :----------------------------------------------------------: |
+| ![](https://github.com/alsrhkd77/TripStoryApp/blob/master/screenshot/gif/myinfo.gif?raw=true) | ![](https://github.com/alsrhkd77/TripStoryApp/blob/master/screenshot/gif/yourinfo.gif?raw=true) |
 
 
 
 ## 개발 기능
 ### 사용자
 
-	- [x] 회원가입
-
+- [x] 회원가입
 - [x] 로그인
 - [x] 내 프로필 조회
 - [x] 타인 프로필 조회
 - [x] 닉네임 변경
 - [x] 프로필 사진 변경
 - [x] 팔로우 및 팔로우 취소
+- [ ] 소셜 로그인(Google, Facebook)
 
 
 
