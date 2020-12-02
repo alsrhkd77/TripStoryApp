@@ -176,19 +176,14 @@
 ### Technical
 
 - [x] 사진 메타데이터 추출
-  
 - [x] 요청 응답 대기 dialog
-  
-- [ ] 인증방식 토큰으로 변경
-  
+- [ ] 사용자 인증방식 토근으로 변경
 - [ ] 모든 페이지 BLoC 패턴 적용을 통해 UI와 Business logic 분리
-  
 - [ ] 모든 요청 결과값 statusCode 확인
-  
 - [ ] statusCode 에러 메시지 맵핑할 String 작성
-  
-   
-  
+
+ 
+
 ## 용어 정리
 - Feed = 단일 게시물(Post), 여행 게시물(Trip)
 - Post = 단일 게시물
