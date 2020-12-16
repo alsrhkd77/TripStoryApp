@@ -1,6 +1,8 @@
 # Trip Story
 
->We are waiting for your opinion🙂
+We are waiting for your opinion🙂
+
+[https://github.com/alsrhkd77/TripStoryApp/discussions](https://github.com/alsrhkd77/TripStoryApp/discussions)
 
 >download link : [Trip Story.apk](https://github.com/alsrhkd77/TripStoryApp/raw/master/Trip%20Story.apk)
 
