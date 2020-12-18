@@ -28,24 +28,40 @@ class _EditPlanPageState extends State<EditPlanPage> {
   void initState() {
     super.initState();
     _travelPlan = this.widget.travelPlan;
+    buildMarker();
   }
 
   static final _gwanghwamun = CameraPosition(
       target: LatLng(37.575929, 126.976849), zoom: 11.151926040649414);
 
+  Future<void> _goToTarget(LatLng pos) async {
+    final GoogleMapController controller = await _controller.future;
+    CameraPosition targetPosition = CameraPosition(target: pos, zoom: 11.5);
+    controller.animateCamera(CameraUpdate.newCameraPosition(targetPosition));
+  }
+
   void _onReorder(int index, int oldIndex, int newIndex) {
     setState(() {
-      final String item = _travelPlan.places[index].removeAt(oldIndex);
+      var item = _travelPlan.places[index].removeAt(oldIndex);
       _travelPlan.places[index].insert(newIndex, item);
     });
   }
 
-  void buildMarker() {}
+  void buildMarker() {
+  }
 
   void buildPolyLine() {}
 
   void addPlace(value, index) {
     _travelPlan.places[index].add(value);
+    Marker marker = new Marker(
+        markerId: MarkerId(value['placeId']),  //TODO: 유니크한 값으로 바꿔야함
+        position: LatLng(value['lat'], value['lng']),
+    );
+    setState(() {
+      _markers.add(marker);
+    });
+    _goToTarget(LatLng(value['lat'], value['lng']));
   }
 
   List<Widget> buildPlaceList(int i) {
@@ -88,7 +104,10 @@ class _EditPlanPageState extends State<EditPlanPage> {
               ),
             ),
             Container(
-              width: MediaQuery.of(context).size.width * 9 / 10,
+              width: MediaQuery
+                  .of(context)
+                  .size
+                  .width * 9 / 10,
               child: Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
@@ -104,13 +123,16 @@ class _EditPlanPageState extends State<EditPlanPage> {
                         onReorder: (oldIndex, newIndex) =>
                             _onReorder(index, oldIndex, newIndex)),
                     Container(
-                      width: MediaQuery.of(context).size.width * 3 / 4,
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width * 3 / 4,
                       margin: EdgeInsets.all(15.0),
                       decoration: BoxDecoration(
                           border:
-                              Border.all(width: 1.0, color: Colors.blueAccent),
+                          Border.all(width: 1.0, color: Colors.blueAccent),
                           borderRadius:
-                              BorderRadius.all(Radius.circular(25.0))),
+                          BorderRadius.all(Radius.circular(25.0))),
                       child: IconButton(
                         //padding: EdgeInsets.symmetric(horizontal: 25.0),
                         icon: Icon(
@@ -166,19 +188,19 @@ class _EditPlanPageState extends State<EditPlanPage> {
               alignment: Alignment.centerLeft,
               child: InkWell(
                 child: Text(DateFormat('yyyy. MM. dd')
-                        .format(_travelPlan.itinerary.first) +
+                    .format(_travelPlan.itinerary.first) +
                     ' ~ ' +
                     DateFormat('yyyy. MM. dd')
                         .format(_travelPlan.itinerary.last)),
                 onTap: () async {
                   final List<DateTime> picked =
-                      await DateRagePicker.showDatePicker(
-                          context: context,
-                          initialFirstDate: new DateTime.now(),
-                          initialLastDate: new DateTime.now(),
-                          firstDate: new DateTime(1945),
-                          lastDate:
-                              new DateTime.now().add(Duration(days: 1825)));
+                  await DateRagePicker.showDatePicker(
+                      context: context,
+                      initialFirstDate: new DateTime.now(),
+                      initialLastDate: new DateTime.now(),
+                      firstDate: new DateTime(1945),
+                      lastDate:
+                      new DateTime.now().add(Duration(days: 1825)));
                   if (picked != null && picked.length >= 2) {
                     setState(() {
                       _travelPlan.itinerary = picked;
@@ -189,7 +211,11 @@ class _EditPlanPageState extends State<EditPlanPage> {
               ),
             ),
             Container(
-              height: MediaQuery.of(context).copyWith().size.height / 3,
+              height: MediaQuery
+                  .of(context)
+                  .copyWith()
+                  .size
+                  .height / 3,
               padding: EdgeInsets.symmetric(vertical: 10.0),
               child: Card(
                 child: GoogleMap(
@@ -207,7 +233,7 @@ class _EditPlanPageState extends State<EditPlanPage> {
                   markers: _markers,
                   gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[
                     new Factory<OneSequenceGestureRecognizer>(
-                      () => new EagerGestureRecognizer(),
+                          () => new EagerGestureRecognizer(),
                     ),
                   ].toSet(),
                 ),

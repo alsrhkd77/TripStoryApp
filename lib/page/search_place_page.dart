@@ -38,6 +38,26 @@ class _SearchPlacePageState extends State<SearchPlacePage> {
     }
   }
 
+  Future<Map> getDetails(String placeId) async {
+    Map result = new Map();
+    http.Response _response = await http.get(
+        'https://maps.googleapis.com/maps/api/place/details/json?key=' +
+            AddressBook.googleMapsKey +
+            '&place_id=' +
+            placeId);
+    if (_response.statusCode == 200) {
+      var resData = jsonDecode(_response.body);
+      if (resData['status'] == 'OK') {
+        result['lat'] = resData['result']['geometry']['location']['lat'];
+        result['lng'] = resData['result']['geometry']['location']['lng'];
+      }
+      print(resData);
+    } else {
+      throw Exception('Failed to get place detail value');
+    }
+    return result;
+  }
+
   buildListView() {
     if (_status == 'OK') {
       return ListView.separated(
@@ -66,11 +86,13 @@ class _SearchPlacePageState extends State<SearchPlacePage> {
       subtitle: Text(_placeList[index]['description']),
       trailing: OutlineButton(
         child: Text('선택'),
-        onPressed: () {
+        onPressed: () async {
           Map value = new Map();
           value['placeName'] =
               _placeList[index]['structured_formatting']['main_text'];
           value['placeId'] = _placeList[index]['place_id'];
+          Map location = await getDetails(value['placeId']);
+          value.addAll(location);
           Navigator.pop(context, value);
         },
       ),

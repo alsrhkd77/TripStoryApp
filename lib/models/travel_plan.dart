@@ -3,7 +3,7 @@ class TravelPlan {
   String title = ''; //여행 이름
   List<DateTime> itinerary = new List(); //여행 일정
   List<String> companion; //태그된 사람
-  List places = new List();
+  List<List> places = new List();
 
   void fromJson(value) {
     title = value['title'];
